@@ -1,5 +1,5 @@
 all:
-	sudo DOCKER_BUILDKIT=0 docker-compose -f docker-compose.yml up -d --build
+	sudo docker-compose up -d --build
 
 clean:
 	sudo docker-compose -f docker-compose.yml down
