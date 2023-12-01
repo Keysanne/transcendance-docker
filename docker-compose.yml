@@ -7,6 +7,8 @@ services:
     image: django
     container_name: django
     restart: always
+    networks:
+      - transcendance
     command: python3 images/django/mysite/back/manage.py runserver 0.0.0.0:8000
     volumes: 
       - .:/code
@@ -17,10 +19,18 @@ services:
   
   db:
     image: postgres
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: postgres
+    networks:
+        - transcendance
     volumes:
       - postgres:/var/lib/postgresql/data/
      
 volumes:
   postgres:
+  
+networks:
+  transcendance:
+    driver: bridge
+    name: transcendance
