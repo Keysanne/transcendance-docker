@@ -26,6 +26,19 @@ services:
         - transcendance
     volumes:
       - postgres:/var/lib/postgresql/data/
+      
+  vuejs:
+    build:
+      context: ./images/vuejs
+    image: vuejs
+    container_name: vuejs
+    restart: always
+    networks:
+      - transcendance
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - django
      
 volumes:
   postgres:
