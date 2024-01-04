@@ -10,13 +10,13 @@ services:
     networks:
       - transcendance
     command: python3 images/django/mysite/back/manage.py runserver 0.0.0.0:8000
-    volumes: 
+    volumes:
       - .:/code
-    ports: 
+    ports:
       - "8000:8000"
     depends_on:
       - db
-  
+
   db:
     image: postgres
     container_name: postgres
@@ -26,7 +26,7 @@ services:
         - transcendance
     volumes:
       - postgres:/var/lib/postgresql/data/
-      
+
   vuejs:
     build:
       context: ./images/vuejs
@@ -35,14 +35,14 @@ services:
     restart: always
     networks:
       - transcendance
-    ports: 
-      - "443:443"
+    ports:
+      - "8080:8080"
     depends_on:
       - django
-     
+
 volumes:
   postgres:
-  
+
 networks:
   transcendance:
     driver: bridge

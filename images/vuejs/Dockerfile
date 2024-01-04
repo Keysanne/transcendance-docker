@@ -14,6 +14,6 @@ RUN mkdir -p /etc/nginx/ssl
 COPY ./ssl/bump.crt /etc/nginx/ssl/transcendance.com.crt
 COPY ./ssl/bump.key /etc/nginx/ssl/transcendance.com.key
 RUN rm /etc/nginx/conf.d/default.conf
-EXPOSE 443
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
 
