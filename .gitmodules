@@ -1,6 +1,0 @@
-[submodule "front"]
-	path = ./images/vuejs/front
-	url = git@github.com:BaptisteBurguiere/transcendance_front.git
-[submodule "back"]
-	path = ./images/django/mysite
-	url = git@github.com:awalter42/transcendance_backend.git
