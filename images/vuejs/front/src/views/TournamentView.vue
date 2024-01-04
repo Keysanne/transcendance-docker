@@ -1,0 +1,137 @@
+<template>
+	<div class="d-flex flex-column align-items-center bg-gray-100">
+		<Navbar />
+
+		<div class="d-flex flex-column mt-20 w-[90%] max-w-[722px]">
+			<h2 class="text-primary">{{ name }}</h2>
+			<p class="mt-3">{{ description }}</p>
+
+			<TournamentTree class="mt-3" :size="max_players" :players="players" />
+		</div>
+	</div>
+</template>
+
+<style>
+
+</style>
+
+<script>
+import Navbar from '../components/Navbar.vue'
+import TournamentTree from '../components/TournamentTree.vue';
+
+export default {
+	data() {
+		return {
+			name: "Tournament test",
+			description: "Irure tempor amet mollit incididunt commodo consectetur aliqua. Ex ullamco enim labore laboris irure culpa incididunt. Nisi ipsum dolor laborum cupidatat ut elit dolore nulla. Mollit Lorem veniam reprehenderit occaecat excepteur veniam minim sunt proident cupidatat excepteur. Cillum ea reprehenderit adipisicing do aute non cupidatat. Enim ad laborum ad sunt cillum eiusmod eu.",
+			players: [
+				{
+					username: "player1",
+					nickname: "Player1nick",
+					image: "",
+					stage: 2,
+				},
+				{
+					username: "player2",
+					nickname: "Player2nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player3",
+					nickname: "Player3nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player4",
+					nickname: "Player4nick",
+					image: "",
+					stage: 1,
+				},
+				{
+					username: "player5",
+					nickname: "Player5nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player6",
+					nickname: "Player6nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player7",
+					nickname: "Player7nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player8",
+					nickname: "Player8nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player9",
+					nickname: "Player9nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player10",
+					nickname: "Player10nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player11",
+					nickname: "Player11nick",
+					image: "",
+					stage: 4,
+				},
+				{
+					username: "player12",
+					nickname: "Player12nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player13",
+					nickname: "Player13nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player14",
+					nickname: "Player14nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player15",
+					nickname: "Player15nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player16",
+					nickname: "Player16nick",
+					image: "",
+					stage: 0,
+				},
+			],
+			max_players: 16,
+		}
+	},
+	mounted() {
+		// TODO get tournament infos
+	},
+	components: {
+		Navbar,
+		TournamentTree,
+	}
+}
+</script>
+
