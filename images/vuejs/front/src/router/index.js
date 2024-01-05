@@ -6,10 +6,12 @@ import Leaderboard from '../views/Leaderboard.vue'
 import Tournaments from '../views/Tournaments.vue'
 import TournamentView from '../views/TournamentView.vue'
 import Matchmaking from '../views/Matchmaking.vue'
+import Home from '../views/Home.vue'
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+        {path: '/', name: 'Home', component: Home},
         {path: '/login', name: 'Login', component: Login},
         {path: '/account', name: 'Account', component: Account},
         {path: '/leaderboard', name: 'Leaderboard', component: Leaderboard},
