@@ -7,6 +7,7 @@ import Tournaments from '../views/Tournaments.vue'
 import TournamentView from '../views/TournamentView.vue'
 import Matchmaking from '../views/Matchmaking.vue'
 import Home from '../views/Home.vue'
+import NotFound from '../views/NotFound.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -18,6 +19,7 @@ const router = createRouter({
         {path: '/tournaments', name: 'Tournaments', component: Tournaments},
         {path: '/tournament/:id', name: 'TournamentView', component: TournamentView},
         {path: '/matchmaking', name: 'Matchmaking', component: Matchmaking},
+        {path: '/:notFound', component: NotFound},  
     ]
 })
 
