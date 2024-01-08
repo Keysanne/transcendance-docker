@@ -1,5 +1,5 @@
 <template>
-    <div class="card w-full sm:w-[47.5%] my-3">
+    <div class="card bg-dark border-secondary border-opacity-50 text-light w-full sm:w-[47.5%] my-3">
         <div class="card-body flex flex-col justify-between">
             <div>
                 <h5 class="card-title">{{ name }}</h5>
@@ -7,7 +7,7 @@
             </div>
             <div class="flex justify-between items-center mt-3">
                 <div>{{ nb_players }} / {{ max_players }}</div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id">See details</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id">See details</button>
             </div>
         </div>
     </div>
