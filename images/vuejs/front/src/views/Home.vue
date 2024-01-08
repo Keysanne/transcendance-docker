@@ -7,9 +7,9 @@
         <h4 class="text-white opacity-25 text-sm">(GOTY 2024)</h4>
 
         <div class="d-grid gap-3 col-3 mx-auto mt-20">
-            <button class="btn btn-light btn-lg" type="button">Play</button>
-            <button class="btn btn-light btn-lg" type="button">Leaderboard</button>
-            <button class="btn btn-light btn-lg" type="button">Tournaments</button>
+            <router-link to="/play" class="btn btn-light btn-lg" type="button">Play</router-link>
+            <router-link to="/leaderboard" class="btn btn-light btn-lg" type="button">Leaderboard</router-link>
+            <router-link to="/tournaments" class="btn btn-light btn-lg" type="button">Tournaments</router-link>
         </div>
 
     </div>
