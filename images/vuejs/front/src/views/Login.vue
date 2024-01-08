@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-content-center">
-        <div :class="signup_display ? 'hidden xl:flex' : 'flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[60vw]">
+        <div :class="signup_display ? 'hidden xl:flex' : 'flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[60vw] bg-light">
             <h1 class="text-5xl font-medium tracking-wider">Login</h1>
 
             <div class="form-floating mt-16 w-[90%] max-w-xl">
@@ -26,7 +26,7 @@
             <p class="mt-16 xl:hidden">Don't have an account?<button v-on:click="signupDisplay" class="btn btn-link">Sign up</button></p>
         </div>
 
-        <div :class="signup_display ? 'flex' : 'hidden xl:flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[40vw] bg-dark">
+        <div :class="signup_display ? 'flex' : 'hidden xl:flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[40vw]">
             <h1 class="text-5xl font-medium tracking-wider text-light">New here?</h1>
 
             <div class="form-floating mt-16 w-[90%] max-w-xl">
