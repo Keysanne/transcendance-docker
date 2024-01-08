@@ -1,5 +1,5 @@
 <template>
-  <div class="font-poppins w-[100vw] min-h-screen bg-dark">
+  <div class="font-poppins min-h-screen bg-dark">
     <router-view></router-view>
   </div>
 </template>
