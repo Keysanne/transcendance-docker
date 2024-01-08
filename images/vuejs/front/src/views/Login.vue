@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex justify-content-center">
-        <div :class="signup_display ? 'd-none d-xl-flex' : 'd-flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[60vw]">
+    <div class="flex justify-content-center">
+        <div :class="signup_display ? 'hidden xl:flex' : 'flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[60vw]">
             <h1 class="text-5xl font-medium tracking-wider">Login</h1>
 
             <div class="form-floating mt-16 w-[90%] max-w-xl">
@@ -23,10 +23,10 @@
                 <img src="../assets/42_logo_png.png" class="ml-2 w-10"/>
             </button>
 
-            <p class="mt-16">Don't have an account?<button v-on:click="signupDisplay" class="btn btn-link">Sign up</button></p>
+            <p class="mt-16 xl:hidden">Don't have an account?<button v-on:click="signupDisplay" class="btn btn-link">Sign up</button></p>
         </div>
 
-        <div :class="signup_display ? 'd-flex' : 'd-none d-xl-flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[40vw] bg-primary">
+        <div :class="signup_display ? 'flex' : 'hidden xl:flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] xl:w-[40vw] bg-dark">
             <h1 class="text-5xl font-medium tracking-wider text-light">New here?</h1>
 
             <div class="form-floating mt-16 w-[90%] max-w-xl">
@@ -44,7 +44,7 @@
 
             <button type="button" class="btn btn-light w-[90%] max-w-xl mt-8 h-10">Sign up</button>
 
-            <p class="mt-16 text-light">Already have an account?<button v-on:click="signupDisplay" class="btn btn-link text-light">Sign up</button></p>
+            <p class="mt-16 text-light xl:hidden">Already have an account?<button v-on:click="signupDisplay" class="btn btn-link text-light">Log in</button></p>
         </div>
     </div>
 </template>
