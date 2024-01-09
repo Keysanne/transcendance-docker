@@ -16,14 +16,14 @@
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{ name }}</h1>
+                    <h1 class="modal-title fs-5 text-light" id="exampleModalLabel">{{ name }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div>
+                    <div class="text-light">
                         {{ description }}
                     </div>
-                    <h5 class="mt-3">Players</h5>
+                    <h5 class="mt-3 text-light">Players</h5>
                     <div class="flex flex-col">
                         <MyTournamentCardPlayer v-for="player in players" :username="player.username" :nickname="player.nickname" :image="player.image"/>
                     </div>

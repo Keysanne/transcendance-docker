@@ -13,7 +13,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="new_tournament_modal_label">New tournament</h1>
+                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">New tournament</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -59,7 +59,9 @@
 </template>
 
 <style>
-
+label {
+    color:#6c757d
+}
 </style>
 
 <script>
