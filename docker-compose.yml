@@ -9,7 +9,13 @@ services:
     restart: always
     networks:
       - transcendance
-    command: python3 images/django/mysite/back/manage.py runserver 0.0.0.0:8000
+    command:
+      - /bin/sh
+      - -c
+      - |
+        python3 images/django/mysite/back/manage.py makemigrations
+        python3 images/django/mysite/back/manage.py migrate
+        python3 images/django/mysite/back/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
