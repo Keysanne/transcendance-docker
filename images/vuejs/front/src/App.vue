@@ -7,6 +7,8 @@
 <script setup>
 </script>
 
-<style scoped>
-
+<style>
+.test {
+  font-family: 'Press Start 2P', system-ui;
+}
 </style>

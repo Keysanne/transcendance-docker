@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'poppins': ['Poppins', 'sans-serif']
+        'poppins': ['Poppins', 'sans-serif'],
+        'pixel' : ['Press+Start+2P', 'system-ui']
       },
       colors: {
         main: '#725DEF'

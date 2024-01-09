@@ -1,7 +1,7 @@
 <template>
 	<div class="d-flex flex-column align-items-center justify-center min-h-screen">
 		<Navbar />
-		<canvas id = board></canvas>
+		<canvas class="font-pixel" id = board></canvas>
 	</div>
 </template>
 
@@ -108,13 +108,36 @@ export default {
 				this.resetGame(-1);
 			}
 
-			this.context.font = "45px sans-serif";
-			this.context.fillText(this.player1Score, this.boardWidth/5, 45);
-			this.context.fillText(this.player2Score, this.boardWidth*4/5 - 45, 45);
+			this.context.font = "40px 'Press Start 2P'";
+			if (this.player1Score >= 5) {
+				this.endgame(1);
+			}
+			else if (this.player2Score >= 5) {
+				this.endgame(0);
+			}
+			if (this.isstart == 0) {
+				this.context.fillText("Press a key to start", 50, 160);
+				this.context.fillText("W / S", 120, 320);
+				this.context.fillText("UP / DOWN", 490, 320);
+			}
+			this.context.fillText(this.player1Score, 200, 60);
+			this.context.fillText(this.player2Score, 655, 60);
 		
 			for (let d = 10; d < this.board.height; d += 25) {
 				this.context.fillRect(this.board.width / 2 - 10, d, 5, 5);
 			}
+		},
+		endgame(e) {
+			if(e == 1){
+				this.context.fillText("WINNER", 95, 320);
+				this.context.fillText("LOSER", 570, 320);
+			}
+			else {
+				this.context.fillText("LOSER", 120, 320);
+				this.context.fillText("WINNER", 550, 320);
+			}
+			this.resetGame(0);
+			this.ball.velocityY = 0;
 		},
 		movePlayer(e) {
 			if (this.isstart == 0 && (e.code == "KeyW" || e.code == "KeyS" || e.code == "ArrowUp" || e.code == "ArrowDown")) {
@@ -123,17 +146,17 @@ export default {
 			}
 
 			if (e.code == "KeyW") {
-				this.player1.velocityY = -3;
+				this.player1.velocityY = -5;
 			}
 			else if (e.code == "KeyS") {
-				this.player1.velocityY = 3;
+				this.player1.velocityY = 5;
 			}
 
 			if (e.code == "ArrowUp") {
-				this.player2.velocityY = -3;
+				this.player2.velocityY = -5;
 			}
 			else if (e.code == "ArrowDown") {
-				this.player2.velocityY = 3;
+				this.player2.velocityY = 5;
 			}
 		},
 		gostart() {
@@ -186,7 +209,7 @@ export default {
 				velocityY: this.playerVelocityY
 			};
 			this.ball = {
-				x: (this.boardWidth / 2) - (this.ballWidth / 2),
+				x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
 				y: (this.boardHeight / 2) - (this.ballHeight / 2),
 				width: this.ballWidth,
 				height: this.ballHeight,
@@ -201,14 +224,14 @@ export default {
 			y: (this.boardHeight / 2) - (this.playerHeight / 2),
 			width: this.playerWidth,
 			height: this.playerHeight,
-			velocityY: this.playerVelocityY
+			velocityY: this.playerVelocityY,
 		};
 		this.player2 = {
 			x: this.boardWidth - this.playerWidth - 10,
 			y: (this.boardHeight / 2) - (this.playerHeight / 2),
 			width: this.playerWidth,
 			height: this.playerHeight,
-			velocityY: this.playerVelocityY
+			velocityY: this.playerVelocityY,
 		};
 		this.ball = {
 			x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
