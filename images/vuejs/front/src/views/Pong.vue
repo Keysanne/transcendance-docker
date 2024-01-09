@@ -1,0 +1,188 @@
+<template>
+	<div class="d-flex flex-column align-items-center justify-center min-h-screen">
+		<Navbar />
+		<canvas id = board></canvas>
+	</div>
+</template>
+
+<style>
+	body{
+		text-align: center;
+	}
+	#board{
+		background-color: black;
+		border-top: 5px solid red;
+		border-bottom: 5px solid red;
+	}
+</style>
+
+<script>
+import Navbar from '../components/Navbar.vue';
+
+export default {
+	data() {
+		return {
+			board: undefined,
+			boardWidth: 800,
+			boardHeight: 700,
+			context: undefined,
+
+			playerWidth: 10,
+			playerHeight: 100,
+			player1Score: 0,
+			player2Score: 0,
+			player1: undefined,
+			player2: undefined,
+			playerVelocityY: 0,
+
+			ballWidth: 10,
+			ballHeight: 10,
+			ball:undefined,
+		}
+	},
+	components: {
+		Navbar,
+	},
+	methods: {
+		initializeBoard() {
+			this.board = document.getElementById("board");
+			this.board.height = this.boardHeight;
+			this.board.width = this.boardWidth;
+			this.context = this.board.getContext("2d");
+		
+			this.context.fillStyle = "white";
+			this.context.fillRect(this.player1.x, this.player1.y, this.player1.width, this.player1.height);
+			this.context.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
+
+			requestAnimationFrame(this.update);
+			document.addEventListener("keydown", this.movePlayer);
+		},
+		update() {
+			requestAnimationFrame(this.update);
+			this.context.clearRect(0, 0, this.board.width, this.board.height);
+
+			this.context.fillStyle = "white";
+
+			let nextPlayer1Y = this.player1.y + this.player1.velocityY;
+			if (!this.outOfBound(nextPlayer1Y)) {
+				this.player1.y += this.player1.velocityY;
+			}
+			this.context.fillRect(this.player1.x, this.player1.y, this.player1.width, this.player1.height);
+			
+			let nextPlayer2Y = this.player2.y + this.player2.velocityY;
+			if (!this.outOfBound(nextPlayer2Y)) {
+				this.player2.y += this.player2.velocityY;
+			}
+			this.context.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
+		
+			// this.context.fillStyle = "";
+			this.ball.x += this.ball.velocityX;
+			this.ball.y += this.ball.velocityY;
+			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
+			if (this.ball.y <= 0 || (this.ball.y + this.ball.height >= this.boardHeight)) {
+				this.ball.velocityY *= -1;
+			}
+			if (this.detectCollision(this.ball, this.player1)) {
+				if (this.ball.x <= this.player1.x + this.player1.width) {
+					this.ball.velocityX *= -1;
+				}
+			}
+			else if (this.detectCollision(this.ball, this.player2)) {
+				if (this.ball.x + this.ballWidth >= this.player2.x) {
+					this.ball.velocityX *= -1;
+				}
+			}
+
+			if (this.ball.x < 0) {
+				this.player2Score += 1;
+				this.resetGame(1);
+			}
+			else if (this.ball.x + this.ballWidth > this.boardWidth) {
+				this.player1Score += 1;
+				this.resetGame(-1);
+			}
+
+			this.context.font = "45px sans-serif";
+			this.context.fillText(this.player1Score, this.boardWidth/5, 45);
+			this.context.fillText(this.player2Score, this.boardWidth*4/5 - 45, 45);
+		
+			for (let d = 10; d < this.board.height; d += 25) {
+				this.context.fillRect(this.board.width / 2 - 10, d, 5, 5);
+			}
+		},
+		movePlayer(e) {
+			if (e.code == "KeyW") {
+				this.player1.velocityY = -3;
+			}
+			else if (e.code == "KeyS") {
+				this.player1.velocityY = 3;
+			}
+
+			if (e.code == "ArrowUp") {
+				this.player2.velocityY = -3;
+			}
+			else if (e.code == "ArrowDown") {
+				this.player2.velocityY = 3;
+			}
+		},
+		outOfBound(yPosition) {
+			return (yPosition < 0 || yPosition + this.playerHeight > this.boardHeight);
+		},
+		detectCollision(a, b) {
+			return a.x < b.x + b.width &&
+					a.x + a.width > b.x &&
+					a.y < b.y + b.height &&
+					a.y + a.height > b.y;
+		},
+		resetGame(direction) {
+				this.player1 = {
+				x: 10,
+				y: (this.boardHeight / 2) - (this.playerHeight / 2),
+				width: this.playerWidth,
+				height: this.playerHeight,
+				velocityY: this.playerVelocityY
+			};
+			this.player2 = {
+				x: this.boardWidth - this.playerWidth - 10,
+				y: (this.boardHeight / 2) - (this.playerHeight / 2),
+				width: this.playerWidth,
+				height: this.playerHeight,
+				velocityY: this.playerVelocityY
+			};
+			this.ball = {
+				x: (this.boardWidth / 2) - (this.ballWidth / 2),
+				y: (this.boardHeight / 2) - (this.ballHeight / 2),
+				width: this.ballWidth,
+				height: this.ballHeight,
+				velocityX: direction,
+				velocityY: 2
+			};
+		}
+	},
+	mounted() {
+		this.player1 = {
+			x: 10,
+			y: (this.boardHeight / 2) - (this.playerHeight / 2),
+			width: this.playerWidth,
+			height: this.playerHeight,
+			velocityY: this.playerVelocityY
+		};
+		this.player2 = {
+			x: this.boardWidth - this.playerWidth - 10,
+			y: (this.boardHeight / 2) - (this.playerHeight / 2),
+			width: this.playerWidth,
+			height: this.playerHeight,
+			velocityY: this.playerVelocityY
+		};
+		this.ball = {
+			x: (this.boardWidth / 2) - (this.ballWidth / 2),
+			y: (this.boardHeight / 2) - (this.ballHeight / 2),
+			width: this.ballWidth,
+			height: this.ballHeight,
+			velocityX: 1,
+			velocityY: 2
+		};
+		this.initializeBoard();
+ 	},
+}
+</script>
