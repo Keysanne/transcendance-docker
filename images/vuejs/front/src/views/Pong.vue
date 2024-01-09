@@ -11,8 +11,10 @@
 	}
 	#board{
 		background-color: black;
-		border-top: 5px solid red;
-		border-bottom: 5px solid red;
+		border-top: 5px solid white;
+		border-bottom: 5px solid white;
+		border-left: 5px solid white;
+		border-right: 5px solid white;
 	}
 </style>
 
@@ -23,12 +25,12 @@ export default {
 	data() {
 		return {
 			board: undefined,
-			boardWidth: 800,
-			boardHeight: 700,
+			boardWidth: 900,
+			boardHeight: 600,
 			context: undefined,
 
 			playerWidth: 10,
-			playerHeight: 100,
+			playerHeight: 80,
 			player1Score: 0,
 			player2Score: 0,
 			player1: undefined,
@@ -38,6 +40,7 @@ export default {
 			ballWidth: 10,
 			ballHeight: 10,
 			ball:undefined,
+			isstart: 0,
 		}
 	},
 	components: {
@@ -56,6 +59,7 @@ export default {
 
 			requestAnimationFrame(this.update);
 			document.addEventListener("keydown", this.movePlayer);
+			document.addEventListener("keyup", this.stopMovePlayer);
 		},
 		update() {
 			requestAnimationFrame(this.update);
@@ -78,6 +82,8 @@ export default {
 			// this.context.fillStyle = "";
 			this.ball.x += this.ball.velocityX;
 			this.ball.y += this.ball.velocityY;
+			this.ball.velocityX *= 1.001;
+			this.ball.velocityY *= 1.001;
 			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 			if (this.ball.y <= 0 || (this.ball.y + this.ball.height >= this.boardHeight)) {
 				this.ball.velocityY *= -1;
@@ -111,6 +117,11 @@ export default {
 			}
 		},
 		movePlayer(e) {
+			if (this.isstart == 0 && (e.code == "KeyW" || e.code == "KeyS" || e.code == "ArrowUp" || e.code == "ArrowDown")) {
+				this.isstart = 1;
+				this.gostart();
+			}
+
 			if (e.code == "KeyW") {
 				this.player1.velocityY = -3;
 			}
@@ -123,6 +134,31 @@ export default {
 			}
 			else if (e.code == "ArrowDown") {
 				this.player2.velocityY = 3;
+			}
+		},
+		gostart() {
+			this.ball = {
+				x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
+				y: (this.boardHeight / 2) - (this.ballHeight / 2),
+				width: this.ballWidth,
+				height: this.ballHeight,
+				velocityX: 1,
+				velocityY: 2
+			};
+		},
+		stopMovePlayer(e) {
+			if (e.code == "KeyW") {
+				this.player1.velocityY = 0;
+			}
+			else if (e.code == "KeyS") {
+				this.player1.velocityY = 0;
+			}
+
+			if (e.code == "ArrowUp") {
+				this.player2.velocityY = 0;
+			}
+			else if (e.code == "ArrowDown") {
+				this.player2.velocityY = 0;
 			}
 		},
 		outOfBound(yPosition) {
@@ -175,12 +211,12 @@ export default {
 			velocityY: this.playerVelocityY
 		};
 		this.ball = {
-			x: (this.boardWidth / 2) - (this.ballWidth / 2),
+			x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
 			y: (this.boardHeight / 2) - (this.ballHeight / 2),
 			width: this.ballWidth,
 			height: this.ballHeight,
-			velocityX: 1,
-			velocityY: 2
+			velocityX: 0,
+			velocityY: 0
 		};
 		this.initializeBoard();
  	},
