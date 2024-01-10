@@ -17,7 +17,7 @@
                 <label class="form-check-label text-light" for="login_remember_me">Remember me</label>
             </div>
             
-            <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10">Log in</button>
+            <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="login">Log in</button>
             <button type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
                 Log in with
                 <img src="../assets/42_logo_png.png" class="ml-2 w-10"/>
@@ -44,7 +44,7 @@
                 <label for="signup_confirm_password">{{ signup_confirm_password_label }}</label>
             </div>
             
-            <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10">Sign up</button>
+            <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="signUp">Sign up</button>
 
             <p class="mt-16 text-light 2xl:hidden">Already have an account?<button v-on:click="signupDisplay" class="btn btn-link text-light">Log in</button></p>
         </div>
@@ -58,6 +58,9 @@ label {
 </style>
 
 <script>
+import axios from 'axios';
+import { toHandlers } from 'vue';
+
 export default {
     data() {
         return {
@@ -96,6 +99,64 @@ export default {
                 this.signup_confirm_password_label = "Confirm password"
             }
         },
+        checkUsername() {
+            if (this.signup_username.length < 5) {
+                this.signup_username_label = "Username must be at least 5 characters"
+                return false
+            }
+            if (this.signup_username.length > 15) {
+                this.signup_username_label = "Username must be at most 15 characters"
+                return false
+            }
+            if (!(/^[a-zA-Z0-9]+$/.test(this.signup_username))) {
+                this.signup_username_label = "Username must be alphanumeric"
+                return false
+            }
+            this.signup_username_label = "Username"
+            return true
+        },
+        checkPassword() {
+            if (this.signup_password.length < 8) {
+                this.signup_password_label = "Password must be at least 8 characters"
+                return false
+            }
+            this.signup_password_label = "Password"
+            if (this.signup_password != this.signup_confirm_password)
+            {
+                this.signup_confirm_password_label = "Confirm password must be the same as password"
+                return false
+            }
+            this.signup_confirm_password_label = "Confirm password"
+            return true
+        },
+        signUp() {
+            if (this.checkUsername() && this.checkPassword())
+            {
+                const URL = "http://127.0.0.1:8000/user/create/?username=" + this.signup_username + "&password=" + this.signup_password
+                axios.post(URL).then(response => {
+                    this.$router.push({path: '/'})
+                })
+                .catch(error => {
+                    this.signup_username_label = "Username already used"
+                })
+            }
+        },
+        login() {
+            const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
+            axios.get(URL).then(response => {
+                this.$router.push({path: '/'})
+            })
+            .catch(error => {
+                if (error.response.data.problem == "username") {
+                    this.login_username_label = "Incorrect username"
+                    this.login_password_label = "Password"
+                }
+                else {
+                    this.login_username_label = "Username"
+                    this.login_password_label = "Incorrect password"
+                }
+            })
+        }
     }
 }
 </script>
