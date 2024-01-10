@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Friend, Tournament, Contestant
+from .models import User, Friend, Tournament, Contestant, Game
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -11,6 +11,13 @@ class UserSerializer(serializers.ModelSerializer):
 		request = self.context.get('request')
 		photo_url = obj.fingerprint.url
 		return request.build_absulute_uri(photo_url)
+
+
+class MatchSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Game
+		fields = '__all__'
 
 
 class FriendSerializer(serializers.ModelSerializer):

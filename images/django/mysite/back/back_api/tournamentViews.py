@@ -87,7 +87,7 @@ def addContestant(request, tpk, upk):
 
 	contestants = Contestant.objects.all().filter(tournament=tpk)
 	if len(contestants) == tournament.capacity:
-		return Response({'problem': 'tournament if full'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament is full'}, status=status.HTTP_400_BAD_REQUEST)
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")

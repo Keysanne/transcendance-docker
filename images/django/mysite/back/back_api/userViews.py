@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .models import User, Tournament
+from .models import User, Tournament, Game
 from rest_framework import generics
-from .serializers import UserSerializer, TournamentSerializer
+from .serializers import UserSerializer, TournamentSerializer, GameSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -62,7 +62,7 @@ def UserDetail(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
 		serializer = UserSerializer(queryset, context={'request': request}, many=False)
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
@@ -129,7 +129,7 @@ def UserDelete(request, pk):
 
 
 @api_view(['POST'])
-def createTournament(request, pk):
+def CreateTournament(request, pk):
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
@@ -155,3 +155,92 @@ def createTournament(request, pk):
 		return Response(status=status.HTTP_201_CREATED)
 	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+def StartGame(request, pk):
+	try:
+		User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	print(f'~~~~~~~{data}~~~~~~~~~')
+
+	serializer = GameSerializer(data=data)
+
+	if serializer.is_valid():
+		serializer.save()
+		return Response({'game_id': serializer.data['pk']})
+	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
+def EndGame(request, gpk):
+	try:
+		queryset = Game.objects.get(pk=gpk)
+		if (queryset.guestscore != 0 or queryset.hostscore != 0):
+			return Response({'problem': 'game has already been played'}, status=status.HTTP_412_PRECONDITION_FAILED)
+	except:
+		return Response({'problem': 'game does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	queryset.hostscore = int(data['hostscore'])
+	queryset.guestscore = int(data['guestscore'])
+	queryset.save()
+	return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def GameHistory(request, pk):
+	try:
+		User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	queryset = list(Game.objects.all().filter(host=pk))
+	matchList = []
+	for g in queryset:
+		dico = GameSerializer(g).data
+		query = User.objects.get(pk=dico['host'])
+		dico['host'] = query.username
+		matchList.append(GameSerializer(g).data)
+
+	matchList = sorted(matchList, key=lambda x: x['pk'], reverse=True)
+	return Response({'history': matchList[:5]}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def GameFullHistory(request, pk):
+	try:
+		User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	queryset = list(Game.objects.all().filter(host=pk))
+	matchList = []
+	for g in queryset:
+		dico = GameSerializer(g).data
+		query = User.objects.get(pk=dico['host'])
+		dico['host'] = query.username
+		matchList.append(GameSerializer(g).data)
+
+	matchList = sorted(matchList, key=lambda x: x['pk'], reverse=True)
+	return Response({'history': matchList}, status=status.HTTP_200_OK)
