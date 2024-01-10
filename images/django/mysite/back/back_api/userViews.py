@@ -205,6 +205,13 @@ def EndGame(request, gpk):
 	queryset.hostscore = int(data['hostscore'])
 	queryset.guestscore = int(data['guestscore'])
 	queryset.save()
+
+	query = User.objects.get(pk=queryset.host)
+	if (queryset.guestscore > queryset.hostscore):
+		query.losses = query.losses + 1
+	elif (queryset.guestscore < queryset.hostscore):
+		query.wins = query.wins + 1
+
 	return Response(status=status.HTTP_200_OK)
 
 

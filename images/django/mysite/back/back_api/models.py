@@ -6,8 +6,8 @@ class User(models.Model):
 	password = models.CharField("password", null=True)
 	pfp = models.ImageField("pfp", upload_to='pfp', null=True)
 	status = models.IntegerField("status", default=0)
-	# wins = models.IntegerField("wins", default=0)
-	# losses = models.IntegerField("losses", default=0)
+	wins = models.IntegerField("wins", default=0)
+	losses = models.IntegerField("losses", default=0)
 	twoFA = models.BooleanField("twoFA", default=False)
 	language = models.IntegerField("language", default=1)
 
