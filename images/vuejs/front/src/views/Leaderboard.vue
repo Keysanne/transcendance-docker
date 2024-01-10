@@ -25,7 +25,7 @@ export default {
             players: [
                 {
                     rank: 1,
-                    username: "Player1",
+                    username: "SkibidiPlayer1",
                     pic: "",
                     elo: 5603,
                     is_last: false

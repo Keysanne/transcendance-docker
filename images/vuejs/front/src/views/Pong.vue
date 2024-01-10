@@ -79,7 +79,6 @@ export default {
 			}
 			this.context.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
 		
-			// this.context.fillStyle = "";
 			this.ball.x += this.ball.velocityX;
 			this.ball.y += this.ball.velocityY;
 			this.ball.velocityX *= 1.001;
@@ -88,16 +87,17 @@ export default {
 			if (this.ball.y <= 0 || (this.ball.y + this.ball.height >= this.boardHeight)) {
 				this.ball.velocityY *= -1;
 			}
-			if (this.detectCollision(this.ball, this.player1)) {
-				if (this.ball.x <= this.player1.x + this.player1.width) {
-					this.ball.velocityX *= -1;
-				}
-			}
-			else if (this.detectCollision(this.ball, this.player2)) {
-				if (this.ball.x + this.ballWidth >= this.player2.x) {
-					this.ball.velocityX *= -1;
-				}
-			}
+			this.detectCollision();
+			// if (this.detectCollision(this.ball, this.player1)) {
+			// 	if (this.ball.x <= this.player1.x + this.player1.width) {
+			// 		this.ball.velocityX *= -1;
+			// 	}
+			// }
+			// else if (this.detectCollision(this.ball, this.player2)) {
+			// 	if (this.ball.x + this.ballWidth >= this.player2.x) {
+			// 		this.ball.velocityX *= -1;
+			// 	}
+			// }
 
 			if (this.ball.x < 0) {
 				this.player2Score += 1;
@@ -187,11 +187,16 @@ export default {
 		outOfBound(yPosition) {
 			return (yPosition < 0 || yPosition + this.playerHeight > this.boardHeight);
 		},
-		detectCollision(a, b) {
-			return a.x < b.x + b.width &&
-					a.x + a.width > b.x &&
-					a.y < b.y + b.height &&
-					a.y + a.height > b.y;
+		detectCollision() {
+			if ((this.ball.y >= this.player1.y && this.ball.y <= this.player1.y + 80) && (this.ball.x <= this.player1.x + 10)) {
+				this.ball.velocityX *= -1;
+				this.ball.velocityY *= -1;
+				this.ball.x = this.player1.x + 11;
+			}
+			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x <= this.player1.x)) {
+				this.ball.velocityX *= -1;
+				this.ball.velocityY *= -1;
+			}
 		},
 		resetGame(direction) {
 				this.player1 = {

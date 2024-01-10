@@ -6,8 +6,7 @@
 
         <div class="d-grid gap-3 col-3 mx-auto mt-20">
             <router-link to="/play" class="btn btn-light btn-lg">Solo vs AI</router-link>
-			<router-link to="/play" class="btn btn-light btn-lg">Local 1 vs 1</router-link>
-			<router-link to="/play" class="btn btn-light btn-lg">Online Matchmaking</router-link>
+			<router-link to="/pong" class="btn btn-light btn-lg">Local 1 vs 1</router-link>
         </div>
 
     </div>
