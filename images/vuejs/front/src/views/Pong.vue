@@ -41,6 +41,7 @@ export default {
 			ballHeight: 10,
 			ball:undefined,
 			isstart: 0,
+			acceleration: 1
 		}
 	},
 	components: {
@@ -79,10 +80,11 @@ export default {
 			}
 			this.context.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
 		
-			this.ball.x += this.ball.velocityX;
-			this.ball.y += this.ball.velocityY;
-			this.ball.velocityX *= 1.001;
-			this.ball.velocityY *= 1.001;
+			this.ball.x += this.ball.velocityX * this.acceleration;
+			this.ball.y += this.ball.velocityY * this.acceleration;
+			this.acceleration *= 1.001
+			// this.ball.velocityX *= this.acceleration;
+			// this.ball.velocityY *= this.acceleration;
 			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 			if (this.ball.y <= 0 || (this.ball.y + this.ball.height >= this.boardHeight)) {
 				this.ball.velocityY *= -1;
@@ -138,13 +140,16 @@ export default {
 			}
 			this.resetGame(0);
 			this.ball.velocityY = 0;
+			this.acceleration = 0;
 		},
 		movePlayer(e) {
 			if (this.isstart == 0 && (e.code == "KeyW" || e.code == "KeyS" || e.code == "ArrowUp" || e.code == "ArrowDown")) {
 				this.isstart = 1;
 				this.gostart();
 			}
-
+			if (this.player1Score >= 5 || this.player2Score >= 5){
+				return;
+			}
 			if (e.code == "KeyW") {
 				this.player1.velocityY = -5;
 			}
@@ -160,13 +165,14 @@ export default {
 			}
 		},
 		gostart() {
+			this.acceleration = 1,
 			this.ball = {
 				x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
 				y: (this.boardHeight / 2) - (this.ballHeight / 2),
 				width: this.ballWidth,
 				height: this.ballHeight,
 				velocityX: 1,
-				velocityY: 2
+				velocityY: 0
 			};
 		},
 		stopMovePlayer(e) {
@@ -188,17 +194,30 @@ export default {
 			return (yPosition < 0 || yPosition + this.playerHeight > this.boardHeight);
 		},
 		detectCollision() {
+			let cal = 0; 
 			if ((this.ball.y >= this.player1.y && this.ball.y <= this.player1.y + 80) && (this.ball.x <= this.player1.x + 10)) {
-				this.ball.velocityX *= -1;
-				this.ball.velocityY *= -1;
+				this.ball.velocityY = ((this.ball.y - this.player1.y) / 40 ) - 1;
+				if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
+					this.ball.velocityX = ((((this.ball.y - this.player1.y) / 40 ) - 1) * -1) + 1;
+				}
+				else {
+					this.ball.velocityX = (((this.ball.y - this.player1.y) / 40 ) - 1) + 1;
+				}
 				this.ball.x = this.player1.x + 11;
 			}
-			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x <= this.player1.x)) {
-				this.ball.velocityX *= -1;
-				this.ball.velocityY *= -1;
+			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x >= this.player2.x - 10)) {
+				this.ball.velocityY = ((this.ball.y - this.player2.y) / 40 ) - 1;
+				if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
+					this.ball.velocityX = ((((this.ball.y - this.player2.y) / 40 ) - 1) * -1) - 1;
+				}
+				else {
+					this.ball.velocityX = (((this.ball.y - this.player2.y) / 40 ) - 1) - 1;
+				}
+				this.ball.x = this.player2.x - 11;
 			}
 		},
 		resetGame(direction) {
+			this.acceleration = 1;
 				this.player1 = {
 				x: 10,
 				y: (this.boardHeight / 2) - (this.playerHeight / 2),
@@ -219,7 +238,7 @@ export default {
 				width: this.ballWidth,
 				height: this.ballHeight,
 				velocityX: direction,
-				velocityY: 2
+				velocityY: 0
 			};
 		}
 	},
