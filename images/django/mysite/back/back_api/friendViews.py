@@ -120,7 +120,7 @@ def viewRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player1"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listofpending.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
+			listofpending.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
 	except:
 		pass
 
@@ -143,7 +143,7 @@ def listRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player1"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
+			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
 	except:
 		pass
 
@@ -154,7 +154,7 @@ def listRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player2"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
+			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
 	except:
 		pass
 

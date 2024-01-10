@@ -58,35 +58,11 @@ def UserConnect(request):
 
 
 @api_view(['GET'])
-def UserList(request):
-	queryset = User.objects.all()
-	serializer = UserSerializer(queryset, context={'request': request}, many=True)
-
-	leaderboard = sorted(serializer.data, key=lambda x: x['elo'], reverse=True)
-
-	return Response([{'pk': u['pk'], 'username':u['username'], 'pfp':u['pfp'], 'elo':u['elo']} for i, u in enumerate(leaderboard)], headers={'Access-Control-Allow-Origin':'*'})
-
-
-@api_view(['GET'])
 def UserDetail(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
 		serializer = UserSerializer(queryset, context={'request': request}, many=False)
-
-		ldb_query = User.objects.all()
-		ldb_serial = UserSerializer(ldb_query, many=True)
-		ldb_dict = sorted(ldb_serial.data, key=lambda x: x['elo'], reverse=True)
-
-		for i, item in enumerate(ldb_dict):
-			if (item['pk'] == pk):
-				rank = i + 1
-				break
-
-		if (rank < queryset.best_rank):
-			queryset.best_rank = rank
-			queryset.save()
-
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
@@ -106,8 +82,6 @@ def UserUpdate(request, pk):
 
 	try:
 		queryset = User.objects.get(pk=pk)
-		# serializer = UserSerializer(queryset, many=False)
-
 
 		if '?' in str(request):
 			keys = data.keys()

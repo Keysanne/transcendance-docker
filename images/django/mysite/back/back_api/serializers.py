@@ -5,7 +5,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['pk', 'username', 'password', 'pfp', 'status', 'wins', 'losses', 'twoFA', 'language', 'elo', 'best_elo', 'best_rank']
+		fields = '__all__'
 
 	def get_image_url(self, obj):
 		request = self.context.get('request')
@@ -17,18 +17,18 @@ class FriendSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Friend
-		fields = ['pk', 'player1', 'player2', 'status']
+		fields = '__all__'
 
 
 class TournamentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Tournament
-		fields = ['pk', 'name', 'description', 'capacity', 'organizer', 'status']
+		fields = '__all__'
 
 
 class ContestantSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Contestant
-		fields = ['pk', 'tournament', 'user', 'nickname', 'position', 'status', 'stage', 'score']
+		fields = '__all__'
