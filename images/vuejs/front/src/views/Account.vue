@@ -2,24 +2,24 @@
     <div class="d-flex flex-column align-items-center">
         <Navbar />
 
-        <div class="d-flex flex-column align-items-center">
-            <div class="d-flex mt-20 align-items-center w-[90%]">
+        <div class="d-flex flex-column align-items-center mt-36">
+            <div class="d-flex align-items-center w-[90%]">
                 <input type="file" class="hidden" id="image_upload" ref="image_upload" accept="image/png, image/jpeg" @change="uploadImage">
                 <div class="group w-2/5 max-w-[10rem] relative rounded-circle" @click="changeImage">
                     <div class="border-2 border-primary rounded-circle w-full h-full bg-black absolute opacity-[0.01] group-hover:opacity-70 transition ease-in-out"></div>
                     <font-awesome-icon icon="fa-solid fa-pen-to-square" class="text-white opacity-[0.01] group-hover:opacity-70 w-[50%] h-[50%] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] absolute transition ease-in-out"/>
-                    <img class="border-2 border-primary rounded-circle w-full" :src="image_url" alt="profile_pic">
+                    <img class="border-2 border-light rounded-circle w-full" src="../assets/avatars/todo.jpg" alt="profile_pic">
                 </div>
                 
                 <div class="d-flex flex-column ml-6">
-                    <h1 class="text-2xl font-semibold">{{ username }}</h1>
+                    <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">Change password</button>
     
                     <div class="modal fade" id="password_modal" tabindex="-1" aria-labelledby="password_modal_label" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="password_modal_label">Change password</h1>
+                                    <h1 class="modal-title fs-5 text-light" id="password_modal_label">Change password</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -46,7 +46,7 @@
                 </div>
             </div>
     
-            <div class="card w-[90%] mt-6 text-bg-primary border-light">
+            <div class="card w-[90%] mt-6 text-bg-dark border-secondary">
                 <div class="card-header text-xl font-semibold">
                     Stats
                 </div>
@@ -54,7 +54,7 @@
                     <div class="container text-center">
                         <div class="row row-cols-2">
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ totalGame }}</h5>
                                         <p class="card-text">Total games</p>
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ winRate }}%</h5>
                                         <p class="card-text">Win rate</p>
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ elo }}</h5>
                                         <p class="card-text">Elo</p>
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ rank }}</h5>
                                         <p class="card-text">Rank</p>
@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ best_elo }}</h5>
                                         <p class="card-text">Best elo</p>
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-bg-primary border-primary">
+                                <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ best_rank }}</h5>
                                         <p class="card-text">Best rank</p>
@@ -106,7 +106,7 @@
                 </div>
             </div>
     
-            <div class="card w-[90%] text-bg-primary mt-6 mb-6 border-light">
+            <div class="card text-bg-dark border-secondary w-[90%] mt-6 mb-6">
                 <div class="card-header text-xl font-semibold">
                     Match history
                 </div>
