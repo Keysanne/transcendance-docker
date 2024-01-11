@@ -1,6 +1,8 @@
 Django==4.2.7
 djangorestframework
-djangorestframework-jwt
+djangorestframework_simplejwt
+jwt
+pyjwt
 Pillow
 psycopg2
 pathlib

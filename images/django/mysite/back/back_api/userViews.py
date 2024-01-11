@@ -7,7 +7,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import authenticate
 from PIL import Image
+import jwt
 
 import django
 
@@ -33,8 +35,24 @@ def UserCreate(request):
 	except:
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
-		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+			username = request.data['username']
+	        password = request.data['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				payload = {
+					'user_id': user.id,
+					'exp': datetime.now(),
+					'token_type': 'access'
+				}
+
+				user = {
+					'user': username,
+					'time': datetime.now().time(),
+					'userType': 10
+				}
+			token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
+			return Response({'pk':serializer.data['pk'], 'JWT': token}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -54,7 +72,24 @@ def UserConnect(request):
 	except:
 		return Response({'problem': "username"}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	if (check_password(data['password'], queryset.password) == True):
-		return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		username = request.data['username']
+        password = request.data['password']
+		user = authenticate(username=username, password=password)
+		if user is not None:
+			payload = {
+				'user_id': user.id,
+				'exp': datetime.now(),
+				'token_type': 'access'
+			}
+
+			user = {
+				'user': username,
+				'time': datetime.now().time(),
+				'userType': 10
+			}
+		token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
+		print(token)
+		return Response({'pk': queryset.pk, 'JWT': token}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
