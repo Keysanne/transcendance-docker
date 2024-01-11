@@ -17,11 +17,14 @@
 
         <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
         <ul :class="showMenu ? 'flex' : 'hidden'" class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0 my-0 py-0">
-          <li><router-link class="text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/leaderboard">Leaderboard</router-link></li>
-          <li><router-link class="text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/tournaments">Tournaments</router-link></li>
-          <li><router-link class="text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/friends">Friends</router-link></li>
-          <li class="md:hidden"><router-link class="text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/account">My Account</router-link></li>
+          <li class="md:hidden"></li>
+          <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/leaderboard">Leaderboard</router-link></li>
+          <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/tournaments">Tournaments</router-link></li>
+          <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/friends">Friends</router-link></li>
+          <li class="md:hidden"><router-link class="font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/account">My Account</router-link></li>
           <li class="hidden md:block"><router-link to="/account"><img class="rounded-full h-14 w-14 border-1 border-black" src="../assets/avatars/todo.jpg" alt="profile_pic"></router-link></li>
+          <li class="md:hidden"><button @click="logout" class="font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors">Log out</button></li>
+          <li class="hidden md:block"><button @click="logout"><font-awesome-icon class="h-6 w-6" icon="fa-solid fa-arrow-right-from-bracket"/></button></li> 
         </ul>
       </nav>
     </div>
@@ -35,5 +38,10 @@ export default {
       showMenu: false,
     };
   },
+  methods: {
+    logout() {
+      this.$router.push({path: "/login"})
+    }
+  }
 };
 </script>
