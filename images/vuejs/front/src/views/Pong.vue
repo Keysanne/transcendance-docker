@@ -36,12 +36,14 @@ export default {
 			player1: undefined,
 			player2: undefined,
 			playerVelocityY: 0,
-
+			
 			ballWidth: 10,
 			ballHeight: 10,
 			ball:undefined,
+			acceleration: 1,
+
 			isstart: 0,
-			acceleration: 1
+			gameover: 0,
 		}
 	},
 	components: {
@@ -83,8 +85,6 @@ export default {
 			this.ball.x += this.ball.velocityX * this.acceleration;
 			this.ball.y += this.ball.velocityY * this.acceleration;
 			this.acceleration *= 1.001
-			// this.ball.velocityX *= this.acceleration;
-			// this.ball.velocityY *= this.acceleration;
 			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 			if (this.ball.y <= 0) {
 				this.ball.velocityY *= -1;
@@ -95,17 +95,6 @@ export default {
 				this.ball.y = this.boardHeight - 1 - this.ballHeight;
 			}
 			this.detectCollision();
-			// if (this.detectCollision(this.ball, this.player1)) {
-			// 	if (this.ball.x <= this.player1.x + this.player1.width) {
-			// 		this.ball.velocityX *= -1;
-			// 	}
-			// }
-			// else if (this.detectCollision(this.ball, this.player2)) {
-			// 	if (this.ball.x + this.ballWidth >= this.player2.x) {
-			// 		this.ball.velocityX *= -1;
-			// 	}
-			// }
-
 			if (this.ball.x < 0) {
 				this.player2Score += 1;
 				this.resetGame(1);
@@ -143,13 +132,19 @@ export default {
 				this.context.fillText("LOSER", 120, 320);
 				this.context.fillText("WINNER", 550, 320);
 			}
+			this.context.fillText("Press any key", 190, 160);
+			this.context.fillText("to restart", 240, 220);
 			this.resetGame(0);
+			this.gameover = 1;
 			this.ball.velocityY = 0;
 			this.acceleration = 0;
 		},
 		movePlayer(e) {
 			if (this.isstart == 0 && (e.code == "KeyW" || e.code == "KeyS" || e.code == "ArrowUp" || e.code == "ArrowDown")) {
 				this.isstart = 1;
+				this.gostart();
+			}
+			else if (this.gameover == 1) {
 				this.gostart();
 			}
 			if (this.player1Score >= 5 || this.player2Score >= 5){
@@ -170,6 +165,9 @@ export default {
 			}
 		},
 		gostart() {
+			this.gameover = 0;
+			this.player1Score = 0;
+			this.player2Score = 0;
 			this.acceleration = 1,
 			this.ball = {
 				x: (this.boardWidth / 2) - (this.ballWidth / 2) - 7,
@@ -223,16 +221,6 @@ export default {
 					this.ball.velocityX = 0.5;
 					this.ball.velocityY = 0.5;
 				}
-				// this.ball.velocityX = 1;
-				// this.ball.velocityY = 0;
-				// this.ball.velocityY = ((this.ball.y - this.player1.y) / 40 ) - 1;
-				// if (cal = (((this.ball.y - this.player1.y) / 40 ) + 1) >= 0) {
-				// 	this.ball.velocityX = (cal * -1) + 1;
-				// }
-				// else {
-				// 	this.ball.velocityX = (cal * -1) + 1;
-				// }
-				// this.ball.x = this.player1.x + 11;
 			}
 			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x >= this.player2.x - 10)) {
 				cal = (this.ball.y - this.player2.y) / 40 - 1;
@@ -257,15 +245,6 @@ export default {
 					this.ball.velocityX = -0.5;
 					this.ball.velocityY = 0.5;
 				}
-				// t
-				// this.ball.velocityY = ((this.ball.y - this.player2.y) / 40 ) - 1;
-				// if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
-				// 	this.ball.velocityX = (cal * -1) + 1;
-				// }
-				// else {
-				// 	this.ball.velocityX = (cal * -1) - 1;
-				// }
-				// this.ball.x = this.player2.x - 11;
 			}
 		},
 		resetGame(direction) {
