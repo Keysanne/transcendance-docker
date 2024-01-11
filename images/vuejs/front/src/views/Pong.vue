@@ -86,8 +86,13 @@ export default {
 			// this.ball.velocityX *= this.acceleration;
 			// this.ball.velocityY *= this.acceleration;
 			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
-			if (this.ball.y <= 0 || (this.ball.y + this.ball.height >= this.boardHeight)) {
+			if (this.ball.y <= 0) {
 				this.ball.velocityY *= -1;
+				this.ball.y = 1;
+			}
+			else if (this.ball.y + this.ball.height >= this.boardHeight) {
+				this.ball.velocityY *= -1;
+				this.ball.y = this.boardHeight - 1 - this.ballHeight;
 			}
 			this.detectCollision();
 			// if (this.detectCollision(this.ball, this.player1)) {
@@ -196,24 +201,71 @@ export default {
 		detectCollision() {
 			let cal = 0; 
 			if ((this.ball.y >= this.player1.y && this.ball.y <= this.player1.y + 80) && (this.ball.x <= this.player1.x + 10)) {
-				this.ball.velocityY = ((this.ball.y - this.player1.y) / 40 ) - 1;
-				if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
-					this.ball.velocityX = ((((this.ball.y - this.player1.y) / 40 ) - 1) * -1) + 1;
+				cal = (this.ball.y - this.player1.y) / 40 - 1;
+
+				if (cal < -0.45){
+					this.ball.velocityX = 0.5;
+					this.ball.velocityY = -0.5;
 				}
-				else {
-					this.ball.velocityX = (((this.ball.y - this.player1.y) / 40 ) - 1) + 1;
+				else if (cal < -0.05){
+					this.ball.velocityX = 0.75;
+					this.ball.velocityY = -0.25;
 				}
-				this.ball.x = this.player1.x + 11;
+				else if (cal < 0.05){
+					this.ball.velocityX = 1;
+					this.ball.velocityY = 0;
+				}
+				else if (cal < 0.55){
+					this.ball.velocityX = 0.75;
+					this.ball.velocityY = 0.25;
+				}
+				else if (cal <= 1){
+					this.ball.velocityX = 0.5;
+					this.ball.velocityY = 0.5;
+				}
+				// this.ball.velocityX = 1;
+				// this.ball.velocityY = 0;
+				// this.ball.velocityY = ((this.ball.y - this.player1.y) / 40 ) - 1;
+				// if (cal = (((this.ball.y - this.player1.y) / 40 ) + 1) >= 0) {
+				// 	this.ball.velocityX = (cal * -1) + 1;
+				// }
+				// else {
+				// 	this.ball.velocityX = (cal * -1) + 1;
+				// }
+				// this.ball.x = this.player1.x + 11;
 			}
 			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x >= this.player2.x - 10)) {
-				this.ball.velocityY = ((this.ball.y - this.player2.y) / 40 ) - 1;
-				if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
-					this.ball.velocityX = ((((this.ball.y - this.player2.y) / 40 ) - 1) * -1) - 1;
+				cal = (this.ball.y - this.player2.y) / 40 - 1;
+
+				if (cal < -0.45){
+					this.ball.velocityX = -0.5;
+					this.ball.velocityY = -0.5;
 				}
-				else {
-					this.ball.velocityX = (((this.ball.y - this.player2.y) / 40 ) - 1) - 1;
+				else if (cal < -0.05){
+					this.ball.velocityX = -0.75;
+					this.ball.velocityY = -0.25;
 				}
-				this.ball.x = this.player2.x - 11;
+				else if (cal < 0.05){
+					this.ball.velocityX = -1;
+					this.ball.velocityY = 0;
+				}
+				else if (cal < 0.55){
+					this.ball.velocityX = -0.75;
+					this.ball.velocityY = 0.25;
+				}
+				else if (cal <= 1){
+					this.ball.velocityX = -0.5;
+					this.ball.velocityY = 0.5;
+				}
+				// t
+				// this.ball.velocityY = ((this.ball.y - this.player2.y) / 40 ) - 1;
+				// if (cal = (((this.ball.y - this.player1.y) / 40 ) - 1) >= 0) {
+				// 	this.ball.velocityX = (cal * -1) + 1;
+				// }
+				// else {
+				// 	this.ball.velocityX = (cal * -1) - 1;
+				// }
+				// this.ball.x = this.player2.x - 11;
 			}
 		},
 		resetGame(direction) {
