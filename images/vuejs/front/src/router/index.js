@@ -11,6 +11,7 @@ import NotFound from '../views/NotFound.vue'
 import Play from '../views/Play.vue'
 import Pong from '../views/Pong.vue'
 import Difficulty from '../views/Difficulty.vue'
+import Friends from '../views/Friends.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -25,6 +26,7 @@ const router = createRouter({
         {path: '/play', name: 'Play', component: Play},
         {path: '/pong', name: 'Pong', component: Pong},
         {path: '/difficulty', name: 'Difficulty', component: Difficulty},
+        {path: '/friends', name: 'Friends', component: Friends},
         {path: '/:notFound', component: NotFound},  
     ]
 })
