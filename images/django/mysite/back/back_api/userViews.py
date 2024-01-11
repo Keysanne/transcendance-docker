@@ -2,9 +2,10 @@ from django.shortcuts import render
 from .models import User, Tournament
 from rest_framework import generics
 from .serializers import UserSerializer, TournamentSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
 from PIL import Image
 
@@ -58,6 +59,7 @@ def UserConnect(request):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def UserList(request):
 	queryset = User.objects.all()
 	serializer = UserSerializer(queryset, context={'request': request}, many=True)
@@ -68,6 +70,7 @@ def UserList(request):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def UserDetail(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -92,6 +95,7 @@ def UserDetail(request, pk):
 
 
 @api_view(['PATCH', 'POST'])
+@permission_classes((IsAuthenticated, ))
 def UserUpdate(request, pk):
 	if ("?" in str(request)):
 		data = (str(request))[(str(request)).index('?') + 1:-2]
@@ -146,6 +150,7 @@ def UserUpdate(request, pk):
 
 
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
 def UserDelete(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk).delete()
@@ -155,6 +160,7 @@ def UserDelete(request, pk):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def createTournament(request, pk):
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]

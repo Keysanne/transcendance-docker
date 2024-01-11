@@ -2,11 +2,13 @@ from django.shortcuts import render
 from .models import User, Tournament, Contestant
 from rest_framework import generics
 from .serializers import UserSerializer, TournamentSerializer, ContestantSerializer
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def tournamentList(request):
 	queryset = Tournament.objects.all().filter(status=0)
 	serializer = TournamentSerializer(queryset, many=True)
@@ -28,6 +30,7 @@ def tournamentList(request):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def contestantList(request, tpk):
 	try:
 		Tournament.objects.get(pk=tpk)
@@ -49,6 +52,7 @@ def contestantList(request, tpk):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def tournamentStart(request, pk):
 	try:
 		queryset = Tournament.objects.get(pk=pk)
@@ -69,6 +73,7 @@ def tournamentStart(request, pk):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def addContestant(request, tpk, upk):
 	try:
 		User.objects.get(pk=upk)
@@ -129,6 +134,7 @@ def addContestant(request, tpk, upk):
 
 
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
 def removeContestant(request, tpk, upk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
@@ -150,6 +156,7 @@ def removeContestant(request, tpk, upk):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def userReady(request, tpk, upk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
@@ -181,6 +188,7 @@ def userReady(request, tpk, upk):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def matchStart(request, tpk):
 	try:
 		Tournament.objects.get(pk=tpk)
@@ -233,6 +241,7 @@ def matchStart(request, tpk):
 	return Response(status=status.HTTP_200_OK)
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def tournamentMatchResult(request, tpk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
@@ -310,6 +319,7 @@ def tournamentMatchResult(request, tpk):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def tournamentEnd(request, tpk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
