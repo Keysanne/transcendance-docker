@@ -80,10 +80,10 @@ export default {
 				this.player2.y += this.player2.velocityY;
 			}
 			this.context.fillRect(this.player2.x, this.player2.y, this.player2.width, this.player2.height);
-		
+			
+			this.detectCollision()
 			this.ball.x += this.ball.velocityX * this.acceleration;
 			this.ball.y += this.ball.velocityY * this.acceleration;
-			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 			if (this.ball.y <= 0) {
 				this.ball.velocityY *= -1;
 				this.ball.y = 1;
@@ -101,6 +101,7 @@ export default {
 				this.player1Score += 1;
 				this.resetGame(-1);
 			}
+			this.context.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height);
 
 			this.context.font = "40px 'Press Start 2P'";
 			if (this.player1Score >= 5) {
@@ -198,7 +199,6 @@ export default {
 			let cal = 0; 
 			if ((this.ball.y >= this.player1.y && this.ball.y <= this.player1.y + 80) && (this.ball.x <= this.player1.x + 10)) {
 				cal = (this.ball.y - this.player1.y) / 40 - 1;
-
 				if (cal < -0.45){
 					this.ball.velocityX = 0.5;
 					this.ball.velocityY = -0.5;
@@ -219,7 +219,10 @@ export default {
 					this.ball.velocityX = 0.5;
 					this.ball.velocityY = 0.5;
 				}
-				this.acceleration += 1;
+				if (this.acceleration <= 28) {
+					this.acceleration += 1;
+				}
+				this.ball.x = this.player1.x + 11;
 			}
 			if ((this.ball.y >= this.player2.y && this.ball.y <= this.player2.y + 80) && (this.ball.x >= this.player2.x - 10)) {
 				cal = (this.ball.y - this.player2.y) / 40 - 1;
@@ -244,7 +247,7 @@ export default {
 					this.ball.velocityX = -0.5;
 					this.ball.velocityY = 0.5;
 				}
-				this.acceleration += 1;
+				this.ball.x = this.player2.x - 11;
 			}
 		},
 		resetGame(direction) {
