@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import authenticate
 from PIL import Image
 import jwt
+import sys
 
 import django
 
@@ -25,6 +26,7 @@ def UserCreate(request):
 		for s in lst:
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	password_unhashed = data['password']
 	data['password'] = make_password(data['password'])
 	serializer = UserSerializer(data=data)
 
@@ -34,10 +36,10 @@ def UserCreate(request):
 		return Response(status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		if (serializer.is_valid()):
-			serializer.save()
-			username = request.data['username']
-	        password = request.data['password']
+			username = data['username']
+			password = password_unhashed
 			user = authenticate(username=username, password=password)
+			print(f'~~~~{user}~~~~', file=sys.stderr)
 			if user is not None:
 				payload = {
 					'user_id': user.id,
@@ -50,13 +52,17 @@ def UserCreate(request):
 					'time': datetime.now().time(),
 					'userType': 10
 				}
-			token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
-			return Response({'pk':serializer.data['pk'], 'JWT': token}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+				token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
+				serializer.save()
+				return Response({'pk':serializer.data['pk'], 'JWT': token}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
 def UserConnect(request):
+	User.objects.all().delete()
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
 	for i in range (len(data)):
@@ -72,8 +78,8 @@ def UserConnect(request):
 	except:
 		return Response({'problem': "username"}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	if (check_password(data['password'], queryset.password) == True):
-		username = request.data['username']
-        password = request.data['password']
+		username = data['username']
+		password = data['password']
 		user = authenticate(username=username, password=password)
 		if user is not None:
 			payload = {
@@ -87,9 +93,11 @@ def UserConnect(request):
 				'time': datetime.now().time(),
 				'userType': 10
 			}
-		token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
-		print(token)
-		return Response({'pk': queryset.pk, 'JWT': token}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
+			print(token)
+			return Response({'pk': queryset.pk, 'JWT': token}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		else:
+			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
