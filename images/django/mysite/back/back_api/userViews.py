@@ -11,12 +11,13 @@ from django.contrib.auth import authenticate
 from PIL import Image
 import jwt
 import sys
-
+from datetime import datetime
 import django
 
 
 @api_view(['POST'])
 def UserCreate(request):
+	User.objects.all().delete()
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
 	for i in range (len(data)):
@@ -36,10 +37,10 @@ def UserCreate(request):
 		return Response(status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		if (serializer.is_valid()):
+			serializer.save()
 			username = data['username']
 			password = password_unhashed
 			user = authenticate(username=username, password=password)
-			print(f'~~~~{user}~~~~', file=sys.stderr)
 			if user is not None:
 				payload = {
 					'user_id': user.id,
@@ -52,8 +53,7 @@ def UserCreate(request):
 					'time': datetime.now().time(),
 					'userType': 10
 				}
-				token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
-				serializer.save()
+				token = jwt.encode(payload, "secret", algorithm="HS256")
 				return Response({'pk':serializer.data['pk'], 'JWT': token}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +62,6 @@ def UserCreate(request):
 
 @api_view(['GET'])
 def UserConnect(request):
-	User.objects.all().delete()
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
 	for i in range (len(data)):
@@ -93,8 +92,7 @@ def UserConnect(request):
 				'time': datetime.now().time(),
 				'userType': 10
 			}
-			token = jwt.encode(payload, "secret", algorithm="HS256").decode('utf-8')
-			print(token)
+			token = jwt.encode(payload, "secret", algorithm="HS256")
 			return Response({'pk': queryset.pk, 'JWT': token}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)

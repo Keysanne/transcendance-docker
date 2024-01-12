@@ -144,3 +144,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+#AUTHENTICATE
+# AUTHENTICATION_BACKENDS = ['back_api.models.User']
+AUTH_USER_MODEL = "back_api.User"

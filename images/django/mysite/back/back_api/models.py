@@ -1,9 +1,14 @@
 from django.db import models
 import django
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
-class User(models.Model):
+class User(AbstractUser):
+
+	REQUIRED_FIELDS = ()
+	USERNAME_FIELD = 'username'
+
 	username = models.CharField("username", unique=True, max_length=14, null=True)
 	password = models.CharField("password", null=True)
 	pfp = models.ImageField("pfp", upload_to='pfp', null=True)
