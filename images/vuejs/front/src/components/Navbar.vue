@@ -20,6 +20,7 @@
           <li class="md:hidden"></li>
           <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/leaderboard">Leaderboard</router-link></li>
           <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/tournaments">Tournaments</router-link></li>
+          <li><router-link class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/friends">Friends</router-link></li>
           <li class="md:hidden"><router-link class="font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors" to="/account">My Account</router-link></li>
           <li class="hidden md:block"><router-link to="/account"><img class="rounded-full h-14 w-14 border-1 border-black" src="../assets/avatars/todo.jpg" alt="profile_pic"></router-link></li>
           <li class="md:hidden"><button @click="logout" class="font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors">Log out</button></li>
