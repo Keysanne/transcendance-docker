@@ -17,7 +17,6 @@ import django
 
 @api_view(['POST'])
 def UserCreate(request):
-	User.objects.all().delete()
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
 	for i in range (len(data)):

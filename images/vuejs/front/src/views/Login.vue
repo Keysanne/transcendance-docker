@@ -134,7 +134,8 @@ export default {
             {
                 const URL = "http://127.0.0.1:8000/user/create/?username=" + this.signup_username + "&password=" + this.signup_password
                 axios.post(URL).then(response => {
-                    this.$router.push({path: '/'})
+                    localStorage.JWT = response.data.JWT
+                    this.$router.push({path: '/leaderboard'})
                 })
                 .catch(error => {
                     this.signup_username_label = "Username already used"
@@ -144,7 +145,8 @@ export default {
         login() {
             const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
             axios.get(URL).then(response => {
-                this.$router.push({path: '/'})
+            	localStorage.JWT = response.data.JWT
+                this.$router.push({path: '/leaderboard'})
             })
             .catch(error => {
                 if (error.response.data.problem == "username") {

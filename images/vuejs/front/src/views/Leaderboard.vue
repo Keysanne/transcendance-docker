@@ -18,6 +18,7 @@
 <script>
 import Navbar from '../components/Navbar.vue';
 import LeaderboardPlayer from '../components/LeaderboardPlayer.vue';
+import axios from 'axios';
 
 export default {
     data() {
@@ -65,6 +66,34 @@ export default {
     components: {
         LeaderboardPlayer,
         Navbar,
+    },
+    mounted() {
+    	if (localStorage.getItem("JWT") === null) {
+    		this.$router.push({path: '/login'})
+    	}
+    	const URL = "http://127.0.0.1:8000/user/leaderboard"
+	    axios.get(URL, {
+	    	headers: {
+	    		Authorization: "Token" + localStorage.JWT
+	    	}
+        }).then(response => {
+            this.players = []
+            var j = 1
+            for (var i in response.data){
+                var player = {}
+                player["rank"] = j
+                player["username"] = response.data[i].username
+                player["pic"] = response.data[i].pfp
+                player["elo"] = response.data[i].elo
+                player["is_last"] = false
+                this.players.push(player)
+                j += 1
+            }
+            this.players[this.players.length - 1]["is_last"] = true
+	    })
+	    .catch(error => {
+		    console.log(error)
+	    })
     }
 }
 
