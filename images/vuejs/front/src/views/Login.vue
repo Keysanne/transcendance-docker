@@ -145,7 +145,7 @@ export default {
         login() {
             const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
             axios.get(URL).then(response => {
-            	localStorage.JWT = response.data.JWT
+            	localStorage.setItem("JWT", response.data.JWT)
                 this.$router.push({path: '/leaderboard'})
             })
             .catch(error => {

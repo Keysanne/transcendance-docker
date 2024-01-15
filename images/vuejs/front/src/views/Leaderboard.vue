@@ -74,7 +74,7 @@ export default {
     	const URL = "http://127.0.0.1:8000/user/leaderboard"
 	    axios.get(URL, {
 	    	headers: {
-	    		Authorization: "Token" + localStorage.JWT
+	    		Authorization: "Token " + localStorage.getItem("JWT")
 	    	}
         }).then(response => {
             this.players = []
