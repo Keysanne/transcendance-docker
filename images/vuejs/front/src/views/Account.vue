@@ -213,12 +213,11 @@ export default {
                     })
                 }).catch(response => {
                     console.log(response)
-                });
+            });
         },
-
     },
     mounted() {
-        const URL = "http://127.0.0.1:8000/user/18/"
+        const URL = "http://127.0.0.1:8000/user/1/"
         axios.get(URL)
         .then(response => {
             this.username = response.data.username;
