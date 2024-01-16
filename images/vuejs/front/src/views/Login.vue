@@ -132,10 +132,19 @@ export default {
         signUp() {
             if (this.checkUsername() && this.checkPassword())
             {
-                const URL = "http://127.0.0.1:8000/user/create/?username=" + this.signup_username + "&password=" + this.signup_password
-                axios.post(URL).then(response => {
-                    localStorage.JWT = response.data.JWT
+		const BASE_URL = "http://127.0.0.1:8000/"
+		const CREATE_ENDPOINT = "user/create/"
+		const TOKEN_ENDPOINT = "api/token/"
+		const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
+                axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
+                   axios.post(BASE_URL + TOKEN_ENDPOINT, {
+			  username: this.signup_username,
+			  password: this.signup_password
+			}).then(response_token => {
+                   console.log(response_token)
+                    localStorage.setItem("access", response_token.data.access)
                     this.$router.push({path: '/leaderboard'})
+                })
                 })
                 .catch(error => {
                     this.signup_username_label = "Username already used"
@@ -146,7 +155,7 @@ export default {
             const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
             axios.get(URL).then(response => {
             	localStorage.setItem("JWT", response.data.JWT)
-                this.$router.push({path: '/leaderboard'})
+                this.$router.push({path: '/leaderboard/'})
             })
             .catch(error => {
                 if (error.response.data.problem == "username") {

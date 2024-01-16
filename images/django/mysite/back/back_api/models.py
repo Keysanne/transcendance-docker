@@ -15,11 +15,12 @@ class User(AbstractUser):
 	status = models.IntegerField("status", default=0)
 	wins = models.IntegerField("wins", default=0)
 	losses = models.IntegerField("losses", default=0)
-	twoFA = models.BooleanField("twoFA", default=False)
+	is_active = models.BooleanField("is_active", default=True)
 	language = models.IntegerField("language", default=1)
 	elo = models.PositiveIntegerField("elo", default=200)
 	best_elo = models.PositiveIntegerField("best_elo", default=200)
 	best_rank = models.PositiveIntegerField("best_rank", default=2147483647)
+	twoFA = models.BooleanField("twoFA", default=False)
 
 	def __str__(self):
 		return self.username

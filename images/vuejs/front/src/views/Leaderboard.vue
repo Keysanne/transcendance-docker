@@ -68,13 +68,13 @@ export default {
         Navbar,
     },
     mounted() {
-    	if (localStorage.getItem("JWT") === null) {
+    	if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-    	const URL = "http://127.0.0.1:8000/user/leaderboard"
+    	const URL = "http://127.0.0.1:8000/user/leaderboard/"
 	    axios.get(URL, {
 	    	headers: {
-	    		Authorization: "Token " + localStorage.getItem("JWT")
+	    		'Authorization': 'Bearer ' + localStorage.getItem("access")
 	    	}
         }).then(response => {
             this.players = []

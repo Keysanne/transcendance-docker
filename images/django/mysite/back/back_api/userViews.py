@@ -2,9 +2,10 @@ from django.shortcuts import render
 from .models import User, Tournament
 from rest_framework import generics
 from .serializers import UserSerializer, TournamentSerializer
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import authenticate
@@ -13,6 +14,7 @@ import jwt
 import sys
 from datetime import datetime
 import django
+
 
 
 @api_view(['POST'])
@@ -29,8 +31,6 @@ def UserCreate(request):
 	password_unhashed = data['password']
 	data['password'] = make_password(data['password'])
 	serializer = UserSerializer(data=data)
-
-
 	try:
 		queryset = User.objects.get(username=data['username'])
 		return Response(status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
@@ -41,19 +41,7 @@ def UserCreate(request):
 			password = password_unhashed
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				payload = {
-					'user_id': user.id,
-					'exp': datetime.now(),
-					'token_type': 'access'
-				}
-
-				user = {
-					'user': username,
-					'time': datetime.now().time(),
-					'userType': 10
-				}
-				token = jwt.encode(payload, "secret", algorithm="HS256")
-				return Response({'pk':serializer.data['pk'], 'JWT': token}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -80,26 +68,14 @@ def UserConnect(request):
 		password = data['password']
 		user = authenticate(username=username, password=password)
 		if user is not None:
-			payload = {
-				'user_id': user.id,
-				'exp': datetime.now(),
-				'token_type': 'access'
-			}
-
-			user = {
-				'user': username,
-				'time': datetime.now().time(),
-				'userType': 10
-			}
-			token = jwt.encode(payload, "secret", algorithm="HS256")
-			return Response({'pk': queryset.pk, 'JWT': token}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes([IsAuthenticated])
 def UserList(request):
 	queryset = User.objects.all()
 	serializer = UserSerializer(queryset, context={'request': request}, many=True)
@@ -110,7 +86,7 @@ def UserList(request):
 
 
 @api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes([IsAuthenticated])
 def UserDetail(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -135,7 +111,7 @@ def UserDetail(request, pk):
 
 
 @api_view(['PATCH', 'POST'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes([IsAuthenticated])
 def UserUpdate(request, pk):
 	if ("?" in str(request)):
 		data = (str(request))[(str(request)).index('?') + 1:-2]
@@ -190,7 +166,7 @@ def UserUpdate(request, pk):
 
 
 @api_view(['DELETE'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes([IsAuthenticated])
 def UserDelete(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk).delete()
@@ -200,7 +176,7 @@ def UserDelete(request, pk):
 
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
+@permission_classes([IsAuthenticated])
 def createTournament(request, pk):
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
