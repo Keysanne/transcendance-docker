@@ -29,7 +29,7 @@ const router = createRouter({
         {path: '/pong4p', name: 'Pong4P', component: Pong4P},
         {path: '/difficulty', name: 'Difficulty', component: Difficulty},
         {path: '/friends', name: 'Friends', component: Friends},
-        {path: '/:notFound', component: NotFound},  
+        {path: '/:notFound', component: NotFound},
     ]
 })
 

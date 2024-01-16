@@ -1,4 +1,15 @@
 <template>
+    <div :class="is_alert ? 'flex' : 'hidden'" class="fixed-top mt-4 w-full justify-center">
+        <div class="alert alert-danger alert-dismissible fade show w-64 flex justify-center items-center" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-red-400" viewBox="0 0 16 16" role="img" aria-label="Danger:">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            <div class="ml-2">
+                Login with 42 failed
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
     <div class="flex justify-content-center items-center">
         <div :class="signup_display ? 'hidden 2xl:flex' : 'flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] 2xl:w-[60vw]">
             <h1 class="text-5xl font-medium tracking-wider text-light">Login</h1>
@@ -18,10 +29,10 @@
             </div>
             
             <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="login">Log in</button>
-            <button type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
+            <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin&response_type=code" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
                 Log in with
                 <img src="../assets/42_logo_png.png" class="ml-2 w-10"/>
-            </button>
+            </a>
 
             <p class="mt-16 2xl:hidden text-light">Don't have an account?<button v-on:click="signupDisplay" class="btn btn-link text-light">Sign up</button></p>
         </div>
@@ -76,6 +87,7 @@ export default {
             login_password: "",
             login_username_label: "Username",
             login_password_label: "Password",
+            is_alert: false
         }
     },
 
@@ -156,6 +168,21 @@ export default {
                     this.login_password_label = "Incorrect password"
                 }
             })
+        },
+    },
+    mounted() {
+        if (window.location.search != '') {
+            var code = window.location.search.search(/\?code=[A-Za-z0-9]/)
+            if (code != -1) {
+                code = window.location.search.split('=')[1]
+                const URL = "http://127.0.0.1:8000/user/remote-login/?code=" + code
+                axios.get(URL).then(response => {
+
+                })
+                .catch(error => {
+                    this.is_alert = true
+                }) 
+            }
         }
     }
 }
