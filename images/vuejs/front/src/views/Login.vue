@@ -143,7 +143,7 @@ export default {
 			}).then(response_token => {
                    console.log(response_token)
                     localStorage.setItem("access", response_token.data.access)
-                    this.$router.push({path: '/leaderboard'})
+                    this.$router.push({path: '/'})
                 })
                 })
                 .catch(error => {
@@ -152,10 +152,18 @@ export default {
             }
         },
         login() {
-            const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
-            axios.get(URL).then(response => {
-            	localStorage.setItem("JWT", response.data.JWT)
-                this.$router.push({path: '/leaderboard/'})
+            const BASE_URL = "http://127.0.0.1:8000/"
+    		const CONNECT_ENDPOINT = "user/connect/"
+	    	const TOKEN_ENDPOINT = "api/token/"
+		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
+            axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+                axios.post(BASE_URL + TOKEN_ENDPOINT, {
+			        username: this.login_username,
+			        password: this.login_password
+			    }).then(response_token => {
+                    localStorage.setItem("access", response_token.data.access)
+                    this.$router.push({path: '/'})
+                })
             })
             .catch(error => {
                 if (error.response.data.problem == "username") {

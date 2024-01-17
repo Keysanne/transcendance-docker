@@ -126,6 +126,9 @@ export default {
 		}
 	},
 	mounted() {
+		if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
 		// TODO get tournament infos
 	},
 	components: {

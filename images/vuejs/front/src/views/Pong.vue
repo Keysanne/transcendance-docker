@@ -274,6 +274,9 @@ export default {
 		}
 	},
 	mounted() {
+		if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
 		this.player1 = {
 			x: 10,
 			y: (this.boardHeight / 2) - (this.playerHeight / 2),

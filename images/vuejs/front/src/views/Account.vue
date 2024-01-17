@@ -218,6 +218,9 @@ export default {
 
     },
     mounted() {
+        if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
         const URL = "http://127.0.0.1:8000/user/18/"
         axios.get(URL)
         .then(response => {

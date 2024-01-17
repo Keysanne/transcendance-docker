@@ -15,6 +15,11 @@ import Navbar from '../components/Navbar.vue';
 export default {
     components: {
         Navbar,
+    },
+    mounted() {
+        if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
     }
 }
 </script>

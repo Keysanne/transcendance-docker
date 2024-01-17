@@ -23,44 +23,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            players: [
-                {
-                    rank: 1,
-                    username: "SkibidiPlayer1",
-                    pic: "",
-                    elo: 5603,
-                    is_last: false
-                },
-                {
-                    rank: 2,
-                    username: "Player2",
-                    pic: "",
-                    elo: 5403,
-                    is_last: false
-                },
-                {
-                    rank: 3,
-                    username: "Player3",
-                    pic: "",
-                    elo: 4932,
-                    is_last: false
-                },
-                {
-                    rank: 4,
-                    username: "Player4",
-                    pic: "",
-                    elo: 4567,
-                    is_last: false
-                },
-                {
-                    rank: 5,
-                    username: "Player5",
-                    pic: "",
-                    elo: 3877,
-                    is_last: true
-                },
-                
-            ]
+            players: []
         }
     },
     components: {
