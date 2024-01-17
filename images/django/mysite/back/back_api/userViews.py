@@ -74,6 +74,36 @@ def UserConnect(request):
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
+@api_view(['PATCH', 'POST', 'GET'])
+@permission_classes([IsAuthenticated])
+def Update2FA(request, pk):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	try:
+		query = User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	if 'mode' not in data.keys():
+		return Response({'problem': 'mode missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+	if (data['mode'] == "true"):
+		query.twoFA = True
+	elif (data['mode'] == 'false'):
+		query.twoFA = False
+	query.save()
+	return Response(status=status.HTTP_200_OK)
+
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def UserList(request):
@@ -105,7 +135,7 @@ def UserDetail(request, pk):
 			queryset.best_rank = rank
 			queryset.save()
 
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 

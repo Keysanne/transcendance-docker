@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from .userViews import UserCreate, UserConnect, UserList, UserDetail, UserUpdate, UserDelete, createTournament
+from .userViews import UserCreate, UserConnect, UserList, UserDetail, UserUpdate, UserDelete, createTournament, Update2FA
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
 	path('create/', UserCreate, name='create-user'),
 	path('connect/', UserConnect, name='connect-user'),
+	path('<int:pk>/update-2fa/', Update2FA, name='update-2fa'),
 	path('leaderboard/', UserList),
 	path('<int:pk>/', UserDetail, name='retrieve-user'),
 	path('update/<int:pk>/', UserUpdate, name='update-user'),

@@ -14,6 +14,8 @@
                 <div class="d-flex flex-column ml-6">
                     <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">Change password</button>
+                    <button type="button" :class="twoFa == true ? 'hidden' : ''" class="btn btn-sm btn-primary" @click="enable_2fa">Enable 2FA</button>
+                    <button type="button" :class="twoFa == false ? 'hidden' : ''" class="btn btn-sm btn-primary" @click="disable_2fa">Disable 2FA</button>
     
                     <div class="modal fade" id="password_modal" tabindex="-1" aria-labelledby="password_modal_label" aria-hidden="true">
                         <div class="modal-dialog">
@@ -130,6 +132,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            twoFA: false,
             username: "Username",
             wins: 12,
             losses: 5,
@@ -198,16 +201,21 @@ export default {
             formData.append('image_upload', image);
             // formData.append('_method', 'PATCH');
 
-            axios.post('http://127.0.0.1:8000/user/update/18/',
+            axios.post('http://127.0.0.1:8000/user/update/1/',
                 formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
+                        'Authorization': 'Bearer ' + localStorage.getItem("access")
                     }
                 }).then(response => {
                     console.log(response)
-                    const URL = "http://127.0.0.1:8000/user/18/"
-                    axios.get(URL)
+                    const URL = "http://127.0.0.1:8000/user/1/"
+                    axios.get(URL, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem("access")
+                        }
+                    })
                     .then(response => {
                         this.image_url = response.data.pfp;
                     })
@@ -215,13 +223,43 @@ export default {
                     console.log(response)
             });
         },
+        enable_2fa: function() {
+            const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=true"
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            }).then(response => {
+                console.log("enabled")
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+        disable_2fa: function() {
+            const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=false"
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            }).then(response => {
+                console.log("disabled")
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
     },
     mounted() {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/user/18/"
-        axios.get(URL)
+        const URL = "http://127.0.0.1:8000/user/1/"
+        axios.get(URL, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("access")
+            }
+        })
         .then(response => {
             this.username = response.data.username;
             this.wins = response.data.wins;
@@ -231,6 +269,7 @@ export default {
             this.elo = response.data.elo;
             this.best_elo = response.data.best_elo;
             this.image_url = response.data.pfp;
+            this.twoFA = response.data.twoFA
         }) 
     },
     components: {
