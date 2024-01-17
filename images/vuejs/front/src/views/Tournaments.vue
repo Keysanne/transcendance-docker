@@ -216,6 +216,11 @@ export default {
         Navbar,
         TournamentCard,
         MyTournamentCard,
+    },
+    mounted() {
+        if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
     }
 }
 </script>

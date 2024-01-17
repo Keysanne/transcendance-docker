@@ -164,9 +164,19 @@ export default {
         signUp() {
             if (this.checkUsername() && this.checkPassword())
             {
-                const URL = "http://127.0.0.1:8000/user/create/?username=" + this.signup_username + "&password=" + this.signup_password
-                axios.post(URL).then(response => {
+		const BASE_URL = "http://127.0.0.1:8000/"
+		const CREATE_ENDPOINT = "user/create/"
+		const TOKEN_ENDPOINT = "api/token/"
+		const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
+                axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
+                   axios.post(BASE_URL + TOKEN_ENDPOINT, {
+			  username: this.signup_username,
+			  password: this.signup_password
+			}).then(response_token => {
+                   console.log(response_token)
+                    localStorage.setItem("access", response_token.data.access)
                     this.$router.push({path: '/'})
+                })
                 })
                 .catch(error => {
                     this.signup_username_label = this.text.already_used[this.lang]
@@ -174,9 +184,18 @@ export default {
             }
         },
         login() {
-            const URL = "http://127.0.0.1:8000/user/connect/?username=" + this.login_username + "&password=" + this.login_password
-            axios.get(URL).then(response => {
-                this.$router.push({path: '/'})
+            const BASE_URL = "http://127.0.0.1:8000/"
+    		const CONNECT_ENDPOINT = "user/connect/"
+	    	const TOKEN_ENDPOINT = "api/token/"
+		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
+            axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+                axios.post(BASE_URL + TOKEN_ENDPOINT, {
+			        username: this.login_username,
+			        password: this.login_password
+			    }).then(response_token => {
+                    localStorage.setItem("access", response_token.data.access)
+                    this.$router.push({path: '/'})
+                })
             })
             .catch(error => {
                 if (error.response.data.problem == "username") {

@@ -2,13 +2,19 @@ from django.shortcuts import render
 from .models import User, Tournament
 from rest_framework import generics
 from .serializers import UserSerializer, TournamentSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import authenticate
 from PIL import Image
-
+import jwt
+import sys
+from datetime import datetime
 import django
+
 
 
 @api_view(['POST'])
@@ -22,18 +28,23 @@ def UserCreate(request):
 		for s in lst:
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	password_unhashed = data['password']
 	data['password'] = make_password(data['password'])
 	serializer = UserSerializer(data=data)
-
-
 	try:
 		queryset = User.objects.get(username=data['username'])
 		return Response(status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
-		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+			username = data['username']
+			password = password_unhashed
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -53,11 +64,48 @@ def UserConnect(request):
 	except:
 		return Response({'problem': "username"}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	if (check_password(data['password'], queryset.password) == True):
-		return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		username = data['username']
+		password = data['password']
+		user = authenticate(username=username, password=password)
+		if user is not None:
+			return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		else:
+			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
+@api_view(['PATCH', 'POST', 'GET'])
+@permission_classes([IsAuthenticated])
+def Update2FA(request, pk):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	try:
+		query = User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	if 'mode' not in data.keys():
+		return Response({'problem': 'mode missing'}, status=status.HTTP_400_BAD_REQUEST)
+
+	if (data['mode'] == "true"):
+		query.twoFA = True
+	elif (data['mode'] == 'false'):
+		query.twoFA = False
+	query.save()
+	return Response(status=status.HTTP_200_OK)
+
+
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def UserList(request):
 	queryset = User.objects.all()
 	serializer = UserSerializer(queryset, context={'request': request}, many=True)
@@ -68,6 +116,7 @@ def UserList(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def UserDetail(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -86,12 +135,13 @@ def UserDetail(request, pk):
 			queryset.best_rank = rank
 			queryset.save()
 
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['PATCH', 'POST'])
+@permission_classes([IsAuthenticated])
 def UserUpdate(request, pk):
 	if ("?" in str(request)):
 		data = (str(request))[(str(request)).index('?') + 1:-2]
@@ -146,6 +196,7 @@ def UserUpdate(request, pk):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def UserDelete(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk).delete()
@@ -155,6 +206,7 @@ def UserDelete(request, pk):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def createTournament(request, pk):
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]

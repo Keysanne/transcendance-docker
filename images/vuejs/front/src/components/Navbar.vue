@@ -40,6 +40,7 @@ export default {
   },
   methods: {
     logout() {
+      localStorage.removeItem("access");
       this.$router.push({path: "/login"})
     }
   }

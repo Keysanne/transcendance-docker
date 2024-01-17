@@ -1,7 +1,12 @@
 Django==4.2.7
+django-cors-headers==4.3.1
 djangorestframework
+djangorestframework-simplejwt
+djangorestframework-jwt
+pyjwt
 Pillow
 psycopg2
 pathlib
 django.urls
 bcrypt
+datetime

@@ -7,6 +7,7 @@
         <div class="d-grid gap-3 col-6 col-md-3 mx-auto mt-20">
             <router-link to="/difficulty" class="btn btn-light btn-lg">Solo vs AI</router-link>
 			<router-link to="/pong" class="btn btn-light btn-lg">Local 1 vs 1</router-link>
+            <router-link to="/pong4p" class="btn btn-light btn-lg">Local 1 vs 1 vs 1 vs 1</router-link>
         </div>
 
     </div>
@@ -22,6 +23,11 @@ import Navbar from '../components/Navbar.vue';
 export default {
     components: {
         Navbar,
+    },
+    mounted() {
+        if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
     }
 }
 </script>

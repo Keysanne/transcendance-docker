@@ -23,44 +23,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            players: [
-                {
-                    rank: 1,
-                    username: "SkibidiPlayer1",
-                    pic: "",
-                    elo: 5603,
-                    is_last: false
-                },
-                {
-                    rank: 2,
-                    username: "Player2",
-                    pic: "",
-                    elo: 5403,
-                    is_last: false
-                },
-                {
-                    rank: 3,
-                    username: "Player3",
-                    pic: "",
-                    elo: 4932,
-                    is_last: false
-                },
-                {
-                    rank: 4,
-                    username: "Player4",
-                    pic: "",
-                    elo: 4567,
-                    is_last: false
-                },
-                {
-                    rank: 5,
-                    username: "Player5",
-                    pic: "",
-                    elo: 3877,
-                    is_last: true
-                },
-                
-            ]
+            players: []
         }
     },
     components: {
@@ -68,25 +31,32 @@ export default {
         Navbar,
     },
     mounted() {
-        const URL = "http://127.0.0.1:8000/user/leaderboard"
-        axios.get(URL).then(response => {
+    	if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
+    	const URL = "http://127.0.0.1:8000/user/leaderboard/"
+	    axios.get(URL, {
+	    	headers: {
+	    		'Authorization': 'Bearer ' + localStorage.getItem("access")
+	    	}
+        }).then(response => {
             this.players = []
-            var i = 1
-            for (var elt in response.data) {
+            var j = 1
+            for (var i in response.data){
                 var player = {}
-                player["rank"] = i
-                player["username"] = response.data[elt].username
-                player["pic"] = response.data[elt].pfp
-                player["elo"] = response.data[elt].elo
+                player["rank"] = j
+                player["username"] = response.data[i].username
+                player["pic"] = response.data[i].pfp
+                player["elo"] = response.data[i].elo
                 player["is_last"] = false
                 this.players.push(player)
-                i += 1
+                j += 1
             }
             this.players[this.players.length - 1]["is_last"] = true
-        })
-        .catch(error => {
-            console.log(error)
-        })
+	    })
+	    .catch(error => {
+		    console.log(error)
+	    })
     }
 }
 
