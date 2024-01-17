@@ -213,9 +213,8 @@ export default {
                     })
                 }).catch(response => {
                     console.log(response)
-                });
+            });
         },
-
     },
     mounted() {
         if (localStorage.getItem("access") === null) {
