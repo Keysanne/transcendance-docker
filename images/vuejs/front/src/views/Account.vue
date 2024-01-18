@@ -265,7 +265,7 @@ export default {
             formData.append('image_upload', image);
             // formData.append('_method', 'PATCH');
 
-            axios.post('http://127.0.0.1:8000/user/update/1/',
+            axios.post('http://127.0.0.1:8000/user/update/' + localStorage.getItem("pk") + "/",
                 formData,
                 {
                     headers: {
@@ -274,7 +274,7 @@ export default {
                     }
                 }).then(response => {
                     console.log(response)
-                    const URL = "http://127.0.0.1:8000/user/1/"
+                    const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
                     axios.get(URL, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -288,7 +288,7 @@ export default {
             });
         },
         enable_2fa() {
-            const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=true"
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/update-2fa/?mode=true"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -301,7 +301,7 @@ export default {
             })
         },
         disable_2fa() {
-            const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=false"
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/update-2fa/?mode=false"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -349,7 +349,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/user/1/"
+        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")

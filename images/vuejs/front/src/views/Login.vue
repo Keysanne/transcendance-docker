@@ -198,6 +198,7 @@ export default {
 			}).then(response_token => {
                    console.log(response_token)
                     localStorage.setItem("access", response_token.data.access)
+                    localStorage.setItem("pk", this.pk)
                     this.$router.push({path: '/'})
                 })
                 })
@@ -222,6 +223,7 @@ export default {
                         password: this.login_password
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
+                        localStorage.setItem("pk", this.pk)
                         this.$router.push({path: '/'})
                     })
                 }
