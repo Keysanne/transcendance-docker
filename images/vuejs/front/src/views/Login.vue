@@ -8,6 +8,25 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
+
+    <button type="button" class="hidden" data-bs-toggle="modal" data-bs-target="#twoFA_modal" id="open_modal"></button>
+    <div class="modal fade" id="twoFA_modal"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="twoFA_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-light" id="twoFA_modal_label">{{ text.enter_2fa[lang] }}</h1>
+                </div>
+                <div class="modal-body">
+                    <input v-model="twoFA_code" type="text" class="form-control" id="twoFA_code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="hidden" data-bs-dismiss="modal" id="close_modal"></button>
+                    <button type="button" class="btn btn-primary">{{ text.send[lang] }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="flex justify-content-center items-center">
         <div :class="signup_display ? 'hidden 2xl:flex' : 'flex'" class="flex-column align-items-center justify-content-center vh-100 w-[100vw] 2xl:w-[60vw]">
             <h1 class="text-5xl font-medium tracking-wider text-light">{{ text.login[lang] }}</h1>
@@ -93,6 +112,8 @@ export default {
                 failed: ["Log in with 42 failed", "La connection avec 42 a echoue"],
                 no_account: ["Don't have an account?", "Vous n'avez pas encore de compte ?"],
                 already_account: ["Already have an account?", "Vous avez deja un compte ?"],
+                enter_2fa: ["Enter the code", "Entrez le code"],
+                send: ["Send", "Envoyer"],
             },
 
             signup_display: false,
@@ -108,6 +129,7 @@ export default {
             login_username_label: "",
             login_password_label: "",
             is_alert: false,
+            twoFA_code: ""
         }
     },
 
@@ -211,6 +233,12 @@ export default {
                     this.login_password_label = this.text.incorrect_password[this.lang]
                 }
             })
+        },
+        openModal() {
+            document.getElementById("open_modal").click()
+        },
+        closeModal() {
+            document.getElementById("close_modal").click()
         },
     },
     mounted() {
