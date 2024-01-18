@@ -21,7 +21,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="hidden" data-bs-dismiss="modal" id="close_modal"></button>
-                    <button type="button" class="btn btn-primary">{{ text.send[lang] }}</button>
+                    <button type="button" class="btn btn-primary" @click="sendCode">{{ text.send[lang] }}</button>
                 </div>
             </div>
         </div>
@@ -129,7 +129,8 @@ export default {
             login_username_label: "",
             login_password_label: "",
             is_alert: false,
-            twoFA_code: ""
+            twoFA_code: "",
+            pk: ""
         }
     },
 
@@ -211,13 +212,19 @@ export default {
 	    	const TOKEN_ENDPOINT = "api/token/"
 		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
             axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
-                axios.post(BASE_URL + TOKEN_ENDPOINT, {
-			        username: this.login_username,
-			        password: this.login_password
-			    }).then(response_token => {
-                    localStorage.setItem("access", response_token.data.access)
-                    this.$router.push({path: '/'})
-                })
+                if (response.data.twoFA == true){
+                    this.pk = response.data.pk
+                    this.openModal()
+                }
+                else {
+                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                        username: this.login_username,
+                        password: this.login_password
+                    }).then(response_token => {
+                        localStorage.setItem("access", response_token.data.access)
+                        this.$router.push({path: '/'})
+                    })
+                }
             })
             .catch(error => {
                 if (error.response.data.problem == "username") {
@@ -228,6 +235,24 @@ export default {
                     this.login_username_label = this.text.username[this.lang]
                     this.login_password_label = this.text.incorrect_password[this.lang]
                 }
+            })
+        },
+        sendCode() {
+            const BASE_URL = "http://127.0.0.1:8000/"
+    		const KEY_ENDPOINT = "user/" + this.pk + "/key/?code=" + this.twoFA_code + "&username=" + this.login_username + "&password=" + this.login_password
+            const TOKEN_ENDPOINT = "api/token/"
+            axios.get(BASE_URL + KEY_ENDPOINT).then(reponse => {
+                this.closeModal()
+                axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                    username: this.login_username,
+                    password: this.login_password
+                }).then(response_token => {
+                    localStorage.setItem("access", response_token.data.access)
+                    this.$router.push({path: '/'})
+                })
+            })
+            .catch(error => {
+                console.log(error)
             })
         },
         openModal() {

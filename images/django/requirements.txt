@@ -10,3 +10,4 @@ pathlib
 django.urls
 bcrypt
 datetime
+pyotp

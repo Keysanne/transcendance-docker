@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from .userViews import UserCreate, UserConnect, UserList, UserDetail, UserUpdate, UserDelete, createTournament, Update2FA
+from .userViews import UserCreate, UserConnect, UserList, UserDetail, UserUpdate, UserDelete, createTournament, Update2FA, Keycheck
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -18,4 +18,7 @@ urlpatterns = [
 	path('<int:pk>/createtournament/', createTournament, name='delete-user'),
 	path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 	path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+	path('<int:pk>/key/', Keycheck, name='Keycheck'),
+	# path(verif_mail
+	# path(verif_mail_key
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -14,6 +14,11 @@ import jwt
 import sys
 from datetime import datetime
 import django
+import time
+import pyotp
+from email.message import EmailMessage
+import ssl
+import smtplib
 
 
 
@@ -47,6 +52,26 @@ def UserCreate(request):
 	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
+def	generate_and_sendmail(email):
+	key = pyotp.random_base32()[:6]
+	# zvmr cdpq fcmi lzbk code google pour app Python
+	email_sender = "transcendance42lehavre@gmail.com"
+	email_password = "zvmr cdpq fcmi lzbk"
+	subject = "transcendance 2FA"
+	body = "here is your code for the 2FA: " + key
+	email_receiver = "wimileg342@konican.com"
+	em = EmailMessage()
+	em["From"] = email_sender
+	em["To"] = email_receiver
+	em["subject"] = subject
+	em.set_content(body)
+	context = ssl.create_default_context()
+	with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+		smtp.login(email_sender, email_password)
+		smtp.sendmail(email_sender, email_receiver, em.as_string())
+	return key
+
+
 @api_view(['GET'])
 def UserConnect(request):
 	data = (str(request))[(str(request)).index('?') + 1:-2]
@@ -64,14 +89,47 @@ def UserConnect(request):
 	except:
 		return Response({'problem': "username"}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	if (check_password(data['password'], queryset.password) == True):
-		username = data['username']
-		password = data['password']
-		user = authenticate(username=username, password=password)
-		if user is not None:
-			return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		if queryset.twoFA == True:
+			key = generate_and_sendmail(queryset.email)
+			queryset.key = key
+			queryset.save()
+			return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
-			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+			username = data['username']
+			password = data['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
+
+@api_view(['GET'])
+def Keycheck(request, pk):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	try:
+		query = User.objects.get(pk=pk)
+		if (query.key == data['code']):
+			username = data['username']
+			password = data['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				return Response({'pk': query.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PATCH', 'POST', 'GET'])
@@ -113,6 +171,52 @@ def UserList(request):
 	leaderboard = sorted(serializer.data, key=lambda x: x['elo'], reverse=True)
 
 	return Response([{'pk': u['pk'], 'username':u['username'], 'pfp':u['pfp'], 'elo':u['elo']} for i, u in enumerate(leaderboard)], headers={'Access-Control-Allow-Origin':'*'})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def	verif_mail_key(request, pk, email):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	try:
+		query = User.objects.get(pk=pk)
+		if (query.key == data['code']):
+			query.email = email
+			query.save()
+			return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		else:
+			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST)
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def	verif_mail(request, pk):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	try:
+		query = User.objects.get(pk=pk)
+		key = generate_and_sendmail(query.email)
+		query.key = key
+		query.save()
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+	except:
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

@@ -21,6 +21,8 @@ class User(AbstractUser):
 	best_elo = models.PositiveIntegerField("best_elo", default=200)
 	best_rank = models.PositiveIntegerField("best_rank", default=2147483647)
 	twoFA = models.BooleanField("twoFA", default=False)
+	email = models.EmailField("email", null=True, unique=True)
+	key = models.CharField("key", null=True)
 
 	def __str__(self):
 		return self.username
