@@ -189,6 +189,10 @@ export default {
 	    	const TOKEN_ENDPOINT = "api/token/"
 		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
             axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+                if (response.data.twoFA == true){
+                    back envoie mail
+                    -> rentrer le code 
+                }
                 axios.post(BASE_URL + TOKEN_ENDPOINT, {
 			        username: this.login_username,
 			        password: this.login_password
