@@ -7,8 +7,8 @@
             </div>
             <div class="flex justify-between items-center mt-3">
                 <div>{{ nb_players }} / {{ max_players }}</div>
-                <button v-if="registered" class="btn btn-danger">Unregister</button>
-                <button v-else class="btn btn-secondary" :disabled="nb_players >= max_players">Register</button>
+                <button v-if="registered" class="btn btn-danger">{{ text.unregister[lang] }}</button>
+                <button v-else class="btn btn-secondary" :disabled="nb_players >= max_players">{{ text.register[lang] }}</button>
             </div>
         </div>
     </div>
@@ -20,6 +20,14 @@
 
 <script>
 export default {
+    data() {
+        return {
+            text: {
+                unregister: ["Unregister", "me desinscrire"],
+                register: ["Register", "m'inscrire"],
+            },
+        }
+    },
     props: {
         id: Number,
         name: String,
@@ -27,6 +35,14 @@ export default {
         nb_players: Number,
         max_players: Number,
         registered: Boolean,
+    },
+    computed: {
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
+        }
     }
 }
 </script>

@@ -3,27 +3,27 @@
         <Navbar />
 
         <div class="d-flex flex-column align-items-center mt-36 max-w-[722px]">
-            <h1 class="text-4xl text-light">Tournaments</h1>
+            <h1 class="text-4xl text-light">{{ text.tournaments[lang] }}</h1>
 
             <div class="flex justify-between items-center w-[90%] xl:w-full mt-16">
-                <h3 class="text-light">My Tournaments</h3>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">New</button>
+                <h3 class="text-light">{{ text.my_tournaments[lang] }}</h3>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">{{ text.new[lang] }}</button>
 
                 <div class="modal fade" id="new_tournament_modal" tabindex="-1" aria-labelledby="new_tournament_modal_label" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">New tournament</h1>
+                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">{{ text.new_tournament[lang] }}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
                                     <input v-model="new_tournament_name" type="text" class="form-control" id="new_tournament_name" placeholder="name">
-                                    <label for="new_tournament_name">Name</label>
+                                    <label for="new_tournament_name">{{ text.name[lang] }}</label>
                                 </div>
                                 <div class="form-floating mt-3">
                                     <textarea v-model="new_tournament_description" class="form-control" style="height: 128px;" id="new_tournament_description" placeholder="description"></textarea>
-                                    <label for="new_tournament_description">Description</label>
+                                    <label for="new_tournament_description">{{ text.description[lang] }}</label>
                                 </div>
                                 <div class="form-floating">
                                     <select v-model="new_tournament_size" class="form-select mt-3" id="new_tournament_size">
@@ -31,12 +31,12 @@
                                         <option>8</option>
                                         <option>16</option>
                                     </select>
-                                    <label for="new_tournament_size">Select a size</label>
+                                    <label for="new_tournament_size">{{ text.size[lang] }}</label>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''">Create tournament</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
+                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''">{{ text.create[lang] }}</button>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
             <div class="w-[90%] xl:w-full bg-gray-700/50 h-[2px] mt-16 mb-16"></div>
  
             <div class="flex justify-start w-[90%] xl:w-full">
-                <h2 class="text-light">Join a tournament</h2>
+                <h2 class="text-light">{{ text.join[lang] }}</h2>
             </div>
             <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
                 <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
@@ -72,6 +72,19 @@ import MyTournamentCard from '../components/MyTournamentCard.vue';
 export default {
     data() {
         return {
+            text: {
+                tournaments: ["Tournaments", "Tournois"],
+                my_tournaments: ["My Tournaments", "Mes tournois"],
+                new: ["New", "Nouveau"],
+                new_tournament: ["New tournament", "Nouveau tournois"],
+                name: ["Name", "Nom"],
+                description: ["Description", "Description"],
+                size: ["Select a size", "Choisis une taille"],
+                close: ["Close", "Fermer"],
+                create: ["Create tournament", "Creer le tournois"],
+                join: ["Join a tournament", "Rejoindre un tournois"],
+            },
+
             new_tournament_name: "",
             new_tournament_description: "",
             new_tournament_size: "",
@@ -221,6 +234,14 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
+    },
+    computed: {
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
+        }
     }
 }
 </script>

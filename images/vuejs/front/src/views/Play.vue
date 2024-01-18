@@ -2,12 +2,12 @@
     <div class="d-flex flex-column align-items-center justify-center min-h-screen bg-[url(https://integraales.fr/wp-content/uploads/2019/12/source.gif)] bg-no-repeat bg-cover">
         <Navbar />
         
-        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl text-center">Choose your game mode</h1>
+        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl text-center">{{ text.choose[lang] }}</h1>
 
         <div class="d-grid gap-3 col-6 col-md-3 mx-auto mt-20">
-            <router-link to="/difficulty" class="btn btn-light btn-lg">Solo vs AI</router-link>
-			<router-link to="/pong" class="btn btn-light btn-lg">Local 1 vs 1</router-link>
-            <router-link to="/pong4p" class="btn btn-light btn-lg">Local 1 vs 1 vs 1 vs 1</router-link>
+            <router-link to="/difficulty" class="btn btn-light btn-lg">{{ text.solo[lang] }}</router-link>
+			<router-link to="/pong" class="btn btn-light btn-lg">{{ text.local[lang] }}</router-link>
+            <router-link to="/pong4p" class="btn btn-light btn-lg">{{ text.local_4[lang] }}</router-link>
         </div>
 
     </div>
@@ -21,6 +21,16 @@
 import Navbar from '../components/Navbar.vue';
 
 export default {
+    data() {
+        return {
+            text: {
+                choose: ["Choose your game mode", "Choisis ton mode de jeu"],
+                solo: ["Solo vs AI", "Solo vs IA"],
+                local: ["Local 1 vs 1", "Local 1 vs 1"],
+                local_4: ["Local 1 vs 1 vs 1 vs 1", "Local 1 vs 1 vs 1 vs 1"],
+            },
+        }
+    },
     components: {
         Navbar,
     },
@@ -28,6 +38,14 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
+    },
+    computed: {
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
+        }
     }
 }
 </script>

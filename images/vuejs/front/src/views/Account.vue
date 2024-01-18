@@ -13,34 +13,34 @@
                 
                 <div class="d-flex flex-column ml-6">
                     <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
-                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">Change password</button>
-                    <button type="button" :class="twoFa == true ? 'hidden' : ''" class="btn btn-sm btn-primary" @click="enable_2fa">Enable 2FA</button>
-                    <button type="button" :class="twoFa == false ? 'hidden' : ''" class="btn btn-sm btn-primary" @click="disable_2fa">Disable 2FA</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">{{ text.change_password[lang] }}</button>
+                    <button type="button" v-if="twoFA == false" class="btn btn-sm btn-primary" @click="enable_2fa">{{ text.enable_2fa[lang] }}</button>
+                    <button type="button" v-else class="btn btn-sm btn-primary" @click="disable_2fa">{{ text.disable_2fa[lang] }}</button>
     
                     <div class="modal fade" id="password_modal" tabindex="-1" aria-labelledby="password_modal_label" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5 text-light" id="password_modal_label">Change password</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h1 class="modal-title fs-5 text-light" id="password_modal_label">{{ text.change_password[lang] }}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" :aria-label="text.close[lang]"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-floating">
-                                        <input v-model="current_password" type="text" :class="current_password_label != 'Current password' ? 'is-invalid' : ''" class="form-control" id="current_password" placeholder="current password">
+                                        <input v-model="current_password" type="text" :class="current_password_label != text.current_password[lang] ? 'is-invalid' : ''" class="form-control" id="current_password" placeholder="current password">
                                         <label for="current_password">{{ current_password_label }}</label>
                                     </div>
                                     <div class="form-floating mt-3">
-                                        <input v-model="new_password" type="text" :class="new_password_label != 'New password' ? 'is-invalid' : ''" class="form-control" id="new_password" placeholder="new password">
+                                        <input v-model="new_password" type="text" :class="new_password_label != text.new_password[lang] ? 'is-invalid' : ''" class="form-control" id="new_password" placeholder="new password">
                                         <label for="new_password">{{ new_password_label }}</label>
                                     </div>
                                     <div class="form-floating mt-3">
-                                        <input v-model="confirm_new_password" type="text" :class="confirm_new_password_label != 'Confirm new password' ? 'is-invalid' : ''" class="form-control" id="confirm_new_password" placeholder="confirm new password">
+                                        <input v-model="confirm_new_password" type="text" :class="confirm_new_password_label != text.confirm_new_password[lang] ? 'is-invalid' : ''" class="form-control" id="confirm_new_password" placeholder="confirm new password">
                                         <label for="confirm_new_password">{{ confirm_new_password_label }}</label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
+                                    <button type="button" class="btn btn-primary">{{ text.save_changes[lang] }}</button>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ totalGame }}</h5>
-                                        <p class="card-text">Total games</p>
+                                        <p class="card-text">{{ text.total_games[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ winRate }}%</h5>
-                                        <p class="card-text">Win rate</p>
+                                        <p class="card-text">{{ text.win_rate[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ elo }}</h5>
-                                        <p class="card-text">Elo</p>
+                                        <p class="card-text">{{ text.elo[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ rank }}</h5>
-                                        <p class="card-text">Rank</p>
+                                        <p class="card-text">{{ text.rank[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ best_elo }}</h5>
-                                        <p class="card-text">Best elo</p>
+                                        <p class="card-text">{{ text.best_elo[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                                 <div class="card border-dark">
                                     <div class="card-body">
                                         <h5 class="card-title text-3xl">{{ best_rank }}</h5>
-                                        <p class="card-text">Best rank</p>
+                                        <p class="card-text">{{ text.best_rank[lang] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +110,7 @@
     
             <div class="card text-bg-dark border-secondary w-[90%] mt-6 mb-6">
                 <div class="card-header text-xl font-semibold">
-                    Match history
+                    {{ text.match_history[lang] }}
                 </div>
                 <ul class="list-group list-group-flush">
                     <MatchHistoryElt v-for="match in match_history" :username_player1="username" :username_player2="match.username_player2" :score_player1="match.score_player1" :score_player2="match.score_player2" :date="match.date" />
@@ -132,11 +132,33 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            text: {
+                change_password: ["Change password", "Changer le mot de passe"],
+                enable_2fa: ["Enable 2FA", "Activer l'A2F"],
+                disable_2fa: ["Disable 2FA", "Desactiver l'A2F"],
+                close: ["Close", "Fermer"],
+                current_password: ["Current password", "Mot de passe actuel"],
+                new_password: ["New password", "Nouveau mot de passe"],
+                confirm_new_password: ["Confirm new password", "Confirmation du nouveau mot de passe"],
+                save_changes: ["Save changes", "Sauvegarder les changements"],
+                total_games: ["Total games", "Nombre de parties"],
+                win_rate: ["Win rate", "Taux de victoire"],
+                elo: ["Elo", "Elo"],
+                rank: ["Rank", "Classement"],
+                best_elo: ["Best elo", "Meilleur elo"],
+                best_rank: ["Best rank", "Meilleur classement"],
+                match_history: ["Match history", "Historique des matchs"],
+                incorrect_username: ["Incorrect username", "Nom d'utilisateur incorrect"],
+                incorrect_password: ["Incorrect password", "Mot de passe incorrect"],
+                failed: ["Log in with 42 failed", "La connection avec 42 a echoue"],
+                no_account: ["Don't have an account?", "Vous n'avez pas encore de compte ?"],
+                already_account: ["Already have an account?", "Vous avez deja un compte ?"],
+            },
+
             twoFA: false,
             username: "Username",
             wins: 12,
             losses: 5,
-            // coins:10245,
             rank: 23,
             best_rank: 4,
             elo: 566,
@@ -188,6 +210,12 @@ export default {
         },
         totalGame: function() {
             return this.wins + this.losses
+        },
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
         }
     },
     methods: {
@@ -251,6 +279,10 @@ export default {
         },
     },
     mounted() {
+        this.current_password_label = this.text.current_password[this.lang]
+        this.new_password_label = this.text.new_password[this.lang]
+        this.confirm_new_password_label = this.text.confirm_new_password[this.lang]
+        
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}

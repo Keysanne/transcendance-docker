@@ -3,7 +3,7 @@
         <Navbar />
 
         <div class="d-flex flex-column align-items-center mt-36">
-            <h1 class="text-4xl text-light">Leaderboard</h1>
+            <h1 class="text-4xl text-light">{{ text.leaderboard[lang] }}</h1>
             <div class="flex flex-col mt-6 w-[90vw] max-w-[722px] rounded-lg border-1 border-gray-700/50">
                 <LeaderboardPlayer v-for="player in players" :rank="player.rank" :username="player.username" :pic="player.pic" :elo="player.elo" :is_last="player.is_last"/>
             </div>
@@ -23,7 +23,11 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            players: []
+            text: {
+                leaderboard: ["Leaderboard", "Classement"],
+            },
+
+            players: [],
         }
     },
     components: {
@@ -57,6 +61,14 @@ export default {
 	    .catch(error => {
 		    console.log(error)
 	    })
+    },
+    computed: {
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
+        }
     }
 }
 
