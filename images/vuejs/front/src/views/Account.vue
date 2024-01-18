@@ -14,7 +14,7 @@
                 <div class="d-flex flex-column ml-6">
                     <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">{{ text.change_password[lang] }}</button>
-                    <button type="button" v-if="twoFA == false" class="btn btn-sm btn-primary" @click="enable_2fa">{{ text.enable_2fa[lang] }}</button>
+                    <button type="button" v-if="twoFA == false" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#twoFA_mail_modal">{{ text.enable_2fa[lang] }}</button>
                     <button type="button" v-else class="btn btn-sm btn-primary" @click="disable_2fa">{{ text.disable_2fa[lang] }}</button>
     
                     <div class="modal fade" id="password_modal" tabindex="-1" aria-labelledby="password_modal_label" aria-hidden="true">
@@ -41,6 +41,42 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
                                     <button type="button" class="btn btn-primary">{{ text.save_changes[lang] }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="twoFA_mail_modal" tabindex="-1" aria-labelledby="twoFA_mail_modal_label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5 text-light" id="twoFA_mail_modal_label">{{ text.mail[lang] }}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" :aria-label="text.close[lang]"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input v-model="twoFA_mail" type="email" class="form-control" id="twoFA_mail">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
+                                    <button type="button" class="btn btn-primary" @click="sendMail">{{ text.send[lang] }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="hidden" data-bs-toggle="modal" data-bs-target="#twoFA_modal_code" id="open_modal"></button>
+                    <div class="modal fade" id="twoFA_modal_code"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="twoFA_modal_code_label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5 text-light" id="twoFA_modal_code_label">{{ text.enter_2fa[lang] }}</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <input v-model="twoFA_code" type="text" class="form-control" id="twoFA_code">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="hidden" data-bs-dismiss="modal" id="close_modal"></button>
+                                    <button type="button" class="btn btn-primary" @click="sendCode">{{ text.send[lang] }}</button>
                                 </div>
                             </div>
                         </div>
@@ -148,13 +184,13 @@ export default {
                 best_elo: ["Best elo", "Meilleur elo"],
                 best_rank: ["Best rank", "Meilleur classement"],
                 match_history: ["Match history", "Historique des matchs"],
-                incorrect_username: ["Incorrect username", "Nom d'utilisateur incorrect"],
-                incorrect_password: ["Incorrect password", "Mot de passe incorrect"],
-                failed: ["Log in with 42 failed", "La connection avec 42 a echoue"],
-                no_account: ["Don't have an account?", "Vous n'avez pas encore de compte ?"],
-                already_account: ["Already have an account?", "Vous avez deja un compte ?"],
+                mail: ["Enter your email address", "Entrez votre adresse email"],
+                send: ["Send", "Envoyer"],
+                enter_2fa: ["Enter the code", "Entrez le code"],
             },
 
+            twoFA_mail: "",
+            twoFA_code: "",
             twoFA: false,
             username: "Username",
             wins: 12,
@@ -219,11 +255,11 @@ export default {
         }
     },
     methods: {
-        changeImage: function() {
+        changeImage() {
             document.getElementById("image_upload").click()
         },
 
-        uploadImage: function() {
+        uploadImage() {
             let image = this.$refs.image_upload.files[0];
             let formData = new FormData();
             formData.append('image_upload', image);
@@ -251,38 +287,65 @@ export default {
                     console.log(response)
             });
         },
-        enable_2fa: function() {
+        enable_2fa() {
             const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=true"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
                 }
             }).then(response => {
-                console.log("enabled")
+                this.twoFA = true
             })
             .catch(error => {
                 console.log(error)
             })
         },
-        disable_2fa: function() {
+        disable_2fa() {
             const URL = "http://127.0.0.1:8000/user/1/update-2fa/?mode=false"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
                 }
             }).then(response => {
-                console.log("disabled")
+                this.twoFA = false
             })
             .catch(error => {
                 console.log(error)
             })
         },
+        sendMail() {
+            const URL = ""
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            }).then(response => {
+                document.getElementById("open_modal").click()
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },
+        sendCode() {
+            const URL = ""
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            }).then(response => {
+                this.enable_2fa()
+                document.getElementById("close_modal").click()
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
     },
     mounted() {
         this.current_password_label = this.text.current_password[this.lang]
         this.new_password_label = this.text.new_password[this.lang]
         this.confirm_new_password_label = this.text.confirm_new_password[this.lang]
-        
+
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
