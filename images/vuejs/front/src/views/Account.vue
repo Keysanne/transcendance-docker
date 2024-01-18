@@ -314,7 +314,7 @@ export default {
             })
         },
         sendMail() {
-            const URL = ""
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/verif_mail/?email=" + this.twoFA_mail
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -327,7 +327,7 @@ export default {
             })
         },
         sendCode() {
-            const URL = ""
+            const URL =  "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/verif_mail_key/?email=" + this.twoFA_mail + "&code=" + this.twoFA_code
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

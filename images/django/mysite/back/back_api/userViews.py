@@ -59,7 +59,7 @@ def	generate_and_sendmail(email):
 	email_password = "zvmr cdpq fcmi lzbk"
 	subject = "transcendance 2FA"
 	body = "here is your code for the 2FA: " + key
-	email_receiver = "wimileg342@konican.com"
+	email_receiver = email
 	em = EmailMessage()
 	em["From"] = email_sender
 	em["To"] = email_receiver
@@ -175,7 +175,7 @@ def UserList(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def	verif_mail_key(request, pk, email):
+def	verif_mail_key(request, pk):
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
 	for i in range (len(data)):
@@ -188,7 +188,7 @@ def	verif_mail_key(request, pk, email):
 	try:
 		query = User.objects.get(pk=pk)
 		if (query.key == data['code']):
-			query.email = email
+			query.email = data['email']
 			query.save()
 			return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
@@ -211,7 +211,7 @@ def	verif_mail(request, pk):
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 	try:
 		query = User.objects.get(pk=pk)
-		key = generate_and_sendmail(query.email)
+		key = generate_and_sendmail(data['email'])
 		query.key = key
 		query.save()
 		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})

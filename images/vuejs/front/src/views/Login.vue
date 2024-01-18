@@ -213,8 +213,8 @@ export default {
 	    	const TOKEN_ENDPOINT = "api/token/"
 		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
             axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+                this.pk = response.data.pk
                 if (response.data.twoFA == true){
-                    this.pk = response.data.pk
                     this.openModal()
                 }
                 else {
@@ -250,6 +250,7 @@ export default {
                     password: this.login_password
                 }).then(response_token => {
                     localStorage.setItem("access", response_token.data.access)
+                    localStorage.setItem("pk", this.pk)
                     this.$router.push({path: '/'})
                 })
             })

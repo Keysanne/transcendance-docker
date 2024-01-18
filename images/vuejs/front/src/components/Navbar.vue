@@ -50,6 +50,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("access");
+      localStorage.removeItem("pk");
       this.$router.push({path: "/login"})
     }
   },
