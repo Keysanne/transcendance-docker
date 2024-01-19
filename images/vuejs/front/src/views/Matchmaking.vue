@@ -1,12 +1,7 @@
 <template>
 	<div class="d-flex flex-column align-items-center justify-center min-h-screen">
 		<Navbar />
-		<div class="text-center flex items-center">
-			<h1 class="display-1">Matchmaking</h1>
-			<div class="spinner-border ml-5" style="width: 3rem; height: 3rem;" role="status">
-				<span class="visually-hidden">Matchmaking</span>
-			</div>	
-		</div>
+		<LaunchMatch :players="players"/>
 	</div>
 </template>
 
@@ -16,10 +11,28 @@
 
 <script>
 import Navbar from '../components/Navbar.vue';
+import LaunchMatch from '../components/LaunchMatch.vue';
 
 export default {
+	data() {
+		return {
+			players: [
+				{
+					username: "User1",
+					nickname: "Nick",
+					image: ""
+				},
+				{
+					username: "User2",
+					nickname: "Nick",
+					image: ""
+				}
+			]
+		}
+	},
 	components: {
 		Navbar,
+		LaunchMatch,
 	}
 }
 </script>
