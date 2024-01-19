@@ -272,7 +272,6 @@ export default {
             let image = this.$refs.image_upload.files[0];
             let formData = new FormData();
             formData.append('image_upload', image);
-            // formData.append('_method', 'PATCH');
 
             axios.post('http://127.0.0.1:8000/user/update/' + localStorage.getItem("pk") + "/",
                 formData,
@@ -290,7 +289,7 @@ export default {
                         }
                     })
                     .then(response => {
-                        this.image_url = response.data.pfp;
+                        location.reload()
                     })
                 }).catch(response => {
                     console.log(response)

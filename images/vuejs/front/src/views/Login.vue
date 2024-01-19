@@ -192,6 +192,7 @@ export default {
 		const TOKEN_ENDPOINT = "api/token/"
 		const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
                 axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
+                    this.pk = response.data.pk
                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
 			  username: this.signup_username,
 			  password: this.signup_password
