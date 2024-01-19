@@ -59,7 +59,11 @@ export default {
             this.players[this.players.length - 1]["is_last"] = true
 	    })
 	    .catch(error => {
-		    console.log(error)
+		    if (error.response.status == 401) {
+                localStorage.removeItem("access");
+                localStorage.removeItem("pk");
+                this.$router.push({path: "/login"})
+            }
 	    })
     },
     computed: {

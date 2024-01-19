@@ -342,6 +342,13 @@ export default {
             this.image_url = response.data.pfp;
             this.twoFA = response.data.twoFA
         })
+        .catch(error => {
+		    if (error.response.status == 401) {
+                localStorage.removeItem("access");
+                localStorage.removeItem("pk");
+                this.$router.push({path: "/login"})
+            }
+	    })
 
         URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/gamehistory/"
         axios.get(URL, {

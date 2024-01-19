@@ -21,6 +21,7 @@
 
 <script>
 import Navbar from '../components/Navbar.vue';
+import axios from 'axios';
 
 export default {
     data() {
@@ -42,6 +43,19 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
+        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+        axios.get(URL, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("access")
+            }
+        })
+        .catch(error => {
+		    if (error.response.status == 401) {
+                localStorage.removeItem("access");
+                localStorage.removeItem("pk");
+                this.$router.push({path: "/login"})
+            }
+	    })
     },
     computed: {
         lang: function() {
