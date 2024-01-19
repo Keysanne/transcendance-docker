@@ -2,18 +2,19 @@
     <div class="d-flex flex-column align-items-center">
         <Navbar />
 
-        <div class="d-flex flex-column align-items-center mt-36">
+        <div class="d-flex flex-column align-items-center mt-[8.5rem]">
             <div class="d-flex align-items-center w-[90%]">
                 <input type="file" class="hidden" id="image_upload" ref="image_upload" accept="image/png, image/jpeg" @change="uploadImage">
                 <div class="group w-2/5 max-w-[10rem] relative rounded-circle" @click="changeImage">
-                    <div class="border-2 border-primary rounded-circle w-full h-full bg-black absolute opacity-[0.01] group-hover:opacity-70 transition ease-in-out"></div>
+                    <div class="border-2 border-light rounded-circle w-full h-full bg-black absolute opacity-[0.01] group-hover:opacity-70 group-hover:cursor-pointer transition ease-in-out"></div>
                     <font-awesome-icon icon="fa-solid fa-pen-to-square" class="text-white opacity-[0.01] group-hover:opacity-70 w-[50%] h-[50%] top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] absolute transition ease-in-out"/>
-                    <img class="border-2 border-light rounded-circle w-full" src="../assets/avatars/todo.jpg" alt="profile_pic">
+                    <img v-if="image_url == null || image_url == ''" class="border-2 border-light rounded-circle w-full" src="../assets/default_profile.png" alt="profile_pic">
+                    <img v-else class="border-2 border-light rounded-circle w-full" :src="image_url" alt="profile_pic">
                 </div>
                 
                 <div class="d-flex flex-column ml-6">
                     <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
-                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#password_modal">{{ text.change_password[lang] }}</button>
+                    <button type="button" class="btn btn-sm btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#password_modal">{{ text.change_password[lang] }}</button>
                     <button type="button" v-if="twoFA == false" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#twoFA_mail_modal">{{ text.enable_2fa[lang] }}</button>
                     <button type="button" v-else class="btn btn-sm btn-primary" @click="disable_2fa">{{ text.disable_2fa[lang] }}</button>
     
@@ -148,7 +149,10 @@
                 <div class="card-header text-xl font-semibold">
                     {{ text.match_history[lang] }}
                 </div>
-                <ul class="list-group list-group-flush">
+                <div v-if="match_history.length == 0" class="card-body flex justify-center">
+                    {{ text.no_games[lang] }}
+                </div>
+                <ul v-else class="list-group list-group-flush">
                     <MatchHistoryElt v-for="match in match_history" :username_player1="username" :username_player2="match.username_player2" :score_player1="match.score_player1" :score_player2="match.score_player2" :date="match.date" />
                 </ul>
             </div>
@@ -187,18 +191,19 @@ export default {
                 mail: ["Enter your email address", "Entrez votre adresse email"],
                 send: ["Send", "Envoyer"],
                 enter_2fa: ["Enter the code", "Entrez le code"],
+                no_games: ["No games yet...", "Pas encore de parties ..."]
             },
 
             twoFA_mail: "",
             twoFA_code: "",
             twoFA: false,
-            username: "Username",
-            wins: 12,
-            losses: 5,
-            rank: 23,
-            best_rank: 4,
-            elo: 566,
-            best_elo: 1076,
+            username: "",
+            wins: 0,
+            losses: 0,
+            rank: 0,
+            best_rank: 0,
+            elo: 0,
+            best_elo: 0,
             current_password: "",
             new_password: "",
             confirm_new_password: "",
@@ -206,46 +211,50 @@ export default {
             new_password_label: "New password",
             confirm_new_password_label: "Confirm new password",
             image_url: "",
-            match_history: [
-                {
-                    score_player1: 5,
-                    score_player2: 3,
-                    username_player2: "player24",
-                    date: "12-04-2023",
-                },
-                {
-                    score_player1: 5,
-                    score_player2: 2,
-                    username_player2: "player23",
-                    date: "12-04-2023",
-                },
-                {
-                    score_player1: 2,
-                    score_player2: 5,
-                    username_player2: "player22",
-                    date: "11-04-2023",
-                },
-                {
-                    score_player1: 5,
-                    score_player2: 4,
-                    username_player2: "player21",
-                    date: "09-04-2023",
-                },
-                {
-                    score_player1: 1,
-                    score_player2: 5,
-                    username_player2: "player20",
-                    date: "09-04-2023",
-                },
-            ],          
+            match_history: [],
+            // match_history: [
+            //     {
+            //         score_player1: 5,
+            //         score_player2: 3,
+            //         username_player2: "player24",
+            //         date: "12-04-2023",
+            //     },
+            //     {
+            //         score_player1: 5,
+            //         score_player2: 2,
+            //         username_player2: "player23",
+            //         date: "12-04-2023",
+            //     },
+            //     {
+            //         score_player1: 2,
+            //         score_player2: 5,
+            //         username_player2: "player22",
+            //         date: "11-04-2023",
+            //     },
+            //     {
+            //         score_player1: 5,
+            //         score_player2: 4,
+            //         username_player2: "player21",
+            //         date: "09-04-2023",
+            //     },
+            //     {
+            //         score_player1: 1,
+            //         score_player2: 5,
+            //         username_player2: "player20",
+            //         date: "09-04-2023",
+            //     },
+            // ],          
         }
     },
     computed: {
-        winRate: function() {
-            return (this.wins / (this.losses + this.wins)).toFixed(3) * 100
-        },
         totalGame: function() {
             return this.wins + this.losses
+        },
+        winRate: function() {
+            if (this.totalGame == 0) {
+                return 0
+            }
+            return (this.wins / this.totalGame).toFixed(3) * 100
         },
         lang: function() {
             if (localStorage.getItem("lang") === null) {
@@ -349,7 +358,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+        var URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -365,6 +374,16 @@ export default {
             this.best_elo = response.data.best_elo;
             this.image_url = response.data.pfp;
             this.twoFA = response.data.twoFA
+        })
+
+        URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/gamehistory/"
+        axios.get(URL, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("access")
+            }
+        })
+        .then(response => {
+            this.match_history = response.data.history
         }) 
     },
     components: {
