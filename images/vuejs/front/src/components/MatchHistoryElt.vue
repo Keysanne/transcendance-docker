@@ -20,7 +20,7 @@ export default {
         username_player2: String,
         score_player1: Number,
         score_player2: Number,
-        date: Date,
+        date: String,
     }
 }
 </script>
