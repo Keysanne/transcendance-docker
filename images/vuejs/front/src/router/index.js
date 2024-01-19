@@ -26,6 +26,7 @@ const router = createRouter({
         {path: '/matchmaking', name: 'Matchmaking', component: Matchmaking},
         {path: '/play', name: 'Play', component: Play},
         {path: '/pong', name: 'Pong', component: Pong},
+        {path: '/friends', name: 'Friends', component: Friends},
         {path: '/pong4p', name: 'Pong4P', component: Pong4P},
         {path: '/difficulty', name: 'Difficulty', component: Difficulty},
         {path: '/:notFound*', component: NotFound},  
