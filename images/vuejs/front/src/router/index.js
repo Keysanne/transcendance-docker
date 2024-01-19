@@ -5,7 +5,6 @@ import Account from '../views/Account.vue'
 import Leaderboard from '../views/Leaderboard.vue'
 import Tournaments from '../views/Tournaments.vue'
 import TournamentView from '../views/TournamentView.vue'
-import Matchmaking from '../views/Matchmaking.vue'
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import Play from '../views/Play.vue'
@@ -23,7 +22,6 @@ const router = createRouter({
         {path: '/leaderboard', name: 'Leaderboard', component: Leaderboard},
         {path: '/tournaments', name: 'Tournaments', component: Tournaments},
         {path: '/tournament/:id', name: 'TournamentView', component: TournamentView},
-        {path: '/matchmaking', name: 'Matchmaking', component: Matchmaking},
         {path: '/play', name: 'Play', component: Play},
         {path: '/pong', name: 'Pong', component: Pong},
         {path: '/friends', name: 'Friends', component: Friends},
