@@ -8,7 +8,5 @@
 </script>
 
 <style>
-.test {
-  font-family: 'Press Start 2P', system-ui;
-}
+
 </style>

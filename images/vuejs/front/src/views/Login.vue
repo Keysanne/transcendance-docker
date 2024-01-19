@@ -40,10 +40,10 @@
                 <label for="login_password">{{ login_password_label }}</label>
             </div>
 
-            <div class="form-check w-[90%] max-w-xl mt-3">
+            <!-- <div class="form-check w-[90%] max-w-xl mt-3">
                 <input v-model="login_remember_me" type="checkbox" class="form-check-input" id="login_remember_me">
                 <label class="form-check-label text-light" for="login_remember_me">{{ text.remember[lang] }}</label>
-            </div>
+            </div> -->
             
             <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="login">{{ text.log_in[lang] }}</button>
             <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin&response_type=code" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">

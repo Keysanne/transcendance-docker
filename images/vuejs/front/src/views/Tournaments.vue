@@ -42,7 +42,14 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-if="my_tournaments == null || my_tournaments.length == 0" class="w-[90vw] xl:w-[722px]">
+                <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
+                    <div class="card-body">
+                        <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex justify-between flex-wrap w-[90%] xl:w-full">
                 <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" />
             </div>
 
@@ -51,7 +58,14 @@
             <div class="flex justify-start w-[90%] xl:w-full">
                 <h2 class="text-light">{{ text.join[lang] }}</h2>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-if="tournaments == null || tournaments.length == 0" class="w-[90vw] xl:w-[722px]">
+                <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
+                    <div class="card-body">
+                        <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex justify-between flex-wrap w-[90%] xl:w-full">
                 <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
             </div>
         </div>
@@ -84,146 +98,14 @@ export default {
                 close: ["Close", "Fermer"],
                 create: ["Create tournament", "Creer le tournois"],
                 join: ["Join a tournament", "Rejoindre un tournois"],
+                no_tournaments: ["No tournaments yet...", "Pas encore de tournois ..."]
             },
 
             new_tournament_name: "",
             new_tournament_description: "",
             new_tournament_size: "",
-            tournaments: [
-                {
-                    id: 5,
-                    name: "Name",
-                    description: "Simple tournament description",
-                    nb_players: 9,
-                    max_players: 16,
-                    registered: true,
-                },
-                {
-                    id: 6,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 7,
-                    name: "Another name",
-                    description: "Another simple tournament description sdlkjflksajd kalsdj fklasj dflkaj",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 8,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 8,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 9,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-            ],
-            my_tournaments: [
-                {
-                    id: 10,
-                    name: "My tournament",
-                    description: "My tournament description",
-                    max_players: 16,
-                    players: [
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                    ],
-                },
-                {
-                    id: 11,
-                    name: "My tournament 2",
-                    description: "My tournament 2 description",
-                    max_players: 16,
-                    players: [
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                    ],
-                },
-            ]
+            tournaments: [],
+            my_tournaments: []
         }
     },
     components:{
@@ -235,10 +117,47 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+        const URL = "http://127.0.0.1:8000/tournament/list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
+            }
+        })
+        .then(response => {
+            for (i in response.data.tournaments) {
+                tournament = {}
+                tournament["id"] = response.data.tournaments[i].pk
+                tournament["name"] = response.data.tournaments[i].name
+                tournament["description"] = response.data.tournaments[i].description
+                tournament["max_players"] = response.data.tournaments[i].capacity
+
+                var id_list = []
+                for (j in response.data.tournaments[i].contestants) {
+                    id_list.push(response.data.tournaments[i].contestants.user)
+                }
+
+                if (localStorage.getItem("pk") == response.data.tournaments[i].organizer) {
+                    var players = []
+                    for (j in response.data.tournaments[i].contestants) {
+                        var player = {}
+                        player["username"] = response.data.tournaments[i].contestants.username
+                        player["nickname"] = response.data.tournaments[i].contestants.nickname
+                        player["image"] = response.data.tournaments[i].contestants.pfp
+                        players.push(player)
+                    }
+                    tournament["players"] = players
+                    this.my_tournaments.push(tournament)
+                }
+                else if (id_list.includes(localStorage.getItem("pk"))) {
+                    tournament["registered"] = true
+                    tournament["nb_players"] = response.data.tournaments[i].contestants.length
+                    this.tournaments.push(tournament)
+                }
+                else {
+                    tournament["registered"] = false
+                    tournament["nb_players"] = response.data.tournaments[i].contestants.length
+                    this.tournaments.push(tournament)
+                }
             }
         })
         .catch(error => {
@@ -255,6 +174,16 @@ export default {
                 localStorage.setItem("lang", 0)
             }
             return localStorage.getItem("lang")
+        }
+    },
+    methods: {
+        createTournament() {
+            // const URL = "http://127.0.0.1:8000/tournament/list/"
+            // axios.get(URL, {
+            //     headers: {
+            //         'Authorization': 'Bearer ' + localStorage.getItem("access")
+            //     }
+            // })
         }
     }
 }
