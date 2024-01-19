@@ -211,39 +211,7 @@ export default {
             new_password_label: "New password",
             confirm_new_password_label: "Confirm new password",
             image_url: "",
-            match_history: [],
-            // match_history: [
-            //     {
-            //         score_player1: 5,
-            //         score_player2: 3,
-            //         username_player2: "player24",
-            //         date: "12-04-2023",
-            //     },
-            //     {
-            //         score_player1: 5,
-            //         score_player2: 2,
-            //         username_player2: "player23",
-            //         date: "12-04-2023",
-            //     },
-            //     {
-            //         score_player1: 2,
-            //         score_player2: 5,
-            //         username_player2: "player22",
-            //         date: "11-04-2023",
-            //     },
-            //     {
-            //         score_player1: 5,
-            //         score_player2: 4,
-            //         username_player2: "player21",
-            //         date: "09-04-2023",
-            //     },
-            //     {
-            //         score_player1: 1,
-            //         score_player2: 5,
-            //         username_player2: "player20",
-            //         date: "09-04-2023",
-            //     },
-            // ],          
+            match_history: [],          
         }
     },
     computed: {
@@ -382,7 +350,14 @@ export default {
             }
         })
         .then(response => {
-            this.match_history = response.data.history
+            for (elt in response.data.history) {
+                var match = {}
+                match["score_player1"] = response.data.history[elt].hostscore
+                match["score_player2"] = response.data.history[elt].guestscore
+                match["username_player2"] = response.data.history[elt].guest
+                match["date"] = responsed.data.history[elt].date
+                this.match_history.push(match)
+            }
         }) 
     },
     components: {
