@@ -5,7 +5,7 @@
         <div class="d-flex flex-column align-items-center mt-36 max-w-[722px]">
             <h1 class="text-4xl text-light">{{ text.tournaments[lang] }}</h1>
 
-            <div class="flex justify-between items-center w-[90%] xl:w-full mt-16">
+            <div class="flex justify-between items-center w-full mt-16">
                 <h3 class="text-light">{{ text.my_tournaments[lang] }}</h3>
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">{{ text.new[lang] }}</button>
 
@@ -36,36 +36,36 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
-                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''">{{ text.create[lang] }}</button>
+                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''" @click="createTournament">{{ text.create[lang] }}</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div v-if="my_tournaments == null || my_tournaments.length == 0" class="w-[90vw] xl:w-[722px]">
+            <div v-if="my_tournaments == null || my_tournaments.length == 0" class="w-[90vw] max-w-[722px]">
                 <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
                     <div class="card-body">
                         <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
                     </div>
                 </div>
             </div>
-            <div v-else class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-else class="flex justify-between flex-wrap w-full">
                 <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" />
             </div>
 
             <div class="w-[90%] xl:w-full bg-gray-700/50 h-[2px] mt-16 mb-16"></div>
  
-            <div class="flex justify-start w-[90%] xl:w-full">
+            <div class="flex justify-start w-full">
                 <h2 class="text-light">{{ text.join[lang] }}</h2>
             </div>
-            <div v-if="tournaments == null || tournaments.length == 0" class="w-[90vw] xl:w-[722px]">
+            <div v-if="tournaments == null || tournaments.length == 0" class="w-[90vw] max-w-[722px]">
                 <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
                     <div class="card-body">
                         <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
                     </div>
                 </div>
             </div>
-            <div v-else class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-else class="flex justify-between flex-wrap w-full">
                 <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
             </div>
         </div>
@@ -124,15 +124,15 @@ export default {
             }
         })
         .then(response => {
-            for (i in response.data.tournaments) {
-                tournament = {}
+            for (var i in response.data.tournaments) {
+                var tournament = {}
                 tournament["id"] = response.data.tournaments[i].pk
                 tournament["name"] = response.data.tournaments[i].name
                 tournament["description"] = response.data.tournaments[i].description
                 tournament["max_players"] = response.data.tournaments[i].capacity
 
                 var id_list = []
-                for (j in response.data.tournaments[i].contestants) {
+                for (var j in response.data.tournaments[i].contestants) {
                     id_list.push(response.data.tournaments[i].contestants.user)
                 }
 
@@ -178,12 +178,15 @@ export default {
     },
     methods: {
         createTournament() {
-            // const URL = "http://127.0.0.1:8000/tournament/list/"
-            // axios.get(URL, {
-            //     headers: {
-            //         'Authorization': 'Bearer ' + localStorage.getItem("access")
-            //     }
-            // })
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/createtournament/?name=" + this.new_tournament_name + "&description=" + this.new_tournament_description + "&capacity=" + this.new_tournament_size
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            })
+            .then(response => {
+                location.reload()
+            })
         }
     }
 }

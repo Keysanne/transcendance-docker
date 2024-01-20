@@ -24,7 +24,10 @@
                         {{ description }}
                     </div>
                     <h5 class="mt-3 text-light">{{ text.players[lang] }}</h5>
-                    <div class="flex flex-col">
+                    <div v-if="players == null || players.length == 0" class="text-light">
+                        {{ text.no_players[lang] }}
+                    </div>
+                    <div v-else class="flex flex-col">
                         <MyTournamentCardPlayer v-for="player in players" :username="player.username" :nickname="player.nickname" :image="player.image"/>
                     </div>
                 </div>
@@ -52,6 +55,7 @@ export default {
                 players: ["Players", "Joueurs"],
                 close: ["Close", "Fermer"],
                 start: ["Start tournament", "Commencer le tournois"],
+                no_players: ["No players yet...", "Pas encore de joueurs ..."]
             },
         }
     },

@@ -309,7 +309,7 @@ def UserDelete(request, pk):
 		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def createTournament(request, pk):
 
@@ -326,7 +326,7 @@ def createTournament(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	data['organizer'] = pk
 
@@ -334,6 +334,6 @@ def createTournament(request, pk):
 
 	if serializer.is_valid():
 		serializer.save()
-		return Response(status=status.HTTP_201_CREATED)
-	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+		return Response(status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
