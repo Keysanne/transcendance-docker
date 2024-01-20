@@ -5,6 +5,7 @@
 		<div class="d-flex flex-column mt-36 w-[90%] max-w-[722px]">
 			<h2 class="text-light">{{ name }}</h2>
 			<p class="mt-3 text-light">{{ description }}</p>
+			<LaunchMatch :players="players"/>
 
 			<TournamentTree class="mt-3" :size="max_players" :players="players" />
 		</div>
@@ -16,6 +17,7 @@
 </style>
 
 <script>
+import LaunchMatch from '../components/LaunchMatch.vue';
 import Navbar from '../components/Navbar.vue'
 import TournamentTree from '../components/TournamentTree.vue';
 import axios from 'axios';
@@ -145,9 +147,10 @@ export default {
 	    })
 	},
 	components: {
-		Navbar,
-		TournamentTree,
-	}
+    Navbar,
+    TournamentTree,
+    LaunchMatch
+}
 }
 </script>
 
