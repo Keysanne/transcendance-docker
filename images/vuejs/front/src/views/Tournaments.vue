@@ -133,16 +133,16 @@ export default {
 
                 var id_list = []
                 for (var j in response.data.tournaments[i].contestants) {
-                    id_list.push(response.data.tournaments[i].contestants.user)
+                    id_list.push(response.data.tournaments[i].contestants[j].user.toString())
                 }
 
                 if (localStorage.getItem("pk") == response.data.tournaments[i].organizer) {
                     var players = []
                     for (j in response.data.tournaments[i].contestants) {
                         var player = {}
-                        player["username"] = response.data.tournaments[i].contestants.username
-                        player["nickname"] = response.data.tournaments[i].contestants.nickname
-                        player["image"] = response.data.tournaments[i].contestants.pfp
+                        player["username"] = response.data.tournaments[i].contestants[j].username
+                        player["nickname"] = response.data.tournaments[i].contestants[j].nickname
+                        player["image"] = response.data.tournaments[i].contestants[j].pfp
                         players.push(player)
                     }
                     tournament["players"] = players

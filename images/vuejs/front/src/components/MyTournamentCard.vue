@@ -85,5 +85,8 @@ export default {
     components: {
         MyTournamentCardPlayer,
     },
+    mounted() {
+        console.log(this.players)
+    }
 }
 </script>

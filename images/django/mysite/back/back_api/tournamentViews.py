@@ -73,27 +73,27 @@ def tournamentStart(request, pk):
 		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def addContestant(request, tpk, upk):
 	try:
 		User.objects.get(pk=upk)
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
 	except:
-		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
 		if len(Contestant.objects.all().filter(tournament=tpk, user=upk)) != 0:
-			return Response({'problem': 'user already registered'}, status=status.HTTP_409_CONFLICT)
+			return Response({'problem': 'user already registered'}, status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		pass
 
 	contestants = Contestant.objects.all().filter(tournament=tpk)
 	if len(contestants) == tournament.capacity:
-		return Response({'problem': 'tournament if full'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament if full'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
@@ -130,8 +130,8 @@ def addContestant(request, tpk, upk):
 	serializer = ContestantSerializer(data=data)
 	if serializer.is_valid():
 		serializer.save()
-		return Response(status=status.HTTP_201_CREATED)
-	return Response({'problem': serializers.errors}, status=status.HTTP_400_BAD_REQUEST)
+		return Response(status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+	return Response({'problem': serializers.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['DELETE'])
@@ -140,20 +140,20 @@ def removeContestant(request, tpk, upk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
 		if tournament.status != 0:
-			return Response({'problem': 'tournament cannot be quit'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'tournament cannot be quit'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
 		User.objects.get(pk=upk)
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
-		Contestant.objects.all().filter(tournament=tpk, user=upk).delete()
-		return Reponse(status=status.HTTP_200_OK)
+		query = Contestant.objects.all().filter(tournament=tpk, user=upk).delete()
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'user is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED)
+		return Response({'problem': 'user is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['PATCH'])
