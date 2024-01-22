@@ -144,7 +144,7 @@ def removeContestant(request, tpk, upk):
 
 	try:
 		Contestant.objects.all().filter(tournament=tpk, user=upk).delete()
-		return Reponse(status=status.HTTP_200_OK)
+		return Response(status=status.HTTP_200_OK)
 	except:
 		return Response({'problem': 'user is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED)
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="font-poppins w-[100vw] min-h-screen bg-light">
+  <div class="font-poppins min-h-screen bg-dark" data-bs-theme="dark">
     <router-view></router-view>
   </div>
 </template>
@@ -7,6 +7,8 @@
 <script setup>
 </script>
 
-<style scoped>
-
+<style>
+.test {
+  font-family: 'Press Start 2P', system-ui;
+}
 </style>

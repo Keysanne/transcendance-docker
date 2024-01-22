@@ -1,10 +1,10 @@
 <template>
-	<div class="d-flex flex-column align-items-center bg-gray-100">
+	<div class="d-flex flex-column align-items-center">
 		<Navbar />
 
-		<div class="d-flex flex-column mt-20 w-[90%] max-w-[722px]">
-			<h2 class="text-primary">{{ name }}</h2>
-			<p class="mt-3">{{ description }}</p>
+		<div class="d-flex flex-column mt-36 w-[90%] max-w-[722px]">
+			<h2 class="text-light">{{ name }}</h2>
+			<p class="mt-3 text-light">{{ description }}</p>
 
 			<TournamentTree class="mt-3" :size="max_players" :players="players" />
 		</div>

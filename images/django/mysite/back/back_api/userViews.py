@@ -6,10 +6,35 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password, make_password
+from datetime import datetime
 from PIL import Image
-
 import django
+import sys
+import os
+import json
+import requests
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+REMOTE_PASSWORD = os.getenv('REMOTE_PASSWORD')
+ACCESS_TOKEN = response = requests.post(
+		"https://api.intra.42.fr/oauth/token",
+        data={"grant_type": "client_credentials"},
+        auth=(CLIENT_ID, CLIENT_SECRET),
+    ).json()["access_token"]
+
+
+# def get_access_token():
+#     response = requests.post(
+#         "https://api.intra.42.fr/oauth/token",
+#         data={"grant_type": "client_credentials"},
+#         auth=(CLIENT_ID, CLIENT_SECRET),
+#     )
+#     return response.json()["access_token"]
 
 @api_view(['POST'])
 def UserCreate(request):
@@ -25,6 +50,10 @@ def UserCreate(request):
 	data['password'] = make_password(data['password'])
 	serializer = UserSerializer(data=data)
 
+	params = {'access_token': ACCESS_TOKEN}
+	response = requests.get(f'https://api.intra.42.fr/v2/users?filter[login]={data["username"]}', params=params)
+	if len(response.json()) != 0:
+		return Response({'problem': 'username is 42 login'}, status=status.HTTP_409_CONFLICT)
 
 	try:
 		queryset = User.objects.get(username=data['username'])
@@ -32,7 +61,43 @@ def UserCreate(request):
 	except:
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk':serializer.data['id']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
+
+@api_view(['GET', 'POST'])
+def RemoteLogin(request):
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	params = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET, 'code': data['code'], 'redirect_uri': 'http://127.0.0.1:8080/login'}
+	response = requests.post('https://api.intra.42.fr/oauth/token', params=params)
+	load = json.loads(response.text)
+
+	response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {load["access_token"]}'})
+
+	login = json.loads(response.text)['login']
+	try:
+		query = User.objects.get(username=login)
+		return Response(status=status.HTTP_200_OK)
+	except:
+		data = {}
+		data['username'] = login
+		data['remote_bool'] = True
+		data['remote_token'] = load["access_token"]
+		data['password'] = REMOTE_PASSWORD
+
+		serializer = UserSerializer(data=data)
+		if (serializer.is_valid()):
+			serializer.save()
+			return Response({'pk':serializer.data['id']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
@@ -52,6 +117,8 @@ def UserConnect(request):
 		queryset = User.objects.get(username=data['username'])
 	except:
 		return Response({'problem': "username"}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+	if queryset.remote_bool == True:
+		return Response({'problem': 'user connected through 42'}, status=status.HTTP_400_BAD_REQUEST)
 	if (check_password(data['password'], queryset.password) == True):
 		return Response({'pk': queryset.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -157,9 +224,9 @@ def CreateTournament(request, pk):
 
 
 @api_view(['POST'])
-def StartGame(request, pk):
+def EndGame(request, pk):
 	try:
-		User.objects.get(pk=pk)
+		query = User.objects.get(pk=pk)
 	except:
 		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -173,46 +240,27 @@ def StartGame(request, pk):
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-	print(f'~~~~~~~{data}~~~~~~~~~')
 
+	data['date'] = str(datetime.now())[:10]
+	data['host'] = pk
+	data['hostscore'] = int(data['hostscore'])
+	data['guestscore'] = int(data['guestscore'])
+	if data['guestscore'] > data['hostscore']:
+		query.losses = query.losses + 1
+		query.elo = query.elo - 20
+		query.save()
+	elif data['hostscore'] > data['guestscore']:
+		query.losses = query.wins + 1
+		query.elo = query.elo + 20
+		if query.elo > query.best_elo:
+			query.best_elo = query.elo
+		query.save()
 	serializer = GameSerializer(data=data)
 
 	if serializer.is_valid():
 		serializer.save()
-		return Response({'game_id': serializer.data['pk']})
+		return Response(status=status.HTTP_201_CREATED)
 	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['PATCH'])
-def EndGame(request, gpk):
-	try:
-		queryset = Game.objects.get(pk=gpk)
-		if (queryset.guestscore != 0 or queryset.hostscore != 0):
-			return Response({'problem': 'game has already been played'}, status=status.HTTP_412_PRECONDITION_FAILED)
-	except:
-		return Response({'problem': 'game does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
-
-	queryset.hostscore = int(data['hostscore'])
-	queryset.guestscore = int(data['guestscore'])
-	queryset.save()
-
-	query = User.objects.get(pk=queryset.host)
-	if (queryset.guestscore > queryset.hostscore):
-		query.losses = query.losses + 1
-	elif (queryset.guestscore < queryset.hostscore):
-		query.wins = query.wins + 1
-
-	return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -230,7 +278,9 @@ def GameHistory(request, pk):
 		dico['host'] = query.username
 		matchList.append(GameSerializer(g).data)
 
-	matchList = sorted(matchList, key=lambda x: x['pk'], reverse=True)
+	print(matchList, file=sys.stderr)
+
+	matchList = sorted(matchList, key=lambda x: x['id'], reverse=True)
 	return Response({'history': matchList[:5]}, status=status.HTTP_200_OK)
 
 

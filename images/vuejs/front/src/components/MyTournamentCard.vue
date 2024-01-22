@@ -1,5 +1,5 @@
 <template>
-    <div class="card w-full sm:w-[47.5%] my-3">
+    <div class="card bg-dark border-secondary border-opacity-50 text-light w-full sm:w-[47.5%] my-3">
         <div class="card-body flex flex-col justify-between">
             <div>
                 <h5 class="card-title">{{ name }}</h5>
@@ -7,7 +7,7 @@
             </div>
             <div class="flex justify-between items-center mt-3">
                 <div>{{ nb_players }} / {{ max_players }}</div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id">See details</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id">See details</button>
             </div>
         </div>
     </div>
@@ -16,14 +16,14 @@
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{ name }}</h1>
+                    <h1 class="modal-title fs-5 text-light" id="exampleModalLabel">{{ name }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div>
+                    <div class="text-light">
                         {{ description }}
                     </div>
-                    <h5 class="mt-3">Players</h5>
+                    <h5 class="mt-3 text-light">Players</h5>
                     <div class="flex flex-col">
                         <MyTournamentCardPlayer v-for="player in players" :username="player.username" :nickname="player.nickname" :image="player.image"/>
                     </div>

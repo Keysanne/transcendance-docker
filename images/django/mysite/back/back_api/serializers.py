@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 		return request.build_absulute_uri(photo_url)
 
 
-class MatchSerializer(serializers.ModelSerializer):
+class GameSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Game

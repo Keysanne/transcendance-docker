@@ -2,18 +2,18 @@
     <div class="d-flex flex-column align-items-center">
         <Navbar />
 
-        <div class="d-flex flex-column align-items-center mt-20 max-w-[722px]">
-            <h1 class="text-4xl text-primary">Tournaments</h1>
+        <div class="d-flex flex-column align-items-center mt-36 max-w-[722px]">
+            <h1 class="text-4xl text-light">Tournaments</h1>
 
-            <div class="flex justify-between items-center w-[90%] mt-16">
-                <h2 class="text-primary">My tournaments</h2>
+            <div class="flex justify-between items-center w-[90%] xl:w-full mt-16">
+                <h3 class="text-light">My Tournaments</h3>
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">New</button>
 
                 <div class="modal fade" id="new_tournament_modal" tabindex="-1" aria-labelledby="new_tournament_modal_label" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="new_tournament_modal_label">New tournament</h1>
+                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">New tournament</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -42,14 +42,16 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%]">
+            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
                 <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" />
             </div>
 
-            <div class="flex justify-start w-[90%] mt-10">
-                <h2 class="text-primary">Join a tournament</h2>
+            <div class="w-[90%] xl:w-full bg-gray-700/50 h-[2px] mt-16 mb-16"></div>
+ 
+            <div class="flex justify-start w-[90%] xl:w-full">
+                <h2 class="text-light">Join a tournament</h2>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%]">
+            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
                 <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
             </div>
         </div>
@@ -57,7 +59,9 @@
 </template>
 
 <style>
-
+label {
+    color:#6c757d
+}
 </style>
 
 <script>
