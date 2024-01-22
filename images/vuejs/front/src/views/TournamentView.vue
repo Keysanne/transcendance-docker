@@ -5,7 +5,7 @@
 		<div class="d-flex flex-column mt-36 w-[90%] max-w-[722px]">
 			<h2 class="text-light">{{ name }}</h2>
 			<p class="mt-3 text-light">{{ description }}</p>
-			<LaunchMatch :players="players"/>
+			<LaunchMatch :players="next_p"/>
 
 			<TournamentTree class="mt-3" :size="max_players" :players="players" />
 		</div>
@@ -32,7 +32,7 @@ export default {
 					username: "player1",
 					nickname: "Player1nick",
 					image: "",
-					stage: 2,
+					stage: 1,
 				},
 				{
 					username: "player2",
@@ -44,13 +44,13 @@ export default {
 					username: "player3",
 					nickname: "Player3nick",
 					image: "",
-					stage: 0,
+					stage: 4,
 				},
 				{
 					username: "player4",
 					nickname: "Player4nick",
 					image: "",
-					stage: 1,
+					stage: 0,
 				},
 				{
 					username: "player5",
@@ -62,13 +62,13 @@ export default {
 					username: "player6",
 					nickname: "Player6nick",
 					image: "",
-					stage: 0,
+					stage: 2,
 				},
 				{
 					username: "player7",
 					nickname: "Player7nick",
 					image: "",
-					stage: 0,
+					stage: 1,
 				},
 				{
 					username: "player8",
@@ -86,19 +86,19 @@ export default {
 					username: "player10",
 					nickname: "Player10nick",
 					image: "",
-					stage: 0,
+					stage: 1,
 				},
 				{
 					username: "player11",
 					nickname: "Player11nick",
 					image: "",
-					stage: 4,
+					stage: 0,
 				},
 				{
 					username: "player12",
 					nickname: "Player12nick",
 					image: "",
-					stage: 0,
+					stage: 2,
 				},
 				{
 					username: "player13",
@@ -110,7 +110,7 @@ export default {
 					username: "player14",
 					nickname: "Player14nick",
 					image: "",
-					stage: 0,
+					stage: 1,
 				},
 				{
 					username: "player15",
@@ -122,10 +122,103 @@ export default {
 					username: "player16",
 					nickname: "Player16nick",
 					image: "",
-					stage: 0,
+					stage: 3,
 				},
 			],
 			max_players: 16,
+			num: 0,
+			next_p: [
+				{
+					username: "player16",
+					nickname: "Player16nick",
+					image: "",
+					stage: 0,
+				},
+				{
+					username: "player16",
+					nickname: "Player16nick",
+					image: "",
+					stage: 0,
+				},
+			]
+		}
+	},
+	methods: {
+		check_next() {
+			if (this.round_1() == 1) {
+				return ;
+			}
+			if (this.round_2() == 1) {
+				return ;
+			}
+			if (this.max_players >= 8)
+			{
+				if (this.round_3() == 1) {
+					return ;
+				}
+			}
+			if (this.max_players >= 16)
+			{
+				if (this.round_4() == 1) {
+					return ;
+				}
+			}
+		},
+		round_1() {
+			for (let i = 0; i < this.max_players; i += 2) {
+				if (this.players[i].stage == this.players[i + 1].stage)
+				{
+					this.next_p[0] = this.players[i];
+					this.next_p[1] = this.players[i + 1];
+					return 1;
+				}
+			}
+			return 0;
+		},
+		round_2() {
+			let n = 0;
+			for (let i = 0; i < this.max_players; i += 4) {
+				for (let y = i; y < i + 4; y++) {
+					if (this.players[y].stage == 1) {
+						this.next_p[n] = this.players[y];
+						n++;
+					}
+					if (n >= 2) {
+						return 1;
+					}
+				}
+				n = 0;
+			}
+			return 0;
+		},
+		round_3(){
+			let n = 0;
+			for (let i = 0; i < this.max_players; i += 8) {
+				for (let y = i; y < i + 8; y++) {
+					if (this.players[y].stage == 2) {
+						this.next_p[n] = this.players[y];
+						n++;
+					}
+					if (n >= 2) {
+						return 1;
+					}
+				}
+				n = 0;
+			}
+			return 0;
+		},
+		round_4(){
+			let n = 0;
+			for (let i = 0; i < this.max_players; i++) {
+				if(this.players[i].stage == 3) {
+					this.next_p[n] = this.players[i];
+					n++;
+				}
+				if (n >= 2) {
+					return 1;
+				}
+			}
+			return 0;
 		}
 	},
 	mounted() {
@@ -145,6 +238,7 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+		this.check_next ();
 	},
 	components: {
     Navbar,
