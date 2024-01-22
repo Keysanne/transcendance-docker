@@ -244,7 +244,7 @@ def UserDetail(request, pk):
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH', 'POST'])
+@api_view(['PATCH', 'POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def UserUpdate(request, pk):
 	if ("?" in str(request)):
