@@ -5,8 +5,11 @@ from .serializers import UserSerializer, FriendSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 def createRequest(request, pk, username):
 	try:
 		player1 = User.objects.get(pk=pk)
@@ -32,6 +35,7 @@ def createRequest(request, pk, username):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def acceptRequest(request, pk, username):
 	try:
 		player1 = User.objects.get(pk=pk)
@@ -50,6 +54,7 @@ def acceptRequest(request, pk, username):
 
 
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
 def denyRequest(request, pk, username):
 	try:
 		player1 = User.objects.get(pk=pk)
@@ -66,6 +71,7 @@ def denyRequest(request, pk, username):
 
 
 @api_view(['PATCH'])
+@permission_classes((IsAuthenticated, ))
 def blockRequest(request, pk, username):
 	try:
 		player1 = User.objects.get(pk=pk)
@@ -84,6 +90,7 @@ def blockRequest(request, pk, username):
 
 
 @api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
 def unfriend(request, pk, username):
 	try:
 		player1 = User.objects.get(pk=pk)
@@ -105,6 +112,7 @@ def unfriend(request, pk, username):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def viewRequest(request, pk):
 	listofpending = []
 
@@ -120,7 +128,7 @@ def viewRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player1"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listofpending.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
+			listofpending.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
 	except:
 		pass
 
@@ -128,6 +136,7 @@ def viewRequest(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def listRequest(request, pk):
 	listoffriends = []
 
@@ -143,7 +152,7 @@ def listRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player1"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
+			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
 	except:
 		pass
 
@@ -154,7 +163,7 @@ def listRequest(request, pk):
 			friend = FriendSerializer(user, many=False)
 			req = User.objects.get(pk=friend.data["player2"])
 			serial = UserSerializer(req, context={'request': request}, many=False)
-			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"]})
+			listoffriends.append({'username':serial.data["username"], 'pfp':serial.data["pfp"], 'elo':serial.data["elo"]})
 	except:
 		pass
 

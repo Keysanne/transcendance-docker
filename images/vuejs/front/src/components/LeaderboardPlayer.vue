@@ -6,7 +6,8 @@
             </div>
         </div>
         <div class="flex h-full w-full items-center">
-            <img class="w-12 h-12 rounded-full" src="../assets/avatars/todo.jpg" alt="profile_pic">
+            <img v-if="pic == null || pic == ''" class="w-12 h-12 rounded-full" src="../assets/default_profile.png" alt="profile_pic">
+            <img v-else class="w-12 h-12 rounded-full" :src="pic" alt="profile_pic">
             <div class="text-lg text-light ml-3">{{ username }}</div>
             <div class="flex-grow"></div>
             <div class="text-lg text-light mr-5">{{ elo }}</div>
@@ -20,11 +21,6 @@
 
 <script>
 export default {
-    data() {
-        return {
-
-        }
-    },
     props: {
         rank: Number,
         username: String,

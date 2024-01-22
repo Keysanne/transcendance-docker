@@ -3,27 +3,27 @@
         <Navbar />
 
         <div class="d-flex flex-column align-items-center mt-36 max-w-[722px]">
-            <h1 class="text-4xl text-light">Tournaments</h1>
+            <h1 class="text-4xl text-light">{{ text.tournaments[lang] }}</h1>
 
-            <div class="flex justify-between items-center w-[90%] xl:w-full mt-16">
-                <h3 class="text-light">My Tournaments</h3>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">New</button>
+            <div class="flex justify-between items-center w-full mt-16">
+                <h3 class="text-light">{{ text.my_tournaments[lang] }}</h3>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new_tournament_modal">{{ text.new[lang] }}</button>
 
                 <div class="modal fade" id="new_tournament_modal" tabindex="-1" aria-labelledby="new_tournament_modal_label" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">New tournament</h1>
+                                <h1 class="modal-title fs-5 text-light" id="new_tournament_modal_label">{{ text.new_tournament[lang] }}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-floating">
                                     <input v-model="new_tournament_name" type="text" class="form-control" id="new_tournament_name" placeholder="name">
-                                    <label for="new_tournament_name">Name</label>
+                                    <label for="new_tournament_name">{{ text.name[lang] }}</label>
                                 </div>
                                 <div class="form-floating mt-3">
                                     <textarea v-model="new_tournament_description" class="form-control" style="height: 128px;" id="new_tournament_description" placeholder="description"></textarea>
-                                    <label for="new_tournament_description">Description</label>
+                                    <label for="new_tournament_description">{{ text.description[lang] }}</label>
                                 </div>
                                 <div class="form-floating">
                                     <select v-model="new_tournament_size" class="form-select mt-3" id="new_tournament_size">
@@ -31,27 +31,41 @@
                                         <option>8</option>
                                         <option>16</option>
                                     </select>
-                                    <label for="new_tournament_size">Select a size</label>
+                                    <label for="new_tournament_size">{{ text.size[lang] }}</label>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''">Create tournament</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
+                                <button type="button" class="btn btn-primary" :disabled="new_tournament_name == '' || new_tournament_description == '' || new_tournament_size == ''" @click="createTournament">{{ text.create[lang] }}</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-if="my_tournaments == null || my_tournaments.length == 0" class="w-[90vw] max-w-[722px]">
+                <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
+                    <div class="card-body">
+                        <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex justify-between flex-wrap w-full">
                 <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" />
             </div>
 
             <div class="w-[90%] xl:w-full bg-gray-700/50 h-[2px] mt-16 mb-16"></div>
  
-            <div class="flex justify-start w-[90%] xl:w-full">
-                <h2 class="text-light">Join a tournament</h2>
+            <div class="flex justify-start w-full">
+                <h2 class="text-light">{{ text.join[lang] }}</h2>
             </div>
-            <div class="flex justify-between flex-wrap w-[90%] xl:w-full">
+            <div v-if="tournaments == null || tournaments.length == 0" class="w-[90vw] max-w-[722px]">
+                <div class="card bg-dark border-secondary border-opacity-50 text-light w-full my-3">
+                    <div class="card-body">
+                        <div class="card-text text-center">{{ text.no_tournaments[lang] }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex justify-between flex-wrap w-full">
                 <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
             </div>
         </div>
@@ -68,154 +82,112 @@ label {
 import Navbar from '../components/Navbar.vue';
 import TournamentCard from '../components/TournamentCard.vue';
 import MyTournamentCard from '../components/MyTournamentCard.vue';
+import axios from 'axios';
 
 export default {
     data() {
         return {
+            text: {
+                tournaments: ["Tournaments", "Tournois"],
+                my_tournaments: ["My Tournaments", "Mes tournois"],
+                new: ["New", "Nouveau"],
+                new_tournament: ["New tournament", "Nouveau tournois"],
+                name: ["Name", "Nom"],
+                description: ["Description", "Description"],
+                size: ["Select a size", "Choisis une taille"],
+                close: ["Close", "Fermer"],
+                create: ["Create tournament", "Creer le tournois"],
+                join: ["Join a tournament", "Rejoindre un tournois"],
+                no_tournaments: ["No tournaments yet...", "Pas encore de tournois ..."]
+            },
+
             new_tournament_name: "",
             new_tournament_description: "",
             new_tournament_size: "",
-            tournaments: [
-                {
-                    id: 5,
-                    name: "Name",
-                    description: "Simple tournament description",
-                    nb_players: 9,
-                    max_players: 16,
-                    registered: true,
-                },
-                {
-                    id: 6,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 7,
-                    name: "Another name",
-                    description: "Another simple tournament description sdlkjflksajd kalsdj fklasj dflkaj",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 8,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 8,
-                    max_players: 8,
-                    registered: false,
-                },
-                {
-                    id: 9,
-                    name: "Another name",
-                    description: "Another simple tournament description",
-                    nb_players: 3,
-                    max_players: 8,
-                    registered: false,
-                },
-            ],
-            my_tournaments: [
-                {
-                    id: 10,
-                    name: "My tournament",
-                    description: "My tournament description",
-                    max_players: 16,
-                    players: [
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                    ],
-                },
-                {
-                    id: 11,
-                    name: "My tournament 2",
-                    description: "My tournament 2 description",
-                    max_players: 16,
-                    players: [
-                        {
-                            username: "player1",
-                            nickname: "Player1 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player2",
-                            nickname: "Player2 nick",
-                            image: "",
-                        },
-                        {
-                            username: "player3",
-                            nickname: "Player3 nick",
-                            image: "",
-                        },
-                    ],
-                },
-            ]
+            tournaments: [],
+            my_tournaments: []
         }
     },
     components:{
         Navbar,
         TournamentCard,
         MyTournamentCard,
+    },
+    mounted() {
+        if (localStorage.getItem("access") === null) {
+    		this.$router.push({path: '/login'})
+    	}
+        const URL = "http://127.0.0.1:8000/tournament/list/"
+        axios.get(URL, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("access")
+            }
+        })
+        .then(response => {
+            for (var i in response.data.tournaments) {
+                var tournament = {}
+                tournament["id"] = response.data.tournaments[i].pk
+                tournament["name"] = response.data.tournaments[i].name
+                tournament["description"] = response.data.tournaments[i].description
+                tournament["max_players"] = response.data.tournaments[i].capacity
+
+                var id_list = []
+                for (var j in response.data.tournaments[i].contestants) {
+                    id_list.push(response.data.tournaments[i].contestants[j].user.toString())
+                }
+
+                if (localStorage.getItem("pk") == response.data.tournaments[i].organizer) {
+                    var players = []
+                    for (j in response.data.tournaments[i].contestants) {
+                        var player = {}
+                        player["username"] = response.data.tournaments[i].contestants[j].username
+                        player["nickname"] = response.data.tournaments[i].contestants[j].nickname
+                        player["image"] = response.data.tournaments[i].contestants[j].pfp
+                        players.push(player)
+                    }
+                    tournament["players"] = players
+                    this.my_tournaments.push(tournament)
+                }
+                else if (id_list.includes(localStorage.getItem("pk"))) {
+                    tournament["registered"] = true
+                    tournament["nb_players"] = response.data.tournaments[i].contestants.length
+                    this.tournaments.push(tournament)
+                }
+                else {
+                    tournament["registered"] = false
+                    tournament["nb_players"] = response.data.tournaments[i].contestants.length
+                    this.tournaments.push(tournament)
+                }
+            }
+        })
+        .catch(error => {
+		    if (error.response.status == 401) {
+                localStorage.removeItem("access");
+                localStorage.removeItem("pk");
+                this.$router.push({path: "/login"})
+            }
+	    })
+    },
+    computed: {
+        lang: function() {
+            if (localStorage.getItem("lang") === null) {
+                localStorage.setItem("lang", 0)
+            }
+            return localStorage.getItem("lang")
+        }
+    },
+    methods: {
+        createTournament() {
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/createtournament/?name=" + this.new_tournament_name + "&description=" + this.new_tournament_description + "&capacity=" + this.new_tournament_size
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            })
+            .then(response => {
+                location.reload()
+            })
+        }
     }
 }
 </script>
