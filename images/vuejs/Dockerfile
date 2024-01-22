@@ -52,7 +52,6 @@ RUN ./build.sh
 RUN ./configure
 RUN make -j16
 RUN make install
-#COPY ./modSecurity/usr/local/modsecurity /usr/local/modsecurity
 
 WORKDIR /opt
 RUN git clone --depth 1 https://github.com/SpiderLabs/ModSecurity-nginx.git
@@ -67,14 +66,10 @@ RUN cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules
 WORKDIR /
 RUN rm -rf /etc/nginx/nginx.conf
 COPY ./modSecurity/etc/nginx/nginx.conf /etc/nginx/nginx.conf
-#COPY ./modSecurity/usr/local/modsecurity-crs /usr/local/modsecurity-crs
 RUN git clone https://github.com/coreruleset/coreruleset /usr/local/modsecurity-crs
 RUN mv /usr/local/modsecurity-crs/crs-setup.conf.example /usr/local/modsecurity-crs/crs-setup.conf
 RUN mv /usr/local/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example /usr/local/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
 COPY ./modSecurity/etc/nginx/modsec /etc/nginx/modsec
-#RUN mv /etc/nginx/modsec/main.conf-ex /etc/nginx/modsec/main.conf
-#RUN mv /etc/nginx/modsec/modsecurity.conf-ex /etc/nginx/modsec/modsecurity.conf
-#RUN echo "Include /usr/local/modsecurity-crs/crs-setup.conf" >> main.conf
 RUN rm -rf /etc/nginx/sites-available/default
 COPY ./modSecurity/etc/nginx/sites-available/default /etc/nginx/sites-available/default
 RUN cp /opt/nginx-1.22.1/objs/*.so /etc/nginx/modules/
