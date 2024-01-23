@@ -67,7 +67,8 @@ def UserCreate(request):
 			password = password_unhashed
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				return Response({'pk':serializer.data['id']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+				print(serializer.data, file=sys.stderr)
+				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -125,7 +126,7 @@ def RemoteLogin(request):
 		serializer = UserSerializer(data=data)
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['id']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
@@ -229,7 +230,7 @@ def UserList(request):
 
 	leaderboard = sorted(serializer.data, key=lambda x: x['elo'], reverse=True)
 
-	return Response([{'pk': u['id'], 'username':u['username'], 'pfp':u['pfp'], 'elo':u['elo']} for i, u in enumerate(leaderboard)], headers={'Access-Control-Allow-Origin':'*'})
+	return Response([{'pk': u['pk'], 'username':u['username'], 'pfp':u['pfp'], 'elo':u['elo']} for i, u in enumerate(leaderboard)], headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -298,7 +299,7 @@ def UserDetail(request, pk):
 			queryset.best_rank = rank
 			queryset.save()
 
-		return Response({'pk': queryset.id, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
@@ -452,7 +453,7 @@ def GameHistory(request, pk):
 		dico['host'] = query.username
 		matchList.append(GameSerializer(g).data)
 
-	matchList = sorted(matchList, key=lambda x: x['id'], reverse=True)
+	matchList = sorted(matchList, key=lambda x: x['pk'], reverse=True)
 	return Response({'history': matchList[:5]}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
 
