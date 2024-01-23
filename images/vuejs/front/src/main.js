@@ -6,9 +6,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faPenToSquare, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faArrowRightFromBracket, faCheck, faXmark, faBan } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPenToSquare, faArrowRightFromBracket)
+library.add(faPenToSquare, faArrowRightFromBracket, faCheck, faXmark, faBan)
 
 createApp(App)
 .component('font-awesome-icon', FontAwesomeIcon)
