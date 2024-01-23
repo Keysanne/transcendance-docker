@@ -359,6 +359,18 @@ def UserUpdate(request, pk):
 		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def StatusUpdate(request, pk, status):
+	try:
+		query = User.objects.get(pk=pk)
+		query.status = status
+		query.save()
+		return Response(status=status.HTTP_200_OK)
+	except:
+		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def UserDelete(request, pk):
