@@ -5,7 +5,7 @@
 		<div class="d-flex flex-column mt-36 w-[90%] max-w-[722px]">
 			<h2 class="text-light">{{ name }}</h2>
 			<p class="mt-3 text-light">{{ description }}</p>
-			<LaunchMatch :players="next_p"/>
+			<LaunchMatch v-if="check_end() == 0" :players="next_p"/>
 
 			<TournamentTree class="mt-3" :size="max_players" :players="players" />
 		</div>
@@ -219,6 +219,26 @@ export default {
 				}
 			}
 			return 0;
+		},
+		check_end() {
+			let save = 0;
+			for(let i = 0; i < this.max_players; i++) {
+				if (this.players[i].stage > save) {
+					save = this.players[i].stage;
+				}
+			}
+			if (this.max_players == 16 && save == 4) {
+				return 1;
+			}
+			else if (this.max_players == 8 && save == 3) {
+				return 1;
+			}
+			else if (this.max_players == 4 && save == 2) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		}
 	},
 	mounted() {
