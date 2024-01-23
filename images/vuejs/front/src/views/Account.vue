@@ -27,21 +27,21 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-floating">
-                                        <input v-model="current_password" type="text" :class="current_password_label != text.current_password[lang] ? 'is-invalid' : ''" class="form-control" id="current_password" placeholder="current password">
+                                        <input v-model="current_password" type="password" :class="current_password_label != text.current_password[lang] ? 'is-invalid' : ''" class="form-control" id="current_password" placeholder="current password">
                                         <label for="current_password">{{ current_password_label }}</label>
                                     </div>
                                     <div class="form-floating mt-3">
-                                        <input v-model="new_password" type="text" :class="new_password_label != text.new_password[lang] ? 'is-invalid' : ''" class="form-control" id="new_password" placeholder="new password">
+                                        <input v-model="new_password" type="password" :class="new_password_label != text.new_password[lang] ? 'is-invalid' : ''" class="form-control" id="new_password" placeholder="new password">
                                         <label for="new_password">{{ new_password_label }}</label>
                                     </div>
                                     <div class="form-floating mt-3">
-                                        <input v-model="confirm_new_password" type="text" :class="confirm_new_password_label != text.confirm_new_password[lang] ? 'is-invalid' : ''" class="form-control" id="confirm_new_password" placeholder="confirm new password">
+                                        <input v-model="confirm_new_password" type="password" :class="confirm_new_password_label != text.confirm_new_password[lang] ? 'is-invalid' : ''" class="form-control" id="confirm_new_password" placeholder="confirm new password">
                                         <label for="confirm_new_password">{{ confirm_new_password_label }}</label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
-                                    <button type="button" class="btn btn-primary">{{ text.save_changes[lang] }}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_password_modal">{{ text.close[lang] }}</button>
+                                    <button type="button" class="btn btn-primary" :disabled="current_password == '' || new_password == '' || confirm_new_password == ''" @click="updatePassword">{{ text.save_changes[lang] }}</button>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                                     <input v-model="twoFA_code" type="text" class="form-control" id="twoFA_code">
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="hidden" data-bs-dismiss="modal" id="close_modal"></button>
+                                    <button type="button" class="hidden" data-bs-dismiss="modal" id="close_code_modal"></button>
                                     <button type="button" class="btn btn-primary" @click="sendCode">{{ text.send[lang] }}</button>
                                 </div>
                             </div>
@@ -191,7 +191,9 @@ export default {
                 mail: ["Enter your email address", "Entrez votre adresse email"],
                 send: ["Send", "Envoyer"],
                 enter_2fa: ["Enter the code", "Entrez le code"],
-                no_games: ["No games yet...", "Pas encore de parties ..."]
+                no_games: ["No games yet...", "Pas encore de parties ..."],
+                at_least_8: ["Password must be at least 8 characters", "Le mot de passe doit faire au moins 8 caracteres"],
+                same_confirm: ["Confirm password must be the same as password", "Doit etre le meme que le mot de passe"], 
             },
 
             twoFA_mail: "",
@@ -211,7 +213,7 @@ export default {
             new_password_label: "New password",
             confirm_new_password_label: "Confirm new password",
             image_url: "",
-            match_history: [],          
+            match_history: [],
         }
     },
     computed: {
@@ -310,11 +312,41 @@ export default {
                 }
             }).then(response => {
                 this.enable_2fa()
-                document.getElementById("close_modal").click()
+                document.getElementById("close_code_modal").click()
             })
             .catch(error => {
                 console.log(error)
             })
+        },
+        checkPassword() {
+            if (this.new_password.length < 8) {
+                this.new_password_label = this.text.at_least_8[this.lang]
+                return false
+            }
+            this.new_password_label = this.text.new_password[this.lang]
+            if (this.new_password != this.confirm_new_password)
+            {
+                this.confirm_new_password_label = this.text.same_confirm[this.lang]
+                return false
+            }
+            this.confirm_new_password_label = this.text.confirm_new_password[this.lang]
+            return true
+        },
+        updatePassword() {
+            if (this.checkPassword()) {
+                const URL = "http://127.0.0.1:8000/user/update/" + localStorage.getItem("pk") + "/?password=" + this.new_password
+                axios.get(URL, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("access")
+                    }
+                })
+                .then(response => {
+                    document.getElementById("close_password_modal").click()
+                    localStorage.removeItem("access");
+                    localStorage.removeItem("pk");
+                    this.$router.push({path: "/login"})
+                })
+            }
         }
     },
     mounted() {
