@@ -15,10 +15,12 @@ class User(AbstractUser):
 	status = models.IntegerField("status", default=0)
 	wins = models.IntegerField("wins", default=0)
 	losses = models.IntegerField("losses", default=0)
+	elo = models.PositiveIntegerField("elo", default=500)
+	best_elo = models.PositiveIntegerField("best_elo", default=500)
+	remote_bool = models.BooleanField("remote_bool", default=False)
+	remote_token = models.CharField("remote_token", default='')
 	is_active = models.BooleanField("is_active", default=True)
 	language = models.IntegerField("language", default=1)
-	elo = models.PositiveIntegerField("elo", default=200)
-	best_elo = models.PositiveIntegerField("best_elo", default=200)
 	best_rank = models.PositiveIntegerField("best_rank", default=2147483647)
 	twoFA = models.BooleanField("twoFA", default=False)
 	email = models.EmailField("email", null=True, unique=True)
@@ -26,6 +28,14 @@ class User(AbstractUser):
 
 	def __str__(self):
 		return self.username
+
+
+class Game(models.Model):
+	host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="host", null=True)
+	guest = models.CharField('guest', max_length=14, null=True)
+	hostscore = models.IntegerField('host', default=0)
+	guestscore = models.IntegerField('guest', default=0)
+	date = models.CharField('date', default='2042-42-42')
 
 
 class Friend(models.Model):

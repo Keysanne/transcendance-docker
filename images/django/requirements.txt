@@ -9,5 +9,7 @@ psycopg2
 pathlib
 django.urls
 bcrypt
+requests
+python-dotenv
 datetime
 pyotp
