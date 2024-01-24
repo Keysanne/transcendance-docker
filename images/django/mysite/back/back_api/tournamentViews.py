@@ -172,7 +172,7 @@ def removeContestant(request, tpk, upk):
 		return Response({'problem': 'user is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tournamentEnd(request, tpk):
 	try:

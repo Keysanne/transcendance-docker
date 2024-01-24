@@ -67,7 +67,6 @@ def UserCreate(request):
 			password = password_unhashed
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				print(serializer.data, file=sys.stderr)
 				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -115,18 +114,27 @@ def RemoteLogin(request):
 	login = json.loads(response.text)['login']
 	try:
 		query = User.objects.get(username=login)
-		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		user = authenticate(username=login, password=REMOTE_PASSWORD)
+		if user is not None:
+			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		else:
+			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		data = {}
 		data['username'] = login
 		data['remote_bool'] = True
 		data['remote_token'] = load["access_token"]
-		data['password'] = REMOTE_PASSWORD
+		data['password'] = make_password(REMOTE_PASSWORD)
 
 		serializer = UserSerializer(data=data)
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			user = authenticate(username=login, password=REMOTE_PASSWORD)
+			print(user, login, REMOTE_PASSWORD, file=sys.stderr)
+			if user is not None:
+				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA']}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
@@ -299,14 +307,19 @@ def UserDetail(request, pk):
 			queryset.best_rank = rank
 			queryset.save()
 
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'remote':queryset.remote_bool, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH', 'POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def UserUpdate(request, pk):
+	try:
+		queryset = User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
 	if ("?" in str(request)):
 		data = (str(request))[(str(request)).index('?') + 1:-2]
 		data = data.split("&")
@@ -318,45 +331,35 @@ def UserUpdate(request, pk):
 				new_data.append(s)
 		data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-	try:
-		queryset = User.objects.get(pk=pk)
-		# serializer = UserSerializer(queryset, many=False)
+		queryset.password = make_password(data['password'])
+		queryset.save()
+	else :
+		queryset.pfp = request.data['image_upload']
+		queryset.save()
 
+		if (queryset.pfp.width != queryset.pfp.height):
+			img = Image.open(queryset.pfp.path)
+			size = list(img.size)
+			wi = int(size[0])
+			he = int(size[1])
 
-		if '?' in str(request):
-			keys = data.keys()
-			queryset.password = make_password(data['password'])
-			queryset.save()
-		else :
-			queryset.pfp = request.data['image_upload']
-			queryset.save()
+			if (he < wi):
+				left = (wi - he) / 2
+				right = wi - ((wi - he) / 2)
+				top = 0
+				bottom = he
+			else:
+				left = 0
+				right = wi
+				top = (he - wi) / 2
+				bottom = he - ((he - wi) / 2)
 
-			if (queryset.pfp.width != queryset.pfp.height):
-				img = Image.open(queryset.pfp.path)
-				size = list(img.size)
-				wi = int(size[0])
-				he = int(size[1])
+			img = img.crop((left, top, right, bottom))
+			img.save(queryset.pfp.path)
+		queryset.save()
 
-				if (he < wi):
-					left = (wi - he) / 2
-					right = wi - ((wi - he) / 2)
-					top = 0
-					bottom = he
-				else:
-					left = 0
-					right = wi
-					top = (he - wi) / 2
-					bottom = he - ((he - wi) / 2)
+	return Response({'pk':pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
-				img = img.crop((left, top, right, bottom))
-				img.save(queryset.pfp.path)
-
-			queryset.save()
-
-		return Response({'pk':pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
-
-	except:
-		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])

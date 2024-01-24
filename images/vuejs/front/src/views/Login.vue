@@ -296,8 +296,23 @@ export default {
             if (code != -1) {
                 code = window.location.search.split('=')[1]
                 const URL = "http://127.0.0.1:8000/user/remote-login/?code=" + code
+                const BASE_URL = "http://127.0.0.1:8000/"
+                const TOKEN_ENDPOINT = "api/token/"
                 axios.get(URL).then(response => {
-                    
+                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                        username: response.data.username,
+                        password: response.data.password
+                    }).then(response_token => {
+                        localStorage.setItem("access", response_token.data.access)
+                        localStorage.setItem("pk", response.data.pk)
+                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        axios.get(URL, {
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem("access")
+                            }
+                        })
+                        this.$router.push({path: '/'})
+                    })
                 })
                 .catch(error => {
                     this.is_alert = true
