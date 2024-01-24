@@ -67,7 +67,6 @@ def UserCreate(request):
 			password = password_unhashed
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				print(serializer.data, file=sys.stderr)
 				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -115,18 +114,27 @@ def RemoteLogin(request):
 	login = json.loads(response.text)['login']
 	try:
 		query = User.objects.get(username=login)
-		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		user = authenticate(username=login, password=REMOTE_PASSWORD)
+		if user is not None:
+			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		else:
+			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		data = {}
 		data['username'] = login
 		data['remote_bool'] = True
 		data['remote_token'] = load["access_token"]
-		data['password'] = REMOTE_PASSWORD
+		data['password'] = make_password(REMOTE_PASSWORD)
 
 		serializer = UserSerializer(data=data)
 		if (serializer.is_valid()):
 			serializer.save()
-			return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
+			user = authenticate(username=login, password=REMOTE_PASSWORD)
+			print(user, login, REMOTE_PASSWORD, file=sys.stderr)
+			if user is not None:
+				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA']}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			else:
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
