@@ -4,10 +4,13 @@
             <div class= "relative">
                 <div :class="status == 1 ? 'bg-success' : status == 2 ? 'bg-orange-600' : status == 0 ? 'bg-secondary' : ''" class="w-6 h-6 rounded-full absolute mt-[-5px] ml-[-5px] border-4 border-dark">
                 </div>
-                <img class="w-12 h-12 rounded-full" src="../assets/avatars/todo.jpg" alt="profile_pic">
+                <img v-if="pic == null || pic == ''" class="w-12 h-12 rounded-full" src="../assets/default_profile.png" alt="profile_pic">
+                <img v-else class="w-12 h-12 rounded-full" :src="pic" alt="profile_pic">
             </div>
             <div class="text-lg text-light ml-3">{{ username }}</div>
             <div class="flex-grow"></div>
+            <div class="text-lg text-light mr-5">{{ elo }}</div>
+
         </div>
     </div>
 </template>
@@ -27,6 +30,7 @@ export default {
         status: Number,
         username: String,
         pic: String,
+        elo: Number,
         is_last: Boolean,
     }
 }

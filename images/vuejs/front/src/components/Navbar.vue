@@ -51,6 +51,12 @@ export default {
   },
   methods: {
     logout() {
+      const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/0/"
+      axios.get(URL, {
+          headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem("access")
+          }
+      })
       localStorage.removeItem("access");
       localStorage.removeItem("pk");
       this.$router.push({path: "/login"})

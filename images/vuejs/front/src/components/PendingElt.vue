@@ -19,6 +19,8 @@
 </style>
 
 <script>
+import axios from 'axios'
+
 export default {
     data() {
         return {
@@ -44,7 +46,7 @@ export default {
         },
         decline() {
             const URL = "http://127.0.0.1:8000/friend/" + localStorage.getItem("pk") + "/deny/" + this.username + "/" 
-            axios.get(URL, {
+            axios.delete(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
                 }

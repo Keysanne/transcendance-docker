@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def createRequest(request, pk, username):
 	try:
@@ -34,7 +34,7 @@ def createRequest(request, pk, username):
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH'])
+@api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def acceptRequest(request, pk, username):
 	try:
@@ -70,7 +70,7 @@ def denyRequest(request, pk, username):
 		return Response({'problem':'request does not exist'},status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH'])
+@api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def blockRequest(request, pk, username):
 	try:

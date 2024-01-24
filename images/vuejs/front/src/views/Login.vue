@@ -187,21 +187,27 @@ export default {
         signUp() {
             if (this.checkUsername() && this.checkPassword())
             {
-		const BASE_URL = "http://127.0.0.1:8000/"
-		const CREATE_ENDPOINT = "user/create/"
-		const TOKEN_ENDPOINT = "api/token/"
-		const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
+                const BASE_URL = "http://127.0.0.1:8000/"
+                const CREATE_ENDPOINT = "user/create/"
+                const TOKEN_ENDPOINT = "api/token/"
+                const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
                 axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
                     this.pk = response.data.pk
-                   axios.post(BASE_URL + TOKEN_ENDPOINT, {
-			  username: this.signup_username,
-			  password: this.signup_password
-			}).then(response_token => {
-                   console.log(response_token)
-                    localStorage.setItem("access", response_token.data.access)
-                    localStorage.setItem("pk", this.pk)
-                    this.$router.push({path: '/'})
-                })
+                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                        username: this.signup_username,
+                        password: this.signup_password
+                    }).then(response_token => {
+                        console.log(response_token)
+                        localStorage.setItem("access", response_token.data.access)
+                        localStorage.setItem("pk", this.pk)
+                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        axios.get(URL, {
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem("access")
+                            }
+                        })
+                        this.$router.push({path: '/'})
+                    })
                 })
                 .catch(error => {
                     this.signup_username_label = this.text.already_used[this.lang]
@@ -225,6 +231,12 @@ export default {
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
+                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        axios.get(URL, {
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem("access")
+                            }
+                        })
                         this.$router.push({path: '/'})
                     })
                 }
@@ -252,6 +264,12 @@ export default {
                 }).then(response_token => {
                     localStorage.setItem("access", response_token.data.access)
                     localStorage.setItem("pk", this.pk)
+                    const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                    axios.get(URL, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem("access")
+                        }
+                    })
                     this.$router.push({path: '/'})
                 })
             })
