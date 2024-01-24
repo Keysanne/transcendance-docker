@@ -398,7 +398,7 @@ def CreateTournament(request, pk):
 	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def EndGame(request, pk):
 	try:
 		query = User.objects.get(pk=pk)
