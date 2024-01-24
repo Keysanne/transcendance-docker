@@ -410,7 +410,7 @@ def CreateTournament(request, pk):
 	return Response({'problem': serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def EndGame(request, pk):
 	try:
 		query = User.objects.get(pk=pk)
@@ -434,10 +434,13 @@ def EndGame(request, pk):
 	data['guestscore'] = int(data['guestscore'])
 	if data['guestscore'] > data['hostscore']:
 		query.losses = query.losses + 1
-		query.elo = query.elo - 20
+		if query.elo >= 20:
+			query.elo = query.elo - 20
+		else:
+			query.elo = 0
 		query.save()
 	elif data['hostscore'] > data['guestscore']:
-		query.losses = query.wins + 1
+		query.wins = query.wins + 1
 		query.elo = query.elo + 20
 		if query.elo > query.best_elo:
 			query.best_elo = query.elo
