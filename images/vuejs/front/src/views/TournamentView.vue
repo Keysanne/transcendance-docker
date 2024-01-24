@@ -261,9 +261,9 @@ export default {
 		this.check_next ();
 	},
 	components: {
-    Navbar,
-    TournamentTree,
-    LaunchMatch
-}
+		Navbar,
+		TournamentTree,
+		LaunchMatch
+	}
 }
 </script>

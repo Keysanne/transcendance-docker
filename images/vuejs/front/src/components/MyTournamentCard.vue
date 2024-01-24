@@ -7,7 +7,7 @@
             </div>
             <div class="flex justify-between items-center mt-3">
                 <div>{{ nb_players }} / {{ max_players }}</div>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id">{{ text.details[lang] }}</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" :data-bs-target="'#' + modal_id" :id="'close' + modal_id">{{ text.details[lang] }}</button>
             </div>
         </div>
     </div>
@@ -33,7 +33,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ text.close[lang] }}</button>
-                    <button type="button" class="btn btn-primary" :disabled="nb_players < max_players">{{ text.start[lang] }}</button>
+                    <button v-if="status == 0" type="button" class="btn btn-primary" :disabled="nb_players < max_players" @click="startTournament">{{ text.start[lang] }}</button>
+                    <button v-else type="button" class="btn btn-primary" @click="pushTournamentTree">{{ text.tree[lang] }}</button>
                 </div>
             </div>
         </div>
@@ -46,8 +47,10 @@
 
 <script>
 import MyTournamentCardPlayer from './MyTournamentCardPlayer.vue';
+import axios from 'axios';
 
 export default {
+
     data() {
         return {
             text: {
@@ -55,7 +58,8 @@ export default {
                 players: ["Players", "Joueurs"],
                 close: ["Close", "Fermer"],
                 start: ["Start tournament", "Commencer le tournois"],
-                no_players: ["No players yet...", "Pas encore de joueurs ..."]
+                no_players: ["No players yet...", "Pas encore de joueurs ..."],
+                tree: ["Tournament page", "Page du tournois"],
             },
         }
     },
@@ -65,6 +69,7 @@ export default {
         description: String,
         max_players: Number,
         players: Array,
+        status: Number,
     },
     computed: {
         nb_players: function() {
@@ -85,8 +90,22 @@ export default {
     components: {
         MyTournamentCardPlayer,
     },
-    mounted() {
-        console.log(this.players)
+    methods: {
+        startTournament() {
+            const URL = "http://127.0.0.1:8000/tournament/" + this.id + "/start/"
+            axios.get(URL, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                }
+            })
+            .then(response => {
+                this.pushTournamentTree()
+            })
+        },
+        pushTournamentTree() {
+            document.getElementById("close" + this.modal_id).click()
+            this.$router.push({path: '/tournament/' + this.id})
+        }
     }
 }
 </script>

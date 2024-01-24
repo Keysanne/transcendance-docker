@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div v-else class="flex justify-between flex-wrap w-full">
-                <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" />
+                <MyTournamentCard v-for="tournament in my_tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :max_players="tournament.max_players" :players="tournament.players" :status="tournament.status" />
             </div>
 
             <div class="w-[90%] xl:w-full bg-gray-700/50 h-[2px] mt-16 mb-16"></div>
@@ -130,6 +130,7 @@ export default {
                 tournament["name"] = response.data.tournaments[i].name
                 tournament["description"] = response.data.tournaments[i].description
                 tournament["max_players"] = response.data.tournaments[i].capacity
+                tournament["status"] = response.data.tournaments[i].status
 
                 var id_list = []
                 for (var j in response.data.tournaments[i].contestants) {
@@ -148,12 +149,12 @@ export default {
                     tournament["players"] = players
                     this.my_tournaments.push(tournament)
                 }
-                else if (id_list.includes(localStorage.getItem("pk"))) {
+                else if (tournament["status"] == 0 && id_list.includes(localStorage.getItem("pk"))) {
                     tournament["registered"] = true
                     tournament["nb_players"] = response.data.tournaments[i].contestants.length
                     this.tournaments.push(tournament)
                 }
-                else {
+                else if (tournament["status"] == 0) {
                     tournament["registered"] = false
                     tournament["nb_players"] = response.data.tournaments[i].contestants.length
                     this.tournaments.push(tournament)

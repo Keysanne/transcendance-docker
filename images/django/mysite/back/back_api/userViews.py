@@ -361,10 +361,10 @@ def UserUpdate(request, pk):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def StatusUpdate(request, pk, status):
+def StatusUpdate(request, pk, statu):
 	try:
 		query = User.objects.get(pk=pk)
-		query.status = status
+		query.status = statu
 		query.save()
 		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:

@@ -25,7 +25,23 @@ def tournamentList(request):
 			dico['pfp'] = UserSerializer(query, context={'request': request}, many=False).data['pfp']
 			listofcontestants.append(dico)
 		listofcontestants = sorted(listofcontestants, key=lambda x: x['position'])
-		unit = {'pk': t['pk'], 'name':t['name'], 'description':t['description'], 'capacity': t['capacity'], 'organizer': t['organizer'], 'contestants':listofcontestants}
+		unit = {'pk': t['pk'], 'name':t['name'], 'description':t['description'], 'status':t['status'], 'capacity': t['capacity'], 'organizer': t['organizer'], 'contestants':listofcontestants}
+		lst.append(unit)
+
+	queryset = Tournament.objects.all().filter(status=1)
+	serializer = TournamentSerializer(queryset, many=True)
+
+	for t in serializer.data:
+		contestants = list(Contestant.objects.all().filter(tournament=t['pk']))
+		listofcontestants = []
+		for c in contestants:
+			dico = ContestantSerializer(c).data
+			query = User.objects.get(pk=dico['user'])
+			dico['username'] = query.username
+			dico['pfp'] = UserSerializer(query, context={'request': request}, many=False).data['pfp']
+			listofcontestants.append(dico)
+		listofcontestants = sorted(listofcontestants, key=lambda x: x['position'])
+		unit = {'pk': t['pk'], 'name':t['name'], 'description':t['description'], 'status':t['status'], 'capacity': t['capacity'], 'organizer': t['organizer'], 'contestants':listofcontestants}
 		lst.append(unit)
 	return Response({'tournaments':lst}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
@@ -52,14 +68,14 @@ def contestantList(request, tpk):
 		return Response({'problem': 'problem while getting the contestants'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tournamentStart(request, pk):
 	try:
 		queryset = Tournament.objects.get(pk=pk)
-		if queryset.status != 1:
+		if queryset.status == 1:
 			return Response({'problem': 'tournament has already been started'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
-		if queryset.status != 2:
+		if queryset.status == 2:
 			return Response({'problem': 'tournament has already finished'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 
 		contestants = Contestant.objects.all().filter(tournament=pk)

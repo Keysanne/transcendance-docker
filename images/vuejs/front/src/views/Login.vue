@@ -297,7 +297,7 @@ export default {
                 code = window.location.search.split('=')[1]
                 const URL = "http://127.0.0.1:8000/user/remote-login/?code=" + code
                 axios.get(URL).then(response => {
-
+                    
                 })
                 .catch(error => {
                     this.is_alert = true

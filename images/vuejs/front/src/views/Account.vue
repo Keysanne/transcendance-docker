@@ -15,8 +15,8 @@
                 <div class="d-flex flex-column ml-6">
                     <h1 class="text-2xl font-semibold text-light">{{ username }}</h1>
                     <button type="button" class="btn btn-sm btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#password_modal">{{ text.change_password[lang] }}</button>
-                    <button type="button" v-if="twoFA == false" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#twoFA_mail_modal">{{ text.enable_2fa[lang] }}</button>
-                    <button type="button" v-else class="btn btn-sm btn-primary" @click="disable_2fa">{{ text.disable_2fa[lang] }}</button>
+                    <button type="button" v-if="is_remote == false && twoFA == false" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#twoFA_mail_modal">{{ text.enable_2fa[lang] }}</button>
+                    <button type="button" v-else-if="is_remote == false" class="btn btn-sm btn-primary" @click="disable_2fa">{{ text.disable_2fa[lang] }}</button>
     
                     <div class="modal fade" id="password_modal" tabindex="-1" aria-labelledby="password_modal_label" aria-hidden="true">
                         <div class="modal-dialog">
@@ -214,6 +214,7 @@ export default {
             confirm_new_password_label: "Confirm new password",
             image_url: "",
             match_history: [],
+            is_remote: false,
         }
     },
     computed: {
@@ -224,7 +225,7 @@ export default {
             if (this.totalGame == 0) {
                 return 0
             }
-            return (this.wins / this.totalGame).toFixed(3) * 100
+            return ((this.wins / this.totalGame) * 100).toFixed(1)
         },
         lang: function() {
             if (localStorage.getItem("lang") === null) {
@@ -364,15 +365,16 @@ export default {
             }
         })
         .then(response => {
-            this.username = response.data.username;
-            this.wins = response.data.wins;
-            this.losses = response.data.losses;
-            this.rank = response.data.rank;
-            this.best_rank = response.data.best_rank;
-            this.elo = response.data.elo;
-            this.best_elo = response.data.best_elo;
-            this.image_url = response.data.pfp;
+            this.username = response.data.username
+            this.wins = response.data.wins
+            this.losses = response.data.losses
+            this.rank = response.data.rank
+            this.best_rank = response.data.best_rank
+            this.elo = response.data.elo
+            this.best_elo = response.data.best_elo
+            this.image_url = response.data.pfp
             this.twoFA = response.data.twoFA
+            this.is_remote = response.data.remote
         })
         .catch(error => {
 		    if (error.response.status == 401) {
@@ -389,12 +391,12 @@ export default {
             }
         })
         .then(response => {
-            for (elt in response.data.history) {
+            for (var elt in response.data.history) {
                 var match = {}
                 match["score_player1"] = response.data.history[elt].hostscore
                 match["score_player2"] = response.data.history[elt].guestscore
                 match["username_player2"] = response.data.history[elt].guest
-                match["date"] = responsed.data.history[elt].date
+                match["date"] = response.data.history[elt].date
                 this.match_history.push(match)
             }
         }) 
