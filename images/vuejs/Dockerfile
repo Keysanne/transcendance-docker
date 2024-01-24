@@ -83,13 +83,3 @@ EXPOSE 8080
 RUN systemctl restart nginx
 
 CMD ["nginx", "-g", "daemon off;"]
-
-#COPY ./script.sh ./script.sh
-#RUN chmod 777 script.sh
-#ENTRYPOINT ./script.sh
-# sudo docker system prune --volumes --all
-# cat /var/log/journal/nginx.service.log
-# ngx_http_geoip_module.so	 ngx_http_perl_module.so	 ngx_stream_geoip_module.so
-# ngx_http_image_filter_module.so  ngx_http_xslt_filter_module.so  ngx_stream_module.so
-# ngx_http_modsecurity_module.so	 ngx_mail_module.so
-

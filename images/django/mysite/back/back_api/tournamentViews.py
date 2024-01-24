@@ -27,7 +27,7 @@ def tournamentList(request):
 		listofcontestants = sorted(listofcontestants, key=lambda x: x['position'])
 		unit = {'pk': t['pk'], 'name':t['name'], 'description':t['description'], 'capacity': t['capacity'], 'organizer': t['organizer'], 'contestants':listofcontestants}
 		lst.append(unit)
-	return Response({'tournaments':lst}, status=status.HTTP_200_OK)
+	return Response({'tournaments':lst}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -36,7 +36,7 @@ def contestantList(request, tpk):
 	try:
 		Tournament.objects.get(pk=tpk)
 	except:
-		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
 		contestants = Contestant.objects.all().filter(tournament=tpk)
@@ -47,9 +47,9 @@ def contestantList(request, tpk):
 			dico['username'] = query.username
 			dico['pfp'] = UserSerializer(query, context={'request': request}, many=False).data['pfp']
 			listofcontestants.append(dico)
-		return Response({'contestants': listofcontestants}, status=status.HTTP_200_OK)
+		return Response({'contestants': listofcontestants}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'problem while getting the contestants'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'problem while getting the contestants'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['PATCH'])
@@ -58,19 +58,19 @@ def tournamentStart(request, pk):
 	try:
 		queryset = Tournament.objects.get(pk=pk)
 		if queryset.status != 1:
-			return Response({'problem': 'tournament has already been started'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'tournament has already been started'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 		if queryset.status != 2:
-			return Response({'problem': 'tournament has already finished'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'tournament has already finished'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 
 		contestants = Contestant.objects.all().filter(tournament=pk)
 		if (len(contestants) != queryset.capacity):
-			return Response({'problem': f'contestants: {len(contestants)}/{queryset.capacity}'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': f'contestants: {len(contestants)}/{queryset.capacity}'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 
 		queryset.status = 1
 		queryset.save()
-		return Response(status=status.HTTP_200_OK)
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -162,19 +162,19 @@ def tournamentEnd(request, tpk):
 	try:
 		tournament = Tournament.objects.get(pk=tpk)
 		if (tournament.status == 0):
-			return Response({'problem': 'tournament hasn\'t started yet'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'tournament hasn\'t started yet'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 		if (tournament.status == 2):
-			return Response({'problem': 'tournament has already ended'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'tournament has already ended'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
 		contestants = Contestant.objects.all().filter(tournament=tpk, status=1)
 		if (len(contestants) > 1):
-			return Response({'problem': 'to many contestants alive'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'to many contestants alive'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 		if (len(contestants) < 1):
-			return Response({'problem': 'to few contestants alive'}, status=status.HTTP_412_PRECONDITION_FAILED)
+			return Response({'problem': 'to few contestants alive'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 		tournament.status = 2
 		tournament.save()
 	except:
-		return Response({'problem': 'problem while obtaining the contestants'})
+		return Response({'problem': 'problem while obtaining the contestants'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
