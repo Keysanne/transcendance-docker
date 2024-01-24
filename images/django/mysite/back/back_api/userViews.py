@@ -307,14 +307,19 @@ def UserDetail(request, pk):
 			queryset.best_rank = rank
 			queryset.save()
 
-		return Response({'pk': queryset.pk, 'username': queryset.username, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'pk': queryset.pk, 'username': queryset.username, 'remote':queryset.remote_bool, 'twoFA': queryset.twoFA, 'pfp':serializer.data['pfp'], 'wins': queryset.wins, 'losses': queryset.losses, 'elo':queryset.elo, 'best_elo':queryset.best_elo, 'rank': rank, 'best_rank': queryset.best_rank, 'language':queryset.language}, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['PATCH', 'POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def UserUpdate(request, pk):
+	try:
+		queryset = User.objects.get(pk=pk)
+	except:
+		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
 	if ("?" in str(request)):
 		data = (str(request))[(str(request)).index('?') + 1:-2]
 		data = data.split("&")
@@ -326,53 +331,43 @@ def UserUpdate(request, pk):
 				new_data.append(s)
 		data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-	try:
-		queryset = User.objects.get(pk=pk)
-		# serializer = UserSerializer(queryset, many=False)
+		queryset.password = make_password(data['password'])
+		queryset.save()
+	else :
+		queryset.pfp = request.data['image_upload']
+		queryset.save()
 
+		if (queryset.pfp.width != queryset.pfp.height):
+			img = Image.open(queryset.pfp.path)
+			size = list(img.size)
+			wi = int(size[0])
+			he = int(size[1])
 
-		if '?' in str(request):
-			keys = data.keys()
-			queryset.password = make_password(data['password'])
-			queryset.save()
-		else :
-			queryset.pfp = request.data['image_upload']
-			queryset.save()
+			if (he < wi):
+				left = (wi - he) / 2
+				right = wi - ((wi - he) / 2)
+				top = 0
+				bottom = he
+			else:
+				left = 0
+				right = wi
+				top = (he - wi) / 2
+				bottom = he - ((he - wi) / 2)
 
-			if (queryset.pfp.width != queryset.pfp.height):
-				img = Image.open(queryset.pfp.path)
-				size = list(img.size)
-				wi = int(size[0])
-				he = int(size[1])
+			img = img.crop((left, top, right, bottom))
+			img.save(queryset.pfp.path)
+		queryset.save()
 
-				if (he < wi):
-					left = (wi - he) / 2
-					right = wi - ((wi - he) / 2)
-					top = 0
-					bottom = he
-				else:
-					left = 0
-					right = wi
-					top = (he - wi) / 2
-					bottom = he - ((he - wi) / 2)
+	return Response({'pk':pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
-				img = img.crop((left, top, right, bottom))
-				img.save(queryset.pfp.path)
-
-			queryset.save()
-
-		return Response({'pk':pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
-
-	except:
-		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def StatusUpdate(request, pk, status):
+def StatusUpdate(request, pk, statu):
 	try:
 		query = User.objects.get(pk=pk)
-		query.status = status
+		query.status = statu
 		query.save()
 		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:

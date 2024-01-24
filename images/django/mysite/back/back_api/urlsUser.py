@@ -15,7 +15,7 @@ urlpatterns = [
 	path('leaderboard/', UserList),
 	path('<int:pk>/', UserDetail, name='retrieve-user'),
 	path('update/<int:pk>/', UserUpdate, name='update-user'),
-	path('<int:pk>/status/<int:status>/', StatusUpdate, name='update-status'),
+	path('<int:pk>/status/<int:statu>/', StatusUpdate, name='update-status'),
 	path('delete/<int:pk>/', UserDelete, name='delete-user'),
 	path('<int:pk>/createtournament/', CreateTournament, name='create-tournament'),
 	path('<int:pk>/endgame/', EndGame, name='end-game'),
