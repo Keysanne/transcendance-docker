@@ -50,7 +50,9 @@ def tournamentList(request):
 @permission_classes([IsAuthenticated])
 def contestantList(request, tpk):
 	try:
-		Tournament.objects.get(pk=tpk)
+		queryset = Tournament.objects.get(pk=tpk)
+		serializer = TournamentSerializer(queryset, many=False)
+		t = serializer.data
 	except:
 		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
@@ -63,7 +65,7 @@ def contestantList(request, tpk):
 			dico['username'] = query.username
 			dico['pfp'] = UserSerializer(query, context={'request': request}, many=False).data['pfp']
 			listofcontestants.append(dico)
-		return Response({'contestants': listofcontestants}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'name': t["name"], 'description': t["description"], 'organizer': t["organizer"], 'contestants': listofcontestants}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		return Response({'problem': 'problem while getting the contestants'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 

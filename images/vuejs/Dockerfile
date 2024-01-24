@@ -11,37 +11,7 @@ FROM debian:bookworm as production-stage
 RUN apt update && apt upgrade  -y
 RUN apt-get install nginx -y
 # RUN apt-get install libmaxminddb-dev -y
-# RUN apt-get install -y bison
-# RUN apt-get install -y libperl-dev          
-# RUN apt-get install -y build-essential
-# RUN apt-get install -y ca-certificates
-# RUN apt-get install -y curl
-# RUN apt-get install -y dh-autoreconf
-# RUN apt-get install -y doxygen
-# RUN apt-get install -y flex
-# RUN apt-get install -y gawk
-# RUN apt-get install -y git
-# RUN apt-get install -y make
-# RUN apt-get install -y iputils-ping
-# RUN apt-get install -y libcurl4-gnutls-dev
-# RUN apt-get install -y libexpat1-dev
-# RUN apt-get install -y libgeoip-dev
-# RUN apt-get install -y liblmdb-dev
-# RUN apt-get install -y libpcre3-dev
-# RUN apt-get install -y libssl-dev 
-# RUN apt-get install -y libtool
-# RUN apt-get install -y libxml2
-# RUN apt-get install -y libxml2-dev
-# RUN apt-get install -y libyajl-dev
-# RUN apt-get install -y locales
-# RUN apt-get install -y lua5.3-dev
-# RUN apt-get install -y pkg-config
-# RUN apt-get install -y wget
-# RUN apt-get install -y yajl-tools
-# RUN apt-get install -y zlib1g-dev
-# RUN apt-get install -y libxslt-dev
-# RUN apt-get install -y libgd-dev
-# RUN apt-get install -y systemctl
+# RUN apt-get install -y bison libperl-dev build-essential ca-certificates curl dh-autoreconf doxygen flex gawk git make iputils-ping libcurl4-gnutls-dev libexpat1-dev libgeoip-dev liblmdb-dev libpcre3-dev libssl-dev  libtool libxml2 libxml2-dev libyajl-dev locales lua5.3-dev pkg-config wget yajl-tools zlib1g-dev libxslt-dev libgd-dev systemctl
 
 # WORKDIR /opt
 # RUN git clone https://github.com/SpiderLabs/ModSecurity
