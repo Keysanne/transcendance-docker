@@ -44,6 +44,8 @@ export default {
 			acceleration: 2,
 			isstart: 0,
 			gameover: 0,
+
+			send: 1,
 		}
 	},
 	components: {
@@ -134,6 +136,18 @@ export default {
 			}
 			this.context.fillText("Press any key", 190, 160);
 			this.context.fillText("to restart", 240, 220);
+			if (this.send == 0) {
+				console.log("caca")
+				const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
+				axios.get(URL, {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem("access")
+					}
+       	 		}).then(response => {
+
+				})
+				this.send = 1;
+			}
 			this.resetGame(0);
 			this.gameover = 1;
 			this.ball.velocityY = 0;
@@ -147,7 +161,7 @@ export default {
 			else if (this.gameover == 1) {
 				this.gostart();
 			}
-			if (this.player1Score >= 10 || this.player2Score >= 10){
+			if (this.player1Score >= 5 || this.player2Score >= 5){
 				return;
 			}
 			if (e.code == "KeyW") {
@@ -165,6 +179,7 @@ export default {
 			}
 		},
 		gostart() {
+			this.send = 0;
 			this.gameover = 0;
 			this.player1Score = 0;
 			this.player2Score = 0;
