@@ -55,7 +55,7 @@ def UserCreate(request):
 	params = {'access_token': ACCESS_TOKEN}
 	response = requests.get(f'https://api.intra.42.fr/v2/users?filter[login]={data["username"]}', params=params)
 	if len(response.json()) != 0:
-		return Response({'problem': 'username is 42 login'}, status=status.HTTP_409_CONFLICT)
+		return Response({'problem': 'username is 42 login'}, status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
 		queryset = User.objects.get(username=data['username'])
@@ -70,7 +70,7 @@ def UserCreate(request):
 				print(serializer.data, file=sys.stderr)
 				return Response({'pk':serializer.data['pk']}, status=status.HTTP_201_CREATED, headers={'Access-Control-Allow-Origin':'*'})
 			else:
-				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
@@ -115,7 +115,7 @@ def RemoteLogin(request):
 	login = json.loads(response.text)['login']
 	try:
 		query = User.objects.get(username=login)
-		return Response(status=status.HTTP_200_OK)
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
 		data = {}
 		data['username'] = login
@@ -161,7 +161,7 @@ def UserConnect(request):
 			if user is not None:
 				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
-				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
@@ -185,11 +185,11 @@ def Keycheck(request, pk):
 			if user is not None:
 				return Response({'pk': query.pk}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
-				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST)
+				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 		else:
-			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['PATCH', 'POST', 'GET'])
@@ -208,17 +208,17 @@ def Update2FA(request, pk):
 	try:
 		query = User.objects.get(pk=pk)
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	if 'mode' not in data.keys():
-		return Response({'problem': 'mode missing'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'mode missing'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	if (data['mode'] == "true"):
 		query.twoFA = True
 	elif (data['mode'] == 'false'):
 		query.twoFA = False
 	query.save()
-	return Response(status=status.HTTP_200_OK)
+	return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 
 
 
@@ -252,9 +252,9 @@ def	verif_mail_key(request, pk):
 			query.save()
 			return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
-			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'problem': 'code not valid'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -276,7 +276,7 @@ def	verif_mail(request, pk):
 		query.save()
 		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['GET'])
@@ -366,9 +366,9 @@ def StatusUpdate(request, pk, status):
 		query = User.objects.get(pk=pk)
 		query.status = status
 		query.save()
-		return Response(status=status.HTTP_200_OK)
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 	except:
-		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
 @api_view(['DELETE'])
