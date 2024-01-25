@@ -24,6 +24,18 @@
           <li v-else class="hidden md:block"><router-link to="/account"><img class="rounded-full h-14 w-14 border-1 border-black" :src="img" alt="profile_pic"></router-link></li>
           <li class="md:hidden"><button @click="logout" class="font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors">{{ text.logout[lang] }}</button></li>
           <li class="hidden md:block"><button @click="logout"><font-awesome-icon class="h-6 w-6 text-gray-800 hover:text-gray-500 ease-in-out transition-colors" icon="fa-solid fa-arrow-right-from-bracket"/></button></li> 
+          <li>
+            <div class="dropdown">
+              <a class="md:text-lg font-semibold text-gray-800 hover:text-gray-500 no-underline ease-in-out transition-colors dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ text.lang[lang] }}
+              </a>
+              <ul class="dropdown-menu">
+                <li v-if="lang != 0"><button class="dropdown-item" @click="changeLang(0)">{{ text.lang[0] }}</button></li>
+                <li v-if="lang != 1"><button class="dropdown-item" @click="changeLang(1)">{{ text.lang[1] }}</button></li>
+                <!-- <li v-if="lang != 2"><button class="dropdown-item" @click="changeLang(2)">{{ text.lang[2] }}</button></li> -->
+              </ul>
+            </div>
+          </li>
         </ul>
       </nav>
     </div>
@@ -43,6 +55,7 @@ export default {
         friends: ["Friends", "Amis"],
         account: ["My account", "Mon compte"],
         logout: ["Log out", "Se deconnecter"],
+        lang: ["English", "Francais"]
       },
 
       showMenu: false,
@@ -60,6 +73,18 @@ export default {
       localStorage.removeItem("access");
       localStorage.removeItem("pk");
       this.$router.push({path: "/login"})
+    },
+    changeLang(i) {
+      const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/lang/" + i + "/"
+      axios.get(URL, {
+          headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem("access")
+          }
+      })
+      .then(response => {
+        localStorage.setItem("lang", i)
+        location.reload()
+      })
     }
   },
   computed: {
@@ -79,6 +104,7 @@ export default {
     })
     .then(response => {
       this.img = response.data.pfp;
+      localStorage.setItem("lang", response.data.language)
     })
     .catch(error => {
       if (error.response.status == 401) {
