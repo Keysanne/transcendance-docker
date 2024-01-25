@@ -69,13 +69,13 @@ export default {
     data() {
         return {
             text: {
-                "friends": ["Friends", "Amis"],
-                "add": ["Add friend", "Ajouter un ami"],
-                "search": ["Search", "Chercher"],
-                "no_friends": ["No friends yet...", "Pas encore d'amis ..."],
-                "failed": ["This username does not exist", "Le nom d'utilisateur n'existe pas"],
-                "success": ["Invitation sent", "Invitation envoyee"],
-                "already": ["Your are already friend with this user", "Tu es deja ami avec cet utilisateur"],
+                "friends": ["Friends", "Amis", "友達"],
+                "add": ["Add friend", "Ajouter un ami", "友達を追加"],
+                "search": ["Search", "Chercher", "検索"],
+                "no_friends": ["No friends yet...", "Pas encore d'amis ...", "まだ友達がいない..."],
+                "failed": ["This username does not exist", "Le nom d'utilisateur n'existe pas", "このユーザー名は存在しません"],
+                "success": ["Invitation sent", "Invitation envoyee", "招待状発送済み"],
+                "already": ["Your are already friend with this user", "Tu es deja ami avec cet utilisateur", "あなたはすでにこのユーザーと友達です"],
             },
 
             search_username: "",

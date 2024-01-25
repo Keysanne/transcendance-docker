@@ -46,11 +46,11 @@ export default {
     data() {
         return {
             text: {
-                unregister: ["Unregister", "Me desinscrire"],
-                register: ["Register", "M'inscrire"],
-                nickname: ["Nickname", "Surnom"],
-                close: ["Close", "Fermer"],
-                alphanumeric: ["Nickname must be alphanumeric", "Le surnom doit etre compose de lettres et/ou de chiffres"],
+                unregister: ["Unregister", "Me desinscrire", "登録解除"],
+                register: ["Register", "M'inscrire", "登録"],
+                nickname: ["Nickname", "Surnom", "ニックネーム"],
+                close: ["Close", "Fermer", "閉じる"],
+                alphanumeric: ["Nickname must be alphanumeric", "Le surnom doit etre compose de lettres et/ou de chiffres", "ニックネームは英数字でなければなりません"],
             },
 
             nickname: "",

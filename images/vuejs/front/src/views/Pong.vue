@@ -45,7 +45,8 @@ export default {
 			isstart: 0,
 			gameover: 0,
 
-			send: 1,
+			fuck: 0,
+			send: 0,
 		}
 	},
 	components: {
@@ -137,7 +138,7 @@ export default {
 			this.context.fillText("Press any key", 190, 160);
 			this.context.fillText("to restart", 240, 220);
 			if (this.send == 0) {
-				console.log("caca")
+				this.send = 1;
 				if (this.$route.params.ids.length == 0) {
 					const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
 					axios.get(URL, {
@@ -163,7 +164,6 @@ export default {
 						console.log(error)
 					})
 				}
-				this.send = 1;
 			}
 			this.resetGame(0);
 			this.gameover = 1;

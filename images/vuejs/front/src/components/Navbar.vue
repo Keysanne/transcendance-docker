@@ -49,13 +49,13 @@ export default {
   data() {
     return {
       text: {
-        home: ["Home", "Accueil"],
-        leaderboard: ["Leaderboard", "Classement"],
-        tournaments: ["Tournaments", "Tournois"],
-        friends: ["Friends", "Amis"],
-        account: ["My account", "Mon compte"],
-        logout: ["Log out", "Se deconnecter"],
-        lang: ["English", "Francais"]
+        home: ["Home", "Accueil", "ホーム"],
+        leaderboard: ["Leaderboard", "Classement", "ランキング"],
+        tournaments: ["Tournaments", "Tournois", "トーナメント"],
+        friends: ["Friends", "Amis", "友達"],
+        account: ["My account", "Mon compte", "マイアカウント"],
+        logout: ["Log out", "Se deconnecter", "ログアウト"],
+        lang: ["English", "Francais", "日本語"]
       },
 
       showMenu: false,
