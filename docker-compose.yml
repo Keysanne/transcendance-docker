@@ -47,6 +47,15 @@ services:
     depends_on:
       - db
 
+  vault:
+    image: hashicorp/vault
+    container_name: vault
+    networks:
+      - transcendance
+    restart: always
+    ports:
+      - "8200:8200"
+
 volumes:
   postgres:
 

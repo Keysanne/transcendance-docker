@@ -1,5 +1,8 @@
 server {
-	listen 8080;
+	listen 8080 ssl;
+	listen [::]:8080 ssl;
+	ssl_certificate        /etc/nginx/ssl/transcendance.com.crt;
+	ssl_certificate_key    /etc/nginx/ssl/transcendance.com.key;
 	root /my/root/path;
 	server_name www.transcendance.com transcendance.com;
 	location / {
