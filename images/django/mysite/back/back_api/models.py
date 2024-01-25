@@ -25,6 +25,7 @@ class User(AbstractUser):
 	twoFA = models.BooleanField("twoFA", default=False)
 	email = models.EmailField("email", null=True, unique=True)
 	key = models.CharField("key", null=True)
+	last_game = models.DateTimeField('last_game', null=True)
 
 	def __str__(self):
 		return self.username

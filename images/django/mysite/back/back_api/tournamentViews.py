@@ -181,6 +181,73 @@ def removeContestant(request, tpk, upk):
 
 
 @api_view(['GET'])
+def tournamentMatchResult(request, tpk):
+	try:
+		tournament = Tournament.objects.get(pk=tpk)
+		if tournament.status == 0:
+			return Response({'problem': 'tournament hasn\'t started yet'}, status=status.HTTP_412_PRECONDITION_FAILED)
+		if tournament.status == 2:
+			return Response({'problem': 'tournament is already finished'}, status=status.HTTP_412_PRECONDITION_FAILED)
+	except:
+		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	if not '?' in request:
+		return Response({'problem': 'no data sent'})
+
+	data = (str(request))[(str(request)).index('?') + 1:-2]
+	data = data.split("&")
+	for i in range (len(data)):
+		data[i] = (data[i]).split("=")
+	new_data = []
+	for lst in data:
+		for s in lst:
+			new_data.append(s)
+	data = {new_data[i]: int(new_data[i + 1]) for i in range (0, len(new_data), 2)}
+
+	for info in ['player1', 'player2', 'player1score', 'player2score']:
+		if info not in data.keys:
+			return Response({'problem': 'lacking informations'}, status=status.HTTP_400_BAD_REQUEST)
+
+	try:
+		User.objects.get(pk=data['player1'])
+	except:
+		return Response({'problem': 'player1 does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+	try:
+		User.objects.get(pk=data['player2'])
+	except:
+		return Response({'problem': 'player2 does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+	try:
+		c1 = Contestant.objects.all().filter(tournament=tpk, user=data['player1'])
+		if c1.status == 0:
+			return Response({'problem': 'player1 is not alive'}, status=status.HTTP_412_PRECONDITION_FAILED)
+	except:
+		return Response({'problem': 'player1 is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED)
+	try:
+		c2 = Contestant.objects.all().filter(tournament=tpk, user=data['player2'])
+		if c2.status == 0:
+			return Response({'problem': 'player2 is not alive'}, status=status.HTTP_412_PRECONDITION_FAILED)
+	except:
+		return Response({'problem': 'player2 is not a contestant'}, status=status.HTTP_412_PRECONDITION_FAILED)
+
+	if (data['player1score'] > data['player2score']):
+		c2.status = 0
+		c2.status = 1
+		c1.stage += 1
+		c1.save()
+		c2.save()
+		return Response(status=status.HTTP_200_OK)
+	if (data['player2score'] > data['player1score']):
+		c1.status = 0
+		c1.status = 1
+		c2.stage += 1
+		c1.save()
+		c2.save()
+		return Response(status=status.HTTP_200_OK)
+	return Response({'problem': 'a tie is not possible'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def tournamentEnd(request, tpk):
 	try:

@@ -190,8 +190,15 @@ export default {
                 const BASE_URL = "http://127.0.0.1:8000/"
                 const CREATE_ENDPOINT = "user/create/"
                 const TOKEN_ENDPOINT = "api/token/"
-                const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
-                axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
+                axios.post(BASE_URL + CREATE_ENDPOINT, {
+                    headers: {
+                    'Content-Type': 'application/json'
+                },
+                    params: {
+                        username: this.signup_username,
+                        password: this.signup_password
+                    }
+                }).then(response => {
                     this.pk = response.data.pk
                     axios.post(BASE_URL + TOKEN_ENDPOINT, {
                         username: this.signup_username,
@@ -218,8 +225,15 @@ export default {
             const BASE_URL = "http://127.0.0.1:8000/"
     		const CONNECT_ENDPOINT = "user/connect/"
 	    	const TOKEN_ENDPOINT = "api/token/"
-		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
-            axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+            axios.post(BASE_URL + CONNECT_ENDPOINT, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    username: this.login_username,
+                    password: this.login_password
+                }
+            }).then(response => {
                 this.pk = response.data.pk
                 if (response.data.twoFA == true){
                     this.openModal()

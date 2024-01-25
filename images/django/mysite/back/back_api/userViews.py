@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from django.contrib.auth import authenticate
 from PIL import Image
 import django
@@ -39,17 +39,22 @@ ACCESS_TOKEN = response = requests.post(
 
 @api_view(['POST'])
 def UserCreate(request):
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
-	password_unhashed = data['password']
-	data['password'] = make_password(data['password'])
+	# data = (str(request))[(str(request)).index('?') + 1:-2]
+	# data = data.split("&")
+	# for i in range (len(data)):
+	# 	data[i] = (data[i]).split("=")
+	# new_data = []
+	# for lst in data:
+	# 	for s in lst:
+	# 		new_data.append(s)
+	# data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	# password_unhashed = data['password']
+	# data['password'] = make_password(data['password'])
+
+	data = {}
+	data['username'] = request.data['params']['username']
+	data['password'] = make_password(request.data['params']['password'])
+	password_unhashed = request.data['params']['password']
 	serializer = UserSerializer(data=data)
 
 	params = {'access_token': ACCESS_TOKEN}
@@ -138,17 +143,21 @@ def RemoteLogin(request):
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def UserConnect(request):
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	# data = (str(request))[(str(request)).index('?') + 1:-2]
+	# data = data.split("&")
+	# for i in range (len(data)):
+	# 	data[i] = (data[i]).split("=")
+	# new_data = []
+	# for lst in data:
+	# 	for s in lst:
+	# 		new_data.append(s)
+	# data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	data = {}
+	data['username'] = request.data['params']['username']
+	data['password'] = request.data['params']['password']
 
 	try:
 		queryset = User.objects.get(username=data['username'])
@@ -312,8 +321,8 @@ def UserDetail(request, pk):
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@api_view(['GET', 'POST'])
 def UserUpdate(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -396,19 +405,14 @@ def UserDelete(request, pk):
 		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@api_view(['POST'])
 def CreateTournament(request, pk):
-
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	print (f'~~~{request.data}', file=sys.stderr)
+	data = {}
+	data['name'] = request.data['params']['name']
+	data['description'] = request.data['params']['description']
+	data['capacity'] = int(request.data['params']['capacity'])
 
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -426,11 +430,19 @@ def CreateTournament(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def EndGame(request, pk):
 	try:
 		query = User.objects.get(pk=pk)
 	except:
 		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
+	game_date = datetime.now(timezone.utc)
+	if query.last_game is not None:
+		compare_date = game_date - query.last_game
+		if (compare_date.seconds < 5 and compare_date.days == 0):
+			return Response(status=status.HTTP_200_OK)
+	query.last_game = game_date
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
@@ -442,8 +454,7 @@ def EndGame(request, pk):
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-
-	data['date'] = str(datetime.now())[:10]
+	data['date'] = str(game_date)[:10]
 	data['host'] = pk
 	data['hostscore'] = int(data['hostscore'])
 	data['guestscore'] = int(data['guestscore'])
@@ -469,6 +480,7 @@ def EndGame(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def GameHistory(request, pk):
 	try:
 		User.objects.get(pk=pk)
@@ -488,6 +500,7 @@ def GameHistory(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def GameFullHistory(request, pk):
 	try:
 		User.objects.get(pk=pk)

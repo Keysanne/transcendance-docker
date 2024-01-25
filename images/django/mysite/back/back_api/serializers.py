@@ -21,7 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
 			'best_rank',
 			'twoFA',
 			'email',
-			'key')
+			'key',
+			'last_game')
 
 	def get_image_url(self, obj):
 		request = self.context.get('request')
