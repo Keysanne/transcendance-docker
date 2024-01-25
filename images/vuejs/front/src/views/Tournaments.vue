@@ -88,17 +88,17 @@ export default {
     data() {
         return {
             text: {
-                tournaments: ["Tournaments", "Tournois"],
-                my_tournaments: ["My Tournaments", "Mes tournois"],
-                new: ["New", "Nouveau"],
-                new_tournament: ["New tournament", "Nouveau tournois"],
-                name: ["Name", "Nom"],
-                description: ["Description", "Description"],
-                size: ["Select a size", "Choisis une taille"],
-                close: ["Close", "Fermer"],
-                create: ["Create tournament", "Creer le tournois"],
-                join: ["Join a tournament", "Rejoindre un tournois"],
-                no_tournaments: ["No tournaments yet...", "Pas encore de tournois ..."]
+                tournaments: ["Tournaments", "Tournois", "トーナメント"],
+                my_tournaments: ["My Tournaments", "Mes tournois", "私のトーナメント"],
+                new: ["New", "Nouveau", "新しい"],
+                new_tournament: ["New tournament", "Nouveau tournois", "新たなイベント"],
+                name: ["Name", "Nom", "名前"],
+                description: ["Description", "Description", "記述"],
+                size: ["Select a size", "Choisis une taille", "サイズを選択する"],
+                close: ["Close", "Fermer", "閉じる"],
+                create: ["Create tournament", "Creer le tournois", "トーナメントを作成"],
+                join: ["Join a tournament", "Rejoindre un tournois", "トーナメントに参加する"],
+                no_tournaments: ["No tournaments yet...", "Pas encore de tournois ...", "まだトーナメントはありません..."]
             },
 
             new_tournament_name: "",
