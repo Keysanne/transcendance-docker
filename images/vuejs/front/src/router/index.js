@@ -23,7 +23,7 @@ const router = createRouter({
         {path: '/tournaments', name: 'Tournaments', component: Tournaments},
         {path: '/tournament/:id', name: 'TournamentView', component: TournamentView},
         {path: '/play', name: 'Play', component: Play},
-        {path: '/pong', name: 'Pong', component: Pong},
+        {path: '/pong/:ids(\\d+)*', name: 'Pong', component: Pong},
         {path: '/friends', name: 'Friends', component: Friends},
         {path: '/pong4p', name: 'Pong4P', component: Pong4P},
         {path: '/difficulty', name: 'Difficulty', component: Difficulty},

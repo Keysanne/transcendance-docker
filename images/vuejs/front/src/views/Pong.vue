@@ -138,14 +138,31 @@ export default {
 			this.context.fillText("to restart", 240, 220);
 			if (this.send == 0) {
 				console.log("caca")
-				const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
-				axios.get(URL, {
-					headers: {
-						'Authorization': 'Bearer ' + localStorage.getItem("access")
-					}
-       	 		}).then(response => {
-
-				})
+				if (this.$route.params.ids.length == 0) {
+					const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
+					axios.get(URL, {
+						headers: {
+							'Authorization': 'Bearer ' + localStorage.getItem("access")
+						}
+					})
+					.then(response => {
+							
+					})
+				}
+				else {
+					const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.ids[0] + "/match-result/?player1=" + this.$route.params.ids[1] + "&player1score=" + this.player1Score + "&player2=" + this.$route.params.ids[1] + "&player2score=" + this.player2Score
+					axios.get(URL, {
+						headers: {
+							'Authorization': 'Bearer ' + localStorage.getItem("access")
+						}
+					})
+					.then(response => {
+						this.$router.push({path: "/tournament/" + this.$route.params.ids[0]})
+					})
+					.catch(error => {
+						console.log(error)
+					})
+				}
 				this.send = 1;
 			}
 			this.resetGame(0);
@@ -309,6 +326,9 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+		if (this.$route.params.ids.length != 0 && this.$route.params.ids.length != 3) {
+			this.$router.push({path: '/'})
+		}
 		this.player1 = {
 			x: 10,
 			y: (this.boardHeight / 2) - (this.playerHeight / 2),

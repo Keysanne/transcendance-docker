@@ -179,14 +179,10 @@ export default {
     },
     methods: {
         createTournament() {
-            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/createtournament/"
+            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/createtournament/?name=" + this.new_tournament_name + "&description=" + this.new_tournament_description + "&capacity=" + this.new_tournament_size
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
-                },
-                data: {
-                    name: this.new_tournament_name,
-                    description: this.new_tournament_description
                 }
             })
             .then(response => {
