@@ -55,6 +55,8 @@ services:
     restart: always
     ports:
       - "8200:8200"
+    depends_on:
+      - db
 
 volumes:
   postgres:
