@@ -32,7 +32,7 @@
               <ul class="dropdown-menu">
                 <li v-if="lang != 0"><button class="dropdown-item" @click="changeLang(0)">{{ text.lang[0] }}</button></li>
                 <li v-if="lang != 1"><button class="dropdown-item" @click="changeLang(1)">{{ text.lang[1] }}</button></li>
-                <!-- <li v-if="lang != 2"><button class="dropdown-item" @click="changeLang(2)">{{ text.lang[2] }}</button></li> -->
+                <li v-if="lang != 2"><button class="dropdown-item" @click="changeLang(2)">{{ text.lang[2] }}</button></li>
               </ul>
             </div>
           </li>
