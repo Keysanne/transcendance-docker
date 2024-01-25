@@ -27,12 +27,12 @@ export default {
     data() {
         return {
             text: {
-                welcome: ["Welcome to transcendance!", "Bienvenue sur transcendance !"],
-                best: ["The best pong game in the world", "Le meilleur pong du monde"],
-                goty: ["(GOTY 2024)", "(GOTY 2024)"],
-                play: ["Play", "Jouer"],
-                leaderboard: ["Leaderboard", "Classement"],
-                tournaments: ["Tournaments", "Tournois"],
+                welcome: ["Welcome to transcendance!", "Bienvenue sur transcendance !", "「Transcendance」へようこそ !"],
+                best: ["The best pong game in the world", "Le meilleur pong du monde", "世界最高のポンゲーム"],
+                goty: ["(GOTY 2024)", "(GOTY 2024)", "「GOTY 2024」"],
+                play: ["Play", "Jouer", "プレイ"],
+                leaderboard: ["Leaderboard", "Classement", "ランキング"],
+                tournaments: ["Tournaments", "Tournois", "トーナメント"],
             },
         }
     },
