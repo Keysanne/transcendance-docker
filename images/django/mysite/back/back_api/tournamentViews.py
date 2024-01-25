@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+import sys
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -126,6 +128,10 @@ def addContestant(request, tpk, upk):
 	data['tournament'] = tpk
 	data['user'] = upk
 	data['position'] = 0
+
+	for c in contestants:
+		if c.nickname == data['nickname']:
+			return Response({'problem': 'Nickname alrady used'}, status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 
 	positions = []
 	for i, c in enumerate(contestants):
