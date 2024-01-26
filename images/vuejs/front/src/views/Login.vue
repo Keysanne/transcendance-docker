@@ -46,7 +46,7 @@
             </div> -->
             
             <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="login">{{ text.log_in[lang] }}</button>
-            <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin&response_type=code" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
+            <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=https%3A%2F%2F127.0.0.1%3A8080%2Flogin&response_type=code" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
                 {{ text.login_42[lang] }}
                 <img src="../assets/42_logo_png.png" class="ml-2 w-10"/>
             </a>
@@ -92,28 +92,28 @@ export default {
     data() {
         return {
             text: {
-                login: ["Login", "Se connecter"],
-                username: ["Username", "Nom d'utilisateur"],
-                password: ["Password", "Mot de passe"],
-                remember: ["Remember me", "Se souvenir de moi"],
-                log_in: ["Log in", "Se connecter"],
-                login_42: ["Log in with", "Se connecter avec"],
-                new_here: ["New here?", "Nouveau ici ?"],
-                confirm_password: ["Confirm password", "Confirmation du mot de passe"],
-                signup: ["Sign up", "Creer mon compte"],
-                at_least: ["Username must be at least 5 characters", "Le nom d'utilisateur doit faire au moins 5 caracteres"],
-                at_most: ["Username must be at most 14 characters", "Le nom d'utilisateur ne doit pas faire plus de 14 caracteres"],
-                alphanumeric: ["Username must be alphanumeric", "Le nom d'utilisateur doit etre compose de lettres et/ou de chiffres"],
-                at_least_8: ["Password must be at least 8 characters", "Le mot de passe doit faire au moins 8 caracteres"],
-                same_confirm: ["Confirm password must be the same as password", "Doit etre le meme que le mot de passe"],
-                already_used: ["Username already used", "Nom d'utilisateur deja utilise"],
-                incorrect_username: ["Incorrect username", "Nom d'utilisateur incorrect"],
-                incorrect_password: ["Incorrect password", "Mot de passe incorrect"],
-                failed: ["Log in with 42 failed", "La connection avec 42 a echoue"],
-                no_account: ["Don't have an account?", "Vous n'avez pas encore de compte ?"],
-                already_account: ["Already have an account?", "Vous avez deja un compte ?"],
-                enter_2fa: ["Enter the code", "Entrez le code"],
-                send: ["Send", "Envoyer"],
+                login: ["Login", "Se connecter", "ログイン"],
+                username: ["Username", "Nom d'utilisateur", "ユーザー名"],
+                password: ["Password", "Mot de passe", "パスワード"],
+                remember: ["Remember me", "Se souvenir de moi", "私を覚えている"],
+                log_in: ["Log in", "Se connecter", "ログイン"],
+                login_42: ["Log in with", "Se connecter avec", "でログイン"],
+                new_here: ["New here?", "Nouveau ici ?", "ここ新しく？"],
+                confirm_password: ["Confirm password", "Confirmation du mot de passe", "パスワードの確認"],
+                signup: ["Sign up", "Creer mon compte", "サインアップ"],
+                at_least: ["Username must be at least 5 characters", "Le nom d'utilisateur doit faire au moins 5 caracteres", "ユーザー名は少なくとも 5 文字でなければなりません"],
+                at_most: ["Username must be at most 14 characters", "Le nom d'utilisateur ne doit pas faire plus de 14 caracteres", "ユーザー名は最大 14 文字でなければなりません"],
+                alphanumeric: ["Username must be alphanumeric", "Le nom d'utilisateur doit etre compose de lettres et/ou de chiffres", "ユーザー名は英数字でなければなりません"],
+                at_least_8: ["Password must be at least 8 characters", "Le mot de passe doit faire au moins 8 caracteres", "パスワードは少なくとも 8 文字でなければなりません"],
+                same_confirm: ["Confirm password must be the same as password", "Doit etre le meme que le mot de passe", "確認パスワードはパスワードと同じである必要があります"],
+                already_used: ["Username already used", "Nom d'utilisateur deja utilise", "すでに使用されているユーザー名"],
+                incorrect_username: ["Incorrect username", "Nom d'utilisateur incorrect", "ユーザー名が間違っています"],
+                incorrect_password: ["Incorrect password", "Mot de passe incorrect", "間違ったパスワード"],
+                failed: ["Log in with 42 failed", "La connection avec 42 a echoue", "42 でログインに失敗しました"],
+                no_account: ["Don't have an account?", "Vous n'avez pas encore de compte ?", "アカウントをお持ちではありませんか？"],
+                already_account: ["Already have an account?", "Vous avez deja un compte ?", "すでにアカウントをお持ちですか？"],
+                enter_2fa: ["Enter the code", "Entrez le code", "コードを入力する"],
+                send: ["Send", "Envoyer", "送信"],
             },
 
             signup_display: false,
@@ -190,8 +190,15 @@ export default {
                 const BASE_URL = "http://127.0.0.1:8000/"
                 const CREATE_ENDPOINT = "user/create/"
                 const TOKEN_ENDPOINT = "api/token/"
-                const PARAMS = "?username="+this.signup_username+"&password="+this.signup_password
-                axios.post(BASE_URL + CREATE_ENDPOINT + PARAMS).then(response => {
+                axios.post(BASE_URL + CREATE_ENDPOINT, {
+                    headers: {
+                    'Content-Type': 'application/json'
+                },
+                    params: {
+                        username: this.signup_username,
+                        password: this.signup_password
+                    }
+                }).then(response => {
                     this.pk = response.data.pk
                     axios.post(BASE_URL + TOKEN_ENDPOINT, {
                         username: this.signup_username,
@@ -206,6 +213,7 @@ export default {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
                             }
                         })
+                        localStorage.setItem("lang", 0)
                         this.$router.push({path: '/'})
                     })
                 })
@@ -218,9 +226,17 @@ export default {
             const BASE_URL = "http://127.0.0.1:8000/"
     		const CONNECT_ENDPOINT = "user/connect/"
 	    	const TOKEN_ENDPOINT = "api/token/"
-		    const PARAMS = "?username="+this.login_username+"&password="+this.login_password
-            axios.get(BASE_URL + CONNECT_ENDPOINT + PARAMS).then(response => {
+            axios.post(BASE_URL + CONNECT_ENDPOINT, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    username: this.login_username,
+                    password: this.login_password
+                }
+            }).then(response => {
                 this.pk = response.data.pk
+                localStorage.setItem("lang", response.data.lang)
                 if (response.data.twoFA == true){
                     this.openModal()
                 }

@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from django.contrib.auth import authenticate
 from PIL import Image
 import django
@@ -39,17 +39,22 @@ ACCESS_TOKEN = response = requests.post(
 
 @api_view(['POST'])
 def UserCreate(request):
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
-	password_unhashed = data['password']
-	data['password'] = make_password(data['password'])
+	# data = (str(request))[(str(request)).index('?') + 1:-2]
+	# data = data.split("&")
+	# for i in range (len(data)):
+	# 	data[i] = (data[i]).split("=")
+	# new_data = []
+	# for lst in data:
+	# 	for s in lst:
+	# 		new_data.append(s)
+	# data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	# password_unhashed = data['password']
+	# data['password'] = make_password(data['password'])
+
+	data = {}
+	data['username'] = request.data['params']['username']
+	data['password'] = make_password(request.data['params']['password'])
+	password_unhashed = request.data['params']['password']
 	serializer = UserSerializer(data=data)
 
 	params = {'access_token': ACCESS_TOKEN}
@@ -105,18 +110,17 @@ def RemoteLogin(request):
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-	params = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET, 'code': data['code'], 'redirect_uri': 'http://127.0.0.1:8080/login'}
+	params = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET, 'code': data['code'], 'redirect_uri': 'https://127.0.0.1:8080/login'}
 	response = requests.post('https://api.intra.42.fr/oauth/token', params=params)
 	load = json.loads(response.text)
 
 	response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {load["access_token"]}'})
-
 	login = json.loads(response.text)['login']
 	try:
 		query = User.objects.get(username=login)
 		user = authenticate(username=login, password=REMOTE_PASSWORD)
 		if user is not None:
-			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA, "lang": query.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
@@ -132,23 +136,27 @@ def RemoteLogin(request):
 			user = authenticate(username=login, password=REMOTE_PASSWORD)
 			print(user, login, REMOTE_PASSWORD, file=sys.stderr)
 			if user is not None:
-				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA']}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA'], "lang": serializer.data["language"]}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def UserConnect(request):
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	# data = (str(request))[(str(request)).index('?') + 1:-2]
+	# data = data.split("&")
+	# for i in range (len(data)):
+	# 	data[i] = (data[i]).split("=")
+	# new_data = []
+	# for lst in data:
+	# 	for s in lst:
+	# 		new_data.append(s)
+	# data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+
+	data = {}
+	data['username'] = request.data['params']['username']
+	data['password'] = request.data['params']['password']
 
 	try:
 		queryset = User.objects.get(username=data['username'])
@@ -161,13 +169,13 @@ def UserConnect(request):
 			key = generate_and_sendmail(queryset.email)
 			queryset.key = key
 			queryset.save()
-			return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk': queryset.pk, "twoFA": queryset.twoFA, "lang": queryset.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			username = data['username']
 			password = data['password']
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA, "lang": queryset.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -312,8 +320,8 @@ def UserDetail(request, pk):
 		return Response({'pk':pk}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@api_view(['GET', 'POST'])
 def UserUpdate(request, pk):
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -374,6 +382,18 @@ def StatusUpdate(request, pk, statu):
 		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def LangUpdate(request, pk, lang):
+	try:
+		query = User.objects.get(pk=pk)
+		query.language = lang
+		query.save()
+		return Response(status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+	except:
+		return Response({'problem': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
+
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def UserDelete(request, pk):
@@ -384,19 +404,13 @@ def UserDelete(request, pk):
 		return Response(status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 
-@api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@api_view(['POST'])
 def CreateTournament(request, pk):
-
-	data = (str(request))[(str(request)).index('?') + 1:-2]
-	data = data.split("&")
-	for i in range (len(data)):
-		data[i] = (data[i]).split("=")
-	new_data = []
-	for lst in data:
-		for s in lst:
-			new_data.append(s)
-	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
+	data = {}
+	data['name'] = request.data['params']['name']
+	data['description'] = request.data['params']['description']
+	data['capacity'] = int(request.data['params']['capacity'])
 
 	try:
 		queryset = User.objects.get(pk=pk)
@@ -414,11 +428,19 @@ def CreateTournament(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def EndGame(request, pk):
 	try:
 		query = User.objects.get(pk=pk)
 	except:
 		return Response({'problem': 'user does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+
+	game_date = datetime.now(timezone.utc)
+	if query.last_game is not None:
+		compare_date = game_date - query.last_game
+		if (compare_date.seconds < 5 and compare_date.days == 0):
+			return Response(status=status.HTTP_200_OK)
+	query.last_game = game_date
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
@@ -430,8 +452,7 @@ def EndGame(request, pk):
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-
-	data['date'] = str(datetime.now())[:10]
+	data['date'] = str(game_date)[:10]
 	data['host'] = pk
 	data['hostscore'] = int(data['hostscore'])
 	data['guestscore'] = int(data['guestscore'])
@@ -457,6 +478,7 @@ def EndGame(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def GameHistory(request, pk):
 	try:
 		User.objects.get(pk=pk)
@@ -476,6 +498,7 @@ def GameHistory(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def GameFullHistory(request, pk):
 	try:
 		User.objects.get(pk=pk)

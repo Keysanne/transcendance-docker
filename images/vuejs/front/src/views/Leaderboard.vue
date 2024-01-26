@@ -24,7 +24,7 @@ export default {
     data() {
         return {
             text: {
-                leaderboard: ["Leaderboard", "Classement"],
+                leaderboard: ["Leaderboard", "Classement", "ランキング"],
             },
 
             players: [],

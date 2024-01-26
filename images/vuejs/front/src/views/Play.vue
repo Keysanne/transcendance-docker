@@ -25,10 +25,10 @@ export default {
     data() {
         return {
             text: {
-                choose: ["Choose your game mode", "Choisis ton mode de jeu"],
-                solo: ["Solo vs AI", "Solo vs IA"],
-                local: ["Local 1 vs 1", "Local 1 vs 1"],
-                local_4: ["Local 1 vs 1 vs 1 vs 1", "Local 1 vs 1 vs 1 vs 1"],
+                choose: ["Choose your game mode", "Choisis ton mode de jeu", "ゲームモードを選択してください"],
+                solo: ["Solo vs AI", "Solo vs IA", "ソロ vs IA"],
+                local: ["Local 1 vs 1", "Local 1 vs 1", "ローカル 1 vs 1"],
+                local_4: ["Local 1 vs 1 vs 1 vs 1", "Local 1 vs 1 vs 1 vs 1", "ローカル 1 vs 1 vs 1 vs 1"],
             },
         }
     },

@@ -54,12 +54,12 @@ export default {
     data() {
         return {
             text: {
-                details: ["Details", "Details"],
-                players: ["Players", "Joueurs"],
-                close: ["Close", "Fermer"],
-                start: ["Start tournament", "Commencer le tournois"],
-                no_players: ["No players yet...", "Pas encore de joueurs ..."],
-                tree: ["Tournament page", "Page du tournois"],
+                details: ["Details", "Details", "詳細"],
+                players: ["Players", "Joueurs", "プレイヤー"],
+                close: ["Close", "Fermer", "閉じる"],
+                start: ["Start tournament", "Commencer le tournois", "トーナメント開始"],
+                no_players: ["No players yet...", "Pas encore de joueurs ...", "まだプレイヤーはいません..."],
+                tree: ["Tournament page", "Page du tournois", "トーナメントページ"],
             },
         }
     },
