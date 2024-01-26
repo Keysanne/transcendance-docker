@@ -30,6 +30,7 @@ load_dotenv()
 CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REMOTE_PASSWORD = os.getenv('REMOTE_PASSWORD')
+MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 ACCESS_TOKEN = response = requests.post(
 		"https://api.intra.42.fr/oauth/token",
         data={"grant_type": "client_credentials"},
@@ -82,7 +83,6 @@ def	generate_and_sendmail(email):
 	key = pyotp.random_base32()[:6]
 	# zvmr cdpq fcmi lzbk code google pour app Python
 	email_sender = "transcendance42lehavre@gmail.com"
-	email_password = "zvmr cdpq fcmi lzbk"
 	subject = "transcendance 2FA"
 	body = "here is your code for the 2FA: " + key
 	email_receiver = email
@@ -93,7 +93,7 @@ def	generate_and_sendmail(email):
 	em.set_content(body)
 	context = ssl.create_default_context()
 	with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-		smtp.login(email_sender, email_password)
+		smtp.login(email_sender, MAIL_PASSWORD)
 		smtp.sendmail(email_sender, email_receiver, em.as_string())
 	return key
 

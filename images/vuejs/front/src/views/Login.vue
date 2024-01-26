@@ -187,7 +187,6 @@ export default {
         signUp() {
             if (this.checkUsername() && this.checkPassword())
             {
-                const BASE_URL = "http://127.0.0.1:8000/"
                 const CREATE_ENDPOINT = "user/create/"
                 const TOKEN_ENDPOINT = "api/token/"
                 axios.post(BASE_URL + CREATE_ENDPOINT, {
@@ -200,14 +199,14 @@ export default {
                     }
                 }).then(response => {
                     this.pk = response.data.pk
-                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                    axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
                         username: this.signup_username,
                         password: this.signup_password
                     }).then(response_token => {
                         console.log(response_token)
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
-                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -223,10 +222,9 @@ export default {
             }
         },
         login() {
-            const BASE_URL = "http://127.0.0.1:8000/"
     		const CONNECT_ENDPOINT = "user/connect/"
 	    	const TOKEN_ENDPOINT = "api/token/"
-            axios.post(BASE_URL + CONNECT_ENDPOINT, {
+            axios.post(import.meta.env.VITE_BASE_URL + CONNECT_ENDPOINT, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -247,7 +245,7 @@ export default {
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
-                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -269,18 +267,17 @@ export default {
             })
         },
         sendCode() {
-            const BASE_URL = "http://127.0.0.1:8000/"
     		const KEY_ENDPOINT = "user/" + this.pk + "/key/?code=" + this.twoFA_code + "&username=" + this.login_username + "&password=" + this.login_password
             const TOKEN_ENDPOINT = "api/token/"
             axios.get(BASE_URL + KEY_ENDPOINT).then(reponse => {
                 this.closeModal()
-                axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
                     username: this.login_username,
                     password: this.login_password
                 }).then(response_token => {
                     localStorage.setItem("access", response_token.data.access)
                     localStorage.setItem("pk", this.pk)
-                    const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                    const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
                     axios.get(URL, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -311,17 +308,16 @@ export default {
             var code = window.location.search.search(/\?code=[A-Za-z0-9]/)
             if (code != -1) {
                 code = window.location.search.split('=')[1]
-                const URL = "http://127.0.0.1:8000/user/remote-login/?code=" + code
-                const BASE_URL = "http://127.0.0.1:8000/"
+                const URL = import.meta.env.VITE_BASE_URL + "user/remote-login/?code=" + code
                 const TOKEN_ENDPOINT = "api/token/"
                 axios.get(URL).then(response => {
-                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                    axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
                         username: response.data.username,
                         password: response.data.password
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", response.data.pk)
-                        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
