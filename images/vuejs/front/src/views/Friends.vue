@@ -90,7 +90,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        var URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/list/"
+        var URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -130,7 +130,7 @@ export default {
             }
 	    })
 
-        URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/pending/"
+        URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/pending/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -165,7 +165,7 @@ export default {
     },
     methods: {
         add() {
-            const URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/invite/" + this.search_username + "/" 
+            const URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/invite/" + this.search_username + "/" 
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

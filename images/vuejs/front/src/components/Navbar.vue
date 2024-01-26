@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     logout() {
-      const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/0/"
+      const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/0/"
       axios.get(URL, {
           headers: {
               'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -75,7 +75,7 @@ export default {
       this.$router.push({path: "/login"})
     },
     changeLang(i) {
-      const URL = import.meta.env.VITE_BASE_URL + "/user/" + localStorage.getItem("pk") + "/lang/" + i + "/"
+      const URL = import.meta.env.VITE_URL_BASE + "/user/" + localStorage.getItem("pk") + "/lang/" + i + "/"
       axios.get(URL, {
           headers: {
               'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -96,7 +96,7 @@ export default {
     }
   },
   mounted() {
-    const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/"
+    const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
     axios.get(URL, {
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem("access")

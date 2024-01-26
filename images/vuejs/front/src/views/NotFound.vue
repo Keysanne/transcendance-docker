@@ -21,7 +21,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/"
+        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")

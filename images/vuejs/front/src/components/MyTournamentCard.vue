@@ -92,7 +92,7 @@ export default {
     },
     methods: {
         startTournament() {
-            const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.id + "/start/"
+            const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.id + "/start/"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

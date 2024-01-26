@@ -117,7 +117,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_BASE_URL + "tournament/list/"
+        const URL = import.meta.env.VITE_URL_BASE + "tournament/list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -179,7 +179,7 @@ export default {
     },
     methods: {
         createTournament() {
-            const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/createtournament/"
+            const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/createtournament/"
             axios.post(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access"),

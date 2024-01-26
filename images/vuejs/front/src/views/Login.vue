@@ -39,14 +39,9 @@
                 <input v-model="login_password" type="password" :class="login_password_label != text.password[lang] ? 'is-invalid' : ''" class="form-control" id="login_password" placeholder="password">
                 <label for="login_password">{{ login_password_label }}</label>
             </div>
-
-            <!-- <div class="form-check w-[90%] max-w-xl mt-3">
-                <input v-model="login_remember_me" type="checkbox" class="form-check-input" id="login_remember_me">
-                <label class="form-check-label text-light" for="login_remember_me">{{ text.remember[lang] }}</label>
-            </div> -->
             
             <button type="button" class="btn btn-secondary w-[90%] max-w-xl mt-8 h-10" @click="login">{{ text.log_in[lang] }}</button>
-            <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=https%3A%2F%2F127.0.0.1%3A8080%2Flogin&response_type=code" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
+            <a :href="'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-81d49bc94d932815eff49672933b8ab64b722a244e6fb161bdcc83d2a6807f0c&redirect_uri=https%3A%2F%2F' + ip + '%3A8080%2Flogin&response_type=code'" type="button" class="btn btn-dark w-[90%] max-w-xl mt-3 d-flex justify-content-center align-items-center h-10">
                 {{ text.login_42[lang] }}
                 <img src="../assets/42_logo_png.png" class="ml-2 w-10"/>
             </a>
@@ -130,7 +125,8 @@ export default {
             login_password_label: "",
             is_alert: false,
             twoFA_code: "",
-            pk: ""
+            pk: "",
+            ip: import.meta.env.VITE_IP
         }
     },
 
@@ -199,14 +195,14 @@ export default {
                     }
                 }).then(response => {
                     this.pk = response.data.pk
-                    axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
+                    axios.post(import.meta.env.VITE_URL_BASE + TOKEN_ENDPOINT, {
                         username: this.signup_username,
                         password: this.signup_password
                     }).then(response_token => {
                         console.log(response_token)
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
-                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -224,7 +220,7 @@ export default {
         login() {
     		const CONNECT_ENDPOINT = "user/connect/"
 	    	const TOKEN_ENDPOINT = "api/token/"
-            axios.post(import.meta.env.VITE_BASE_URL + CONNECT_ENDPOINT, {
+            axios.post(import.meta.env.VITE_URL_BASE + CONNECT_ENDPOINT, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -245,7 +241,7 @@ export default {
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
-                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -271,13 +267,13 @@ export default {
             const TOKEN_ENDPOINT = "api/token/"
             axios.get(BASE_URL + KEY_ENDPOINT).then(reponse => {
                 this.closeModal()
-                axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
+                axios.post(import.meta.env.VITE_URL_BASE + TOKEN_ENDPOINT, {
                     username: this.login_username,
                     password: this.login_password
                 }).then(response_token => {
                     localStorage.setItem("access", response_token.data.access)
                     localStorage.setItem("pk", this.pk)
-                    const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
+                    const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
                     axios.get(URL, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -308,16 +304,16 @@ export default {
             var code = window.location.search.search(/\?code=[A-Za-z0-9]/)
             if (code != -1) {
                 code = window.location.search.split('=')[1]
-                const URL = import.meta.env.VITE_BASE_URL + "user/remote-login/?code=" + code
+                const URL = import.meta.env.VITE_URL_BASE + "user/remote-login/?code=" + code
                 const TOKEN_ENDPOINT = "api/token/"
                 axios.get(URL).then(response => {
-                    axios.post(import.meta.env.VITE_BASE_URL + TOKEN_ENDPOINT, {
+                    axios.post(import.meta.env.VITE_URL_BASE + TOKEN_ENDPOINT, {
                         username: response.data.username,
                         password: response.data.password
                     }).then(response_token => {
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", response.data.pk)
-                        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/status/1/"
+                        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
                         axios.get(URL, {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")

@@ -34,7 +34,7 @@ export default {
     },
     methods: {
         accept() {
-            const URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/accept/" + this.username + "/" 
+            const URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/accept/" + this.username + "/" 
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -45,7 +45,7 @@ export default {
             })
         },
         decline() {
-            const URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/deny/" + this.username + "/" 
+            const URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/deny/" + this.username + "/" 
             axios.delete(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -56,7 +56,7 @@ export default {
             })
         },
         block() {
-            const URL = import.meta.env.VITE_BASE_URL + "friend/" + localStorage.getItem("pk") + "/block/" + this.username + "/" 
+            const URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/block/" + this.username + "/" 
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

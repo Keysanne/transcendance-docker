@@ -135,7 +135,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.$route.params.id + "/contestant-list/"
+        const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.$route.params.id + "/contestant-list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
