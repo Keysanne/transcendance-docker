@@ -80,7 +80,7 @@ export default {
                 this.nickname_label = this.text.alphanumeric[this.lang]
                 return
             }
-            const URL = "http://127.0.0.1:8000/tournament/" + this.id + "/add-contestant/" + localStorage.getItem("pk") + "/?nickname=" + this.nickname
+            const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.id + "/add-contestant/" + localStorage.getItem("pk") + "/?nickname=" + this.nickname
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -96,7 +96,7 @@ export default {
             })
         },
         unregister() {
-            const URL = "http://127.0.0.1:8000/tournament/" + this.id + "/remove-contestant/" + localStorage.getItem("pk") + "/"
+            const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.id + "/remove-contestant/" + localStorage.getItem("pk") + "/"
             axios.delete(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

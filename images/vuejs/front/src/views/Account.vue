@@ -244,7 +244,7 @@ export default {
             let formData = new FormData();
             formData.append('image_upload', image);
 
-            axios.post('http://127.0.0.1:8000/user/update/' + localStorage.getItem("pk") + "/",
+            axios.post(import.meta.env.VITE_BASE_URL + 'user/update/' + localStorage.getItem("pk") + "/",
                 formData,
                 {
                     headers: {
@@ -253,7 +253,7 @@ export default {
                     }
                 }).then(response => {
                     console.log(response)
-                    const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+                    const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/"
                     axios.get(URL, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -267,7 +267,7 @@ export default {
             });
         },
         enable_2fa() {
-            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/update-2fa/?mode=true"
+            const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/update-2fa/?mode=true"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -280,7 +280,7 @@ export default {
             })
         },
         disable_2fa() {
-            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/update-2fa/?mode=false"
+            const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/update-2fa/?mode=false"
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -293,7 +293,7 @@ export default {
             })
         },
         sendMail() {
-            const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/verif_mail/?email=" + this.twoFA_mail
+            const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/verif_mail/?email=" + this.twoFA_mail
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -306,7 +306,7 @@ export default {
             })
         },
         sendCode() {
-            const URL =  "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/verif_mail_key/?email=" + this.twoFA_mail + "&code=" + this.twoFA_code
+            const URL =  import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/verif_mail_key/?email=" + this.twoFA_mail + "&code=" + this.twoFA_code
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -335,7 +335,7 @@ export default {
         },
         updatePassword() {
             if (this.checkPassword()) {
-                const URL = "http://127.0.0.1:8000/user/update/" + localStorage.getItem("pk") + "/?password=" + this.new_password
+                const URL = import.meta.env.VITE_BASE_URL + "user/update/" + localStorage.getItem("pk") + "/?password=" + this.new_password
                 axios.get(URL, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -358,7 +358,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        var URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+        var URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -384,7 +384,7 @@ export default {
             }
 	    })
 
-        URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/gamehistory/"
+        URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/gamehistory/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")

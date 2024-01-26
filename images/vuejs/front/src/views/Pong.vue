@@ -140,7 +140,7 @@ export default {
 			if (this.send == 0) {
 				this.send = 1;
 				if (this.$route.params.ids.length == 0) {
-					const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
+					const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/endgame/?hostscore=" + this.player1Score + "&guestscore=" + this.player2Score + "&guest=" + "guest"
 					axios.get(URL, {
 						headers: {
 							'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -151,7 +151,7 @@ export default {
 					})
 				}
 				else {
-					const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.ids[0] + "/match-result/?player1=" + this.$route.params.ids[1] + "&player1score=" + this.player1Score + "&player2=" + this.$route.params.ids[2] + "&player2score=" + this.player2Score
+					const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.$route.params.ids[0] + "/match-result/?player1=" + this.$route.params.ids[1] + "&player1score=" + this.player1Score + "&player2=" + this.$route.params.ids[2] + "&player2score=" + this.player2Score
 					axios.get(URL, {
 						headers: {
 							'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -313,7 +313,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/user/" + localStorage.getItem("pk") + "/"
+        const URL = import.meta.env.VITE_BASE_URL + "user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")

@@ -149,7 +149,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.id + "/contestant-list/"
+        const URL = import.meta.env.VITE_BASE_URL + "tournament/" + this.$route.params.id + "/contestant-list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
