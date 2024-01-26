@@ -8,8 +8,6 @@ clean:
 ip:
 	chmod +x get_ip.sh
 	./get_ip.sh
-	echo -n "VITE_IP=" >> images/vuejs/front/.env
-	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> images/vuejs/front/.env
 
 fclean: clean
 	docker volume rm transcendance-docker_postgres

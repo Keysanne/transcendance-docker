@@ -185,7 +185,7 @@ export default {
             {
                 const CREATE_ENDPOINT = "user/create/"
                 const TOKEN_ENDPOINT = "api/token/"
-                axios.post(BASE_URL + CREATE_ENDPOINT, {
+                axios.post(import.meta.env.VITE_URL_BASE + CREATE_ENDPOINT, {
                     headers: {
                     'Content-Type': 'application/json'
                 },
@@ -235,7 +235,7 @@ export default {
                     this.openModal()
                 }
                 else {
-                    axios.post(BASE_URL + TOKEN_ENDPOINT, {
+                    axios.post(import.meta.env.VITE_URL_BASE + TOKEN_ENDPOINT, {
                         username: this.login_username,
                         password: this.login_password
                     }).then(response_token => {
@@ -265,7 +265,7 @@ export default {
         sendCode() {
     		const KEY_ENDPOINT = "user/" + this.pk + "/key/?code=" + this.twoFA_code + "&username=" + this.login_username + "&password=" + this.login_password
             const TOKEN_ENDPOINT = "api/token/"
-            axios.get(BASE_URL + KEY_ENDPOINT).then(reponse => {
+            axios.get(import.meta.env.VITE_URL_BASE + KEY_ENDPOINT).then(reponse => {
                 this.closeModal()
                 axios.post(import.meta.env.VITE_URL_BASE + TOKEN_ENDPOINT, {
                     username: this.login_username,
