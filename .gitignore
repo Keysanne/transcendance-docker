@@ -3,3 +3,4 @@ __pycache__
 images/django/mysite/back/media
 .env
 migrations
+images/vuejs/front/.env
