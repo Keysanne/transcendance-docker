@@ -254,7 +254,7 @@ def tournamentEnd(request, tpk):
 		return Response({'problem': 'tournament does not exist'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	try:
-		contestants = Contestant.objects.all().filter(tournament=tpk, status=1)
+		contestants = lst(Contestant.objects.all().filter(tournament=tpk, status=1))
 		if (len(contestants) > 1):
 			return Response({'problem': 'to many contestants alive'}, status=status.HTTP_412_PRECONDITION_FAILED, headers={'Access-Control-Allow-Origin':'*'})
 		if (len(contestants) < 1):
