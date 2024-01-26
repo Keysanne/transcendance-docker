@@ -6,9 +6,9 @@ clean:
 	docker system prune -a --force --volumes --all
 
 ip:
-	echo -n "URL=https://" >> .env
-	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> .env
-	echo "" >> .env
+	echo -n "VITE_URL_BASE=https://" > images/vuejs/front/.env
+	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> images/vuejs/front/.env
+	echo "/" >> images/vuejs/front/.env
 
 fclean: clean
 	docker volume rm transcendance-docker_postgres
