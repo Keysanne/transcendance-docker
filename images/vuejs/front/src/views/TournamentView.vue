@@ -151,7 +151,7 @@ export default {
 			this.players = []
 			for (var i in response.data.contestants) {
 				var player = {}
-				player["id"] = response.data.contestants[i].pk
+				player["id"] = response.data.contestants[i].user
 				player["username"] = response.data.contestants[i].username
 				player["nickname"] = response.data.contestants[i].nickname
 				player["image"] = response.data.contestants[i].pfp

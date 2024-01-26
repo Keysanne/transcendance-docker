@@ -235,6 +235,7 @@ export default {
                 }
             }).then(response => {
                 this.pk = response.data.pk
+                localStorage.setItem("lang", response.data.lang)
                 if (response.data.twoFA == true){
                     this.openModal()
                 }

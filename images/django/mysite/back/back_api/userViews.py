@@ -120,7 +120,7 @@ def RemoteLogin(request):
 		query = User.objects.get(username=login)
 		user = authenticate(username=login, password=REMOTE_PASSWORD)
 		if user is not None:
-			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk': query.pk, 'username': login, 'password': REMOTE_PASSWORD, "twoFA": query.twoFA, "lang": query.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	except:
@@ -136,7 +136,7 @@ def RemoteLogin(request):
 			user = authenticate(username=login, password=REMOTE_PASSWORD)
 			print(user, login, REMOTE_PASSWORD, file=sys.stderr)
 			if user is not None:
-				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA']}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+				return Response({'pk': serializer.data['pk'], 'username': login, 'password': REMOTE_PASSWORD, "twoFA": serializer.data['twoFA'], "lang": serializer.data["language"]}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 		return Response({'problem':serializer.errors}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
@@ -169,13 +169,13 @@ def UserConnect(request):
 			key = generate_and_sendmail(queryset.email)
 			queryset.key = key
 			queryset.save()
-			return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'pk': queryset.pk, "twoFA": queryset.twoFA, "lang": queryset.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 		else:
 			username = data['username']
 			password = data['password']
 			user = authenticate(username=username, password=password)
 			if user is not None:
-				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
+				return Response({'pk': queryset.pk, "twoFA": queryset.twoFA, "lang": queryset.language}, status=status.HTTP_200_OK, headers={'Access-Control-Allow-Origin':'*'})
 			else:
 				return Response({'problem': 'JWT'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 	return Response({'problem': 'password'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})

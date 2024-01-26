@@ -151,7 +151,7 @@ export default {
 					})
 				}
 				else {
-					const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.ids[0] + "/match-result/?player1=" + this.$route.params.ids[1] + "&player1score=" + this.player1Score + "&player2=" + this.$route.params.ids[1] + "&player2score=" + this.player2Score
+					const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.ids[0] + "/match-result/?player1=" + this.$route.params.ids[1] + "&player1score=" + this.player1Score + "&player2=" + this.$route.params.ids[2] + "&player2score=" + this.player2Score
 					axios.get(URL, {
 						headers: {
 							'Authorization': 'Bearer ' + localStorage.getItem("access")
