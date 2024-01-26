@@ -213,6 +213,7 @@ export default {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
                             }
                         })
+                        localStorage.setItem("lang", 0)
                         this.$router.push({path: '/'})
                     })
                 })
@@ -235,6 +236,7 @@ export default {
                 }
             }).then(response => {
                 this.pk = response.data.pk
+                localStorage.setItem("lang", response.data.lang)
                 if (response.data.twoFA == true){
                     this.openModal()
                 }
