@@ -6,9 +6,8 @@ clean:
 	docker system prune -a --force --volumes --all
 
 ip:
-	echo -n "VITE_URL_BASE=https://" > images/vuejs/front/.env
-	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> images/vuejs/front/.env
-	echo ":8000/" >> images/vuejs/front/.env
+	chmod +x get_ip.sh
+	./get_ip.sh
 	echo -n "VITE_IP=" >> images/vuejs/front/.env
 	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> images/vuejs/front/.env
 

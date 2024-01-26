@@ -118,17 +118,31 @@ export default {
 				}
 			}
 			if (this.max_players == 16 && save == 4) {
+				this.send_end();
 				return 1;
 			}
 			else if (this.max_players == 8 && save == 3) {
+				this.send_end();
 				return 1;
 			}
 			else if (this.max_players == 4 && save == 2) {
+				this.send_end();
 				return 1;
 			}
 			else {
 				return 0;
 			}
+		},
+		send_end() {
+			const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.id + "/end/"
+			axios.get(URL, {
+				headers: {
+					'Authorization': 'Bearer ' + localStorage.getItem("access")
+				}
+			})
+			.then(response => {
+						
+			})
 		}
 	},
 	mounted() {
