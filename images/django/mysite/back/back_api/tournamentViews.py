@@ -149,8 +149,6 @@ def addContestant(request, tpk, upk):
 			positions.append(c.position)
 			data['position'] += 1
 
-	print (data['position'])
-
 	serializer = ContestantSerializer(data=data)
 	if serializer.is_valid():
 		serializer.save()

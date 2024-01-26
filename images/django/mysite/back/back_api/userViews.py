@@ -110,12 +110,11 @@ def RemoteLogin(request):
 			new_data.append(s)
 	data = {new_data[i]: new_data[i + 1] for i in range (0, len(new_data), 2)}
 
-	params = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET, 'code': data['code'], 'redirect_uri': 'http://127.0.0.1:8080/login'}
+	params = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET, 'code': data['code'], 'redirect_uri': 'https://127.0.0.1:8080/login'}
 	response = requests.post('https://api.intra.42.fr/oauth/token', params=params)
 	load = json.loads(response.text)
 
 	response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {load["access_token"]}'})
-
 	login = json.loads(response.text)['login']
 	try:
 		query = User.objects.get(username=login)
@@ -408,7 +407,6 @@ def UserDelete(request, pk):
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
 def CreateTournament(request, pk):
-	print (f'~~~{request.data}', file=sys.stderr)
 	data = {}
 	data['name'] = request.data['params']['name']
 	data['description'] = request.data['params']['description']
