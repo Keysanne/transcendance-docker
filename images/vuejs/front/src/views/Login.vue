@@ -213,6 +213,7 @@ export default {
                                 'Authorization': 'Bearer ' + localStorage.getItem("access")
                             }
                         })
+                        localStorage.setItem("lang", 0)
                         this.$router.push({path: '/'})
                     })
                 })
