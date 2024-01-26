@@ -4,7 +4,11 @@ all:
 clean:
 	docker-compose -f docker-compose.yml down
 	docker system prune -a --force --volumes --all
-	#docker volume rm transcendance-docker_postgres
+
+ip:
+	echo -n "URL=https://" >> .env
+	ifconfig | grep -w "inet 10.*.*.*" | head -c 23 | tail -c 10 >> .env
+	echo "" >> .env
 
 fclean: clean
 	docker volume rm transcendance-docker_postgres
