@@ -25,7 +25,7 @@ export default {
     data() {
         return {
             text: {
-                choose: ["Select your difficulty", "Choisis une difficulte", "難易度を選択してください"],
+                choose: ["Select your difficulty", "Choisis une difficulté", "難易度を選択してください"],
                 easy: ["Easy", "Facile", "簡単"],
                 medium: ["Medium", "Moyen", "中"],
                 hard: ["Hard", "Difficile", "難しい"],

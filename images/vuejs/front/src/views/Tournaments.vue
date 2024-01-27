@@ -96,7 +96,7 @@ export default {
                 description: ["Description", "Description", "記述"],
                 size: ["Select a size", "Choisis une taille", "サイズを選択する"],
                 close: ["Close", "Fermer", "閉じる"],
-                create: ["Create tournament", "Creer le tournois", "トーナメントを作成"],
+                create: ["Create tournament", "Créer le tournois", "トーナメントを作成"],
                 join: ["Join a tournament", "Rejoindre un tournois", "トーナメントに参加する"],
                 no_tournaments: ["No tournaments yet...", "Pas encore de tournois ...", "まだトーナメントはありません..."]
             },

@@ -55,7 +55,7 @@ export default {
         friends: ["Friends", "Amis", "友達"],
         account: ["My account", "Mon compte", "マイアカウント"],
         logout: ["Log out", "Se deconnecter", "ログアウト"],
-        lang: ["English", "Francais", "日本語"]
+        lang: ["English", "Français", "日本語"]
       },
 
       showMenu: false,

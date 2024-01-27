@@ -175,7 +175,7 @@ export default {
             text: {
                 change_password: ["Change password", "Changer le mot de passe", "パスワード変更"],
                 enable_2fa: ["Enable 2FA", "Activer l'A2F", "可能にする A2F"],
-                disable_2fa: ["Disable 2FA", "Desactiver l'A2F", "無効にし A2F"],
+                disable_2fa: ["Disable 2FA", "Désactiver l'A2F", "無効にし A2F"],
                 close: ["Close", "Fermer", "閉じる"],
                 current_password: ["Current password", "Mot de passe actuel", "現在のパスワード"],
                 new_password: ["New password", "Nouveau mot de passe", "新しいパスワード"],
@@ -192,8 +192,8 @@ export default {
                 send: ["Send", "Envoyer", "送信"],
                 enter_2fa: ["Enter the code", "Entrez le code", "コードを入力する"],
                 no_games: ["No games yet...", "Pas encore de parties ...", "まだゲームはありません..."],
-                at_least_8: ["Password must be at least 8 characters", "Le mot de passe doit faire au moins 8 caracteres", "パスワードは少なくとも 8 文字でなければなりません"],
-                same_confirm: ["Confirm password must be the same as password", "Doit etre le meme que le mot de passe", "確認パスワードはパスワードと同じである必要があります"], 
+                at_least_8: ["Password must be at least 8 characters", "Le mot de passe doit faire au moins 8 caractères", "パスワードは少なくとも 8 文字でなければなりません"],
+                same_confirm: ["Confirm password must be the same as password", "Doit être le même que le mot de passe", "確認パスワードはパスワードと同じである必要があります"], 
             },
 
             twoFA_mail: "",

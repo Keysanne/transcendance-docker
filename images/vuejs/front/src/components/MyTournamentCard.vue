@@ -54,7 +54,7 @@ export default {
     data() {
         return {
             text: {
-                details: ["Details", "Details", "詳細"],
+                details: ["Details", "Détails", "詳細"],
                 players: ["Players", "Joueurs", "プレイヤー"],
                 close: ["Close", "Fermer", "閉じる"],
                 start: ["Start tournament", "Commencer le tournois", "トーナメント開始"],

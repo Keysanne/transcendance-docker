@@ -74,8 +74,8 @@ export default {
                 "search": ["Search", "Chercher", "検索"],
                 "no_friends": ["No friends yet...", "Pas encore d'amis ...", "まだ友達がいない..."],
                 "failed": ["This username does not exist", "Le nom d'utilisateur n'existe pas", "このユーザー名は存在しません"],
-                "success": ["Invitation sent", "Invitation envoyee", "招待状発送済み"],
-                "already": ["Your are already friend with this user", "Tu es deja ami avec cet utilisateur", "あなたはすでにこのユーザーと友達です"],
+                "success": ["Invitation sent", "Invitation envoyée", "招待状発送済み"],
+                "already": ["Your are already friend with this user", "Tu es déjà ami avec cet utilisateur", "あなたはすでにこのユーザーと友達です"],
             },
 
             search_username: "",
