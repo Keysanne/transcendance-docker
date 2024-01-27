@@ -113,7 +113,7 @@ def addContestant(request, tpk, upk):
 
 	contestants = Contestant.objects.all().filter(tournament=tpk)
 	if len(contestants) == tournament.capacity:
-		return Response({'problem': 'tournament if full'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
+		return Response({'problem': 'tournament is full'}, status=status.HTTP_400_BAD_REQUEST, headers={'Access-Control-Allow-Origin':'*'})
 
 	data = (str(request))[(str(request)).index('?') + 1:-2]
 	data = data.split("&")
@@ -131,7 +131,7 @@ def addContestant(request, tpk, upk):
 
 	for c in contestants:
 		if c.nickname == data['nickname']:
-			return Response({'problem': 'Nickname alrady used'}, status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
+			return Response({'problem': 'Nickname already used'}, status=status.HTTP_409_CONFLICT, headers={'Access-Control-Allow-Origin':'*'})
 
 	positions = []
 	for i, c in enumerate(contestants):
@@ -226,14 +226,14 @@ def tournamentMatchResult(request, pk):
 
 	if (data['player1score'] > data['player2score']):
 		c2.status = 0
-		c2.status = 1
+		c1.status = 1
 		c1.stage += 1
 		c1.save()
 		c2.save()
 		return Response(status=status.HTTP_200_OK)
 	if (data['player2score'] > data['player1score']):
 		c1.status = 0
-		c1.status = 1
+		c2.status = 1
 		c2.stage += 1
 		c1.save()
 		c2.save()

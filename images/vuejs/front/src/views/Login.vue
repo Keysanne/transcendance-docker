@@ -199,7 +199,6 @@ export default {
                         username: this.signup_username,
                         password: this.signup_password
                     }).then(response_token => {
-                        console.log(response_token)
                         localStorage.setItem("access", response_token.data.access)
                         localStorage.setItem("pk", this.pk)
                         const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
@@ -283,7 +282,6 @@ export default {
                 })
             })
             .catch(error => {
-                console.log(error)
             })
         },
         openModal() {

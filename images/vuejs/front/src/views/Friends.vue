@@ -130,6 +130,13 @@ export default {
             }
 	    })
 
+        URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
+
         URL = import.meta.env.VITE_URL_BASE + "friend/" + localStorage.getItem("pk") + "/pending/"
         axios.get(URL, {
             headers: {

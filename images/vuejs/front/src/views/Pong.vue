@@ -161,7 +161,6 @@ export default {
 						this.$router.push({path: "/tournament/" + this.$route.params.ids[0]})
 					})
 					.catch(error => {
-						console.log(error)
 					})
 				}
 			}
@@ -313,7 +312,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
+        var URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -329,6 +328,12 @@ export default {
 		if (this.$route.params.ids.length != 0 && this.$route.params.ids.length != 3) {
 			this.$router.push({path: '/'})
 		}
+		URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/2/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
 		this.player1 = {
 			x: 10,
 			y: (this.boardHeight / 2) - (this.playerHeight / 2),

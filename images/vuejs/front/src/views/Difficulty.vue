@@ -39,7 +39,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
+        var URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -52,6 +52,12 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+        URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
     },
     computed: {
         lang: function() {

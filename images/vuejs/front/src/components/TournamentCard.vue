@@ -8,9 +8,9 @@
             <div class="flex justify-between items-center mt-3">
                 <div>{{ nb_players }} / {{ max_players }}</div>
                 <button v-if="registered" class="btn btn-danger" @click="unregister">{{ text.unregister[lang] }}</button>
-                <button v-else class="btn btn-secondary" :disabled="nb_players >= max_players" data-bs-toggle="modal" data-bs-target="#nickname_modal">{{ text.register[lang] }}</button>
+                <button v-else class="btn btn-secondary" :disabled="nb_players >= max_players" data-bs-toggle="modal" :data-bs-target="'#nickname_modal_' + this.id_t">{{ text.register[lang] }}</button>
 
-                <div class="modal fade" id="nickname_modal" tabindex="-1" aria-labelledby="nickname_modal_label" aria-hidden="true">
+                <div class="modal fade" :id="'nickname_modal_' + this.id_t" tabindex="-1" aria-labelledby="nickname_modal_label" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -59,7 +59,7 @@ export default {
         }
     },
     props: {
-        id: Number,
+        id_t: Number,
         name: String,
         description: String,
         nb_players: Number,
@@ -75,12 +75,12 @@ export default {
         }
     },
     methods: {
-        register() {
+        register(e) {
             if (!(/^[a-zA-Z0-9]+$/.test(this.nickname))) {
                 this.nickname_label = this.text.alphanumeric[this.lang]
                 return
             }
-            const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.id + "/add-contestant/" + localStorage.getItem("pk") + "/?nickname=" + this.nickname
+            const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.id_t + "/add-contestant/" + localStorage.getItem("pk") + "/?nickname=" + this.nickname
             axios.get(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -96,7 +96,7 @@ export default {
             })
         },
         unregister() {
-            const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.id + "/remove-contestant/" + localStorage.getItem("pk") + "/"
+            const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.id_t + "/remove-contestant/" + localStorage.getItem("pk") + "/"
             axios.delete(URL, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("access")

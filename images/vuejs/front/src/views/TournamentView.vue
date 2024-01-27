@@ -118,38 +118,24 @@ export default {
 				}
 			}
 			if (this.max_players == 16 && save == 4) {
-				this.send_end();
 				return 1;
 			}
 			else if (this.max_players == 8 && save == 3) {
-				this.send_end();
 				return 1;
 			}
 			else if (this.max_players == 4 && save == 2) {
-				this.send_end();
 				return 1;
 			}
 			else {
 				return 0;
 			}
 		},
-		send_end() {
-			const URL = "http://127.0.0.1:8000/tournament/" + this.$route.params.id + "/end/"
-			axios.get(URL, {
-				headers: {
-					'Authorization': 'Bearer ' + localStorage.getItem("access")
-				}
-			})
-			.then(response => {
-						
-			})
-		}
 	},
 	mounted() {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.$route.params.id + "/contestant-list/"
+        var URL = import.meta.env.VITE_URL_BASE + "tournament/" + this.$route.params.id + "/contestant-list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -170,8 +156,17 @@ export default {
 				player["nickname"] = response.data.contestants[i].nickname
 				player["image"] = response.data.contestants[i].pfp
 				player["stage"] = response.data.contestants[i].stage
+				player["position"] = response.data.contestants[i].position
 				this.players.push(player)
 			}
+			this.players.sort(function (a, b) {
+                if (b.position < a.position) {
+                    return -1
+                }
+                else {
+                    return 1
+                }
+            })
 			this.check_next();
 		})
         .catch(error => {
@@ -181,6 +176,13 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+
+		URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
 	},
 	components: {
 		Navbar,

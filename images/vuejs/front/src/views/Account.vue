@@ -252,7 +252,6 @@ export default {
                         'Authorization': 'Bearer ' + localStorage.getItem("access")
                     }
                 }).then(response => {
-                    console.log(response)
                     const URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/"
                     axios.get(URL, {
                         headers: {
@@ -263,7 +262,6 @@ export default {
                         location.reload()
                     })
                 }).catch(response => {
-                    console.log(response)
             });
         },
         enable_2fa() {
@@ -276,7 +274,6 @@ export default {
                 this.twoFA = true
             })
             .catch(error => {
-                console.log(error)
             })
         },
         disable_2fa() {
@@ -289,7 +286,6 @@ export default {
                 this.twoFA = false
             })
             .catch(error => {
-                console.log(error)
             })
         },
         sendMail() {
@@ -302,7 +298,6 @@ export default {
                 document.getElementById("open_modal").click()
             })
             .catch(error => {
-                console.log(error)
             })
         },
         sendCode() {
@@ -316,7 +311,6 @@ export default {
                 document.getElementById("close_code_modal").click()
             })
             .catch(error => {
-                console.log(error)
             })
         },
         checkPassword() {
@@ -383,6 +377,13 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+
+        URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
 
         URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/gamehistory/"
         axios.get(URL, {

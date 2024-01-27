@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div v-else class="flex justify-between flex-wrap w-full">
-                <TournamentCard v-for="tournament in tournaments" :id="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
+                <TournamentCard v-for="tournament in tournaments" :id_t="tournament.id" :name="tournament.name" :description="tournament.description" :nb_players="tournament.nb_players" :max_players="tournament.max_players" :registered="tournament.registered" />
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@ export default {
         if (localStorage.getItem("access") === null) {
     		this.$router.push({path: '/login'})
     	}
-        const URL = import.meta.env.VITE_URL_BASE + "tournament/list/"
+        var URL = import.meta.env.VITE_URL_BASE + "tournament/list/"
         axios.get(URL, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("access")
@@ -168,6 +168,13 @@ export default {
                 this.$router.push({path: "/login"})
             }
 	    })
+
+        URL = import.meta.env.VITE_URL_BASE + "user/" + localStorage.getItem("pk") + "/status/1/"
+		axios.get(URL, {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem("access")
+			}
+		})
     },
     computed: {
         lang: function() {
