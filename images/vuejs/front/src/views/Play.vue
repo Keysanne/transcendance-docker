@@ -5,7 +5,7 @@
         <h1 class="text-white text-4xl md:text-5xl lg:text-6xl text-center">{{ text.choose[lang] }}</h1>
 
         <div class="d-grid gap-3 col-6 col-md-3 mx-auto mt-20">
-            <router-link to="/difficulty" class="btn btn-light btn-lg">{{ text.solo[lang] }}</router-link>
+            <router-link to="/pongAI" class="btn btn-light btn-lg">{{ text.solo[lang] }}</router-link>
 			<router-link to="/pong" class="btn btn-light btn-lg">{{ text.local[lang] }}</router-link>
             <router-link to="/pong4p" class="btn btn-light btn-lg">{{ text.local_4[lang] }}</router-link>
         </div>
