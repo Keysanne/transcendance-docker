@@ -9,8 +9,8 @@ import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import Play from '../views/Play.vue'
 import Pong from '../views/Pong.vue'
+import PongAI from '../views/PongAI.vue'
 import Pong4P from '../views/Pong4P.vue'
-import Difficulty from '../views/Difficulty.vue'
 import Friends from '../views/Friends.vue'
 
 const router = createRouter({
@@ -26,7 +26,7 @@ const router = createRouter({
         {path: '/pong/:ids(\\d+)*', name: 'Pong', component: Pong},
         {path: '/friends', name: 'Friends', component: Friends},
         {path: '/pong4p', name: 'Pong4P', component: Pong4P},
-        {path: '/difficulty', name: 'Difficulty', component: Difficulty},
+        {path: '/pongAI', name: 'PongAI', component: PongAI},
         {path: '/friends', name:'Friends', component: Friends},
         {path: '/:notFound*', component: NotFound},  
     ]
